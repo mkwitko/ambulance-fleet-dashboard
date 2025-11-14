@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import { queryClient } from "@/lib/react-query";
 import { useHookFormMask } from "use-mask-input";
 import CompanyGroupAdminPhone from "./components/company-group-admin-phone";
+import { toast } from "sonner";
 
 // --- 🔒 Schema de validação ---
 const companySchema = z.object({
@@ -50,9 +51,10 @@ export default function CompanyGroupAdminEdit() {
 
   const { mutateAsync: createCompanyGroup } = useCreateCompanyGroup({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: companyGroupQueryKey });
-        navigate("/company-group/admin");
+      onSuccess: async (response) => {
+        await queryClient.invalidateQueries({ queryKey: companyGroupQueryKey });
+        toast.success("Grupo empresarial criado com sucesso!");
+        navigate("/company-group/admin/" + response.id);
       },
     },
   });
@@ -161,7 +163,7 @@ export default function CompanyGroupAdminEdit() {
         </CardContent>
       </Card>
 
-      {isEdit && <CompanyGroupAdminPhone isEdit={isEdit} id={id as string} />}
+      <CompanyGroupAdminPhone isEdit={isEdit} id={id as string} />
     </motion.div>
   );
 }

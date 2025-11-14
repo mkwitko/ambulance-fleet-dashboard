@@ -1,47 +1,32 @@
 import { useDeleteCompany, useGetCompanies } from "@/http/generated/company/company";
 import type { GetCompanies200DataItem } from "@/http/generated/connectServer.schemas";
-import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useCompaniesHook() {
-  // States
-  const [selectedRow, setSelectedRow] =
-    useState<GetCompanies200DataItem | null>(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
   // Queries
   const { data: companies, refetch } = useGetCompanies();
   const { mutateAsync: deleteCompany, isPending } =
-    useDeleteCompany();
+    useDeleteCompany({
+      mutation: {
+        onSuccess: async () => {
+          toast.success("Grupo empresarial excluído com sucesso.");
+          await refetch();
+        },
+        onError: () => {
+          toast.error("Erro ao excluir o grupo empresarial.");
+        },
+      }
+    });
 
-  // Handlers
-  const handleOpenDeleteDialog = (row: GetCompanies200DataItem) => {
-    setSelectedRow(row);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!selectedRow) return;
-
-    try {
-      await deleteCompany({ companyId: selectedRow.id });
-      toast.success("Empresa excluída com sucesso.");
-      setOpenDeleteDialog(false);
-      refetch?.();
-    } catch (err) {
-      toast.error(
-        "Ocorreu um erro ao excluir a empresa. Tente novamente."
-      );
-    }
-  };
+  const handleDelete = (row: GetCompanies200DataItem) => {
+    return deleteCompany({
+      companyId: row.id,
+    });
+  }
 
   return {
     companies,
-    openDeleteDialog,
-    setOpenDeleteDialog,
-    selectedRow,
-    handleOpenDeleteDialog,
-    handleConfirmDelete,
+    handleDelete,
     isPending,
   };
 }

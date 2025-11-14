@@ -1,11 +1,11 @@
 import { AppLayout } from "@/pages/protected/_layout";
-import CompanyGroupList from "@/pages/protected/company-group/company-group-listing";
-import CompanyGroupAdmin from "@/pages/protected/company-group/company-group-admin";
-import CompanyGroupAdminEdit from "@/pages/protected/company-group/company-group-admin-edit/company-group-admin-edit";
 import { PublicLayout } from "@/pages/public/_layout";
 import SignIn from "@/pages/public/sign-in";
 import { createBrowserRouter } from "react-router-dom";
-import CompaniesListing from "@/pages/protected/companies/companies-listing";
+import { CompanyGroupRoute } from "./company-group-route";
+import { CompaniesRoute } from "./companies-route";
+import { UnitsRoute } from "./units-route";
+import { BasesRoute } from "./bases-route";
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       {
-        path: "",
+        index: true,
         element: <SignIn />,
       },
     ],
@@ -22,26 +22,10 @@ export const router = createBrowserRouter([
     path: "",
     element: <AppLayout />,
     children: [
-      {
-        path: "company-group/list",
-        element: <CompanyGroupList />,
-      },
-      {
-        path: "company-group/admin",
-        element: <CompanyGroupAdmin />,
-      },
-      {
-        path: "company-group/admin/new",
-        element: <CompanyGroupAdminEdit />,
-      },
-      {
-        path: "company-group/admin/:id",
-        element: <CompanyGroupAdminEdit />,
-      },
-      {
-        path: "companies/list",
-        element: <CompaniesListing />,
-      },
+      ...CompanyGroupRoute,
+      ...CompaniesRoute,
+      ...UnitsRoute,
+      ...BasesRoute,
     ],
   },
 ]);

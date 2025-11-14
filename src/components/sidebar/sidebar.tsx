@@ -50,9 +50,16 @@ export function Sidebar({ handleClose }: SidebarProps) {
     {
       type: "link",
       role: Role["unit:read"],
-      to: "/units",
+      to: "/units/list",
       icon: Home,
       title: "Unidades",
+    },
+    {
+      type: "link",
+      role: Role["base:read"],
+      to: "/bases/list",
+      icon: Home,
+      title: "Bases",
     },
     { type: "separator" },
     {

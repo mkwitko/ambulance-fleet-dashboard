@@ -2,8 +2,8 @@ import { PhoneForm } from "@/components/phone-form/phone-form";
 import {
   useGetCompanyGroupPhones,
   useCreateCompanyGroupPhoneNumber,
+  useDeleteCompanyGroupPhoneNumber,
 } from "@/http/generated/company-group/company-group";
-import { useDeleteCompanyPhoneNumber } from "@/http/generated/company/company";
 import { queryClient } from "@/lib/react-query";
 
 export default function CompanyGroupAdminPhone({
@@ -33,7 +33,7 @@ export default function CompanyGroupAdminPhone({
   const {
     mutateAsync: deletePhoneNumber,
     isPending: deletingPhoneNumberPending,
-  } = useDeleteCompanyPhoneNumber({
+  } = useDeleteCompanyGroupPhoneNumber({
     mutation: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: companyGroupPhonesQueryKey });
@@ -51,13 +51,15 @@ export default function CompanyGroupAdminPhone({
       }}
       onPhoneDelete={async (phoneId) => {
         await deletePhoneNumber({
-          companyId: id as string,
+          companyGroupId: id as string,
           phoneId,
         });
       }}
       phones={companyGroupPhones?.data.phones || []}
       creatingPhonePending={creatingPhoneNumbersPending}
       deletingPhonePending={deletingPhoneNumberPending}
+      isEdit={isEdit}
+      blockedMessage="Para adicionar ou remover telefones, crie o grupo empresarial primeiro."
     />
   );
 }

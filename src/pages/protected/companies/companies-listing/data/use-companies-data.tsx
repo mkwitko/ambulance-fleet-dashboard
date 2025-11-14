@@ -8,9 +8,9 @@ import { Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function useCompaniesData({
-  handleOpenDeleteDialog,
+  handleDelete,
 }: {
-  handleOpenDeleteDialog: (row: GetCompanies200DataItem) => void;
+  handleDelete: (row: GetCompanies200DataItem) => void;
 }) {
   const navigate = useNavigate();
   const columns: Column<GetCompanies200DataItem>[] = [
@@ -32,7 +32,7 @@ export default function useCompaniesData({
     },
     {
       label: "Excluir",
-      onClick: handleOpenDeleteDialog,
+      onClick: handleDelete,
       icon: (
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),

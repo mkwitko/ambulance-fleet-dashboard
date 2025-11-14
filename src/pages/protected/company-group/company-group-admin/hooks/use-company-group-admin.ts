@@ -6,7 +6,6 @@ import type { GetCompanyGroups200DataItem } from "@/http/generated/connectServer
 import { toast } from "sonner";
 
 export default function useCompanyGroupAdminHook() {
-
   // Queries
   const { data: companyGroups, refetch } = useGetCompanyGroups();
   const { mutateAsync: deleteCompanyGroup, isPending } =

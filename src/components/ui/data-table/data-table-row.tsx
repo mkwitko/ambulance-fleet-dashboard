@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MoreHorizontal, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Action, Column } from "./data-table-types";
+import type { Action, Column, DotNestedKeys } from "./data-table-types";
 import { useState } from "react";
 
 interface DataTableRowProps<T> {
@@ -56,6 +56,10 @@ export function DataTableRow<T extends Record<string, any>>({
   const [openDropdown, setOpenDropdown] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  function getByPath<T>(obj: T, path: DotNestedKeys<T>) {
+    return path.split(".").reduce((acc: any, key) => acc?.[key], obj);
+  }
 
   return (
     <>
@@ -195,7 +199,7 @@ export function DataTableRow<T extends Record<string, any>>({
                   "group-hover:text-foreground transition-colors duration-200"
                 )}
               >
-                {col.render ? col.render(row) : String(row[col.key] ?? "—")}
+                {col.render ? col.render(row) : getByPath(row, col.key) ?? "—"}
               </span>
             </div>
           </TableCell>
