@@ -1,13 +1,25 @@
-export function maskPhoneNumber(phoneNumber: string) {
-  const digits = phoneNumber.replace(/\D/g, '')
+export function maskPhoneNumber(value: string) {
+  const digits = value.replace(/\D/g, '');
 
-  if (digits.length === 11) {
-    return digits.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+  if (!digits) return "";
+
+  // (1) D — "(D"
+  if (digits.length <= 2) {
+    return `(${digits}`;
   }
-  if (digits.length === 10) {
-    return digits.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+
+  // (2) DD — "(DD) "
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
   }
-  return phoneNumber
+
+  // (3) até 10 dígitos
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+
+  // (4) 11 dígitos — formato 5+4
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
 }
 
 export function maskCnpj(cnpj: string) {

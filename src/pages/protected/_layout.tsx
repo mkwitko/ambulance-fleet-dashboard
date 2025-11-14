@@ -1,29 +1,30 @@
-import { useEffect } from 'react'
-import { AppSidebar } from '@/components/app-sidebar'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { useCheckAuth } from '@/hooks/queries/use-check-auth'
-import { useNavigate, Outlet } from 'react-router-dom'
+import { Header } from "@/components/header/header";
+import { useCheckAuth } from "@/http/generated/auth/auth";
+import { useEffect } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
 
 export function AppLayout() {
-  const { data, isLoading } = useCheckAuth()
-  const navigate = useNavigate()
+  const { data, isLoading } = useCheckAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!data) return
+    if (!data) return;
+    console.log("Auth data:", data);
     if (!data.isAuthenticated) {
-      navigate('/authentication')
-      return
+      navigate("/authentication");
+      return;
     }
-  }, [isLoading])
+  }, [isLoading]);
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <div className="flex h-full max-h-screen w-full flex-1">
-          <Outlet />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  )
+    <main className="min-h-screen relative w-full max-w-8xl bg-linear-to-t from-primary/20 via-primary/10 to-primary/25">
+      {/* Header flutuante */}
+      <Header />
+
+      {/* Conteúdo principal */}
+      <div className="mx-auto max-w-8xl w-[95%] pt-28 pb-8">
+        <Outlet />
+      </div>
+    </main>
+  );
 }

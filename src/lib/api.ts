@@ -18,9 +18,9 @@ export const customInstance = <T>(
     cancelToken: source.token,
   })
     .then(({ data }) => data)
-    .catch((error: Error) => {
-      // Handle error and show toast notification
-      // if (error.response) {
+    .catch((error: any) => {
+      console.log('API ERROR:', error)
+      // if (error.) {
       //   if (error.response.status === 401 || error.response.status === 500)
       //     return
       //   toast.error(
