@@ -23,6 +23,7 @@ interface AppSelectProps extends SelectProps {
   disabledMessage?: string;
   placeholder?: string;
   loading?: boolean;
+  className?: string;
 }
 
 export function AppSelect({
@@ -33,6 +34,7 @@ export function AppSelect({
   placeholder = "Selecione...",
   loading = false,
   disabled,
+  className,
   ...props
 }: AppSelectProps) {
   const hasItems = items.length > 0;
@@ -41,7 +43,7 @@ export function AppSelect({
   return (
     <div className="flex w-full flex-col gap-1">
       <Select disabled={isDisabled} {...props}>
-        <SelectTrigger>
+        <SelectTrigger className={className}>
           <SelectValue
             placeholder={
               loading

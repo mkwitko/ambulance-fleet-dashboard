@@ -16,6 +16,10 @@ export default function useCompaniesData({
   const columns: Column<GetCompanies200DataItem>[] = [
     { key: "name", label: "Nome" },
     {
+      key: "companyGroup.name",
+      label: "Grupo Empresa",
+    },
+    {
       key: "document",
       label: "Documento",
       render: (value) => maskCnpj(value.document),

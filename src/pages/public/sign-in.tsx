@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { useSignIn } from "@/http/generated/auth/auth";
+import { useNavigate } from "react-router-dom";
 
 const signInForm = z.object({
   document: z.string(),
@@ -30,6 +31,7 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<z.infer<typeof signInForm>>({
@@ -42,7 +44,13 @@ export default function SignIn() {
 
   const registerWithMask = useHookFormMask(form.register);
 
-  const { mutateAsync: signInAsync } = useSignIn();
+  const { mutateAsync: signInAsync, isPending } = useSignIn({
+    mutation: {
+      onSuccess: () => {
+        navigate("/company-group/list");
+      },
+    },
+  });
 
   async function onSubmit(data: SignInForm) {
     await signInAsync({ data });
@@ -68,7 +76,7 @@ export default function SignIn() {
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="document">Email</Label>
+                  <Label htmlFor="document">CPF</Label>
                   <InputGroup>
                     <InputGroupAddon>
                       <UserIcon />
@@ -115,7 +123,9 @@ export default function SignIn() {
                   </InputGroup>
                 </div>
 
-                <Button type="submit">Login</Button>
+                <Button isSubmitting={isPending} type="submit">
+                  Login
+                </Button>
               </form>
             </CardContent>
           </Card>

@@ -1,4 +1,6 @@
 
-import { GetAuthenticatedUser200DataRolesItem as Role } from "@/http/generated/connectServer.schemas";
+import { CreateUserBodyRolesItem, GetAuthenticatedUser200DataRolesItem as Role } from "@/http/generated/connectServer.schemas";
 
-export { Role };
+const RolesData: Role[] = Object.values(CreateUserBodyRolesItem);
+
+export { Role, RolesData };

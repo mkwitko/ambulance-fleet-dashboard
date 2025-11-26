@@ -4,3 +4,5 @@ export function getInitials(name: string, limit = 2) {
 
   return initials.slice(0, limit).toUpperCase();
 }
+
+

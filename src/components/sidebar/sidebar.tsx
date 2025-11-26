@@ -1,4 +1,11 @@
-import { AmbulanceIcon, Building2, Group, Home, Users } from "lucide-react";
+import {
+  AmbulanceIcon,
+  Building2,
+  Group,
+  Home,
+  MessagesSquare,
+  Users,
+} from "lucide-react";
 import { SheetContent } from "../ui/sheet";
 import { motion } from "framer-motion";
 
@@ -44,7 +51,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       type: "link",
       role: Role["company:read"],
       icon: Group,
-      to: "companies/list",
+      to: "/companies/list",
       title: "Empresas",
     },
     {
@@ -61,20 +68,33 @@ export function Sidebar({ handleClose }: SidebarProps) {
       icon: Home,
       title: "Bases",
     },
-    { type: "separator" },
     {
       type: "link",
       role: Role["user:read"],
-      to: "/users",
+      to: "/users/list",
       icon: Users,
       title: "Usuários",
     },
     {
       type: "link",
       role: Role["ambulance:read"],
-      to: "/ambulances",
+      to: "/ambulances/list",
       icon: AmbulanceIcon,
       title: "Ambulâncias",
+    },
+    {
+      type: "link",
+      role: Role["sys_admin:accessAll"],
+      to: "/modules/list",
+      icon: Home,
+      title: "Módulos",
+    },
+    {
+      type: "link",
+      role: Role["chat:read"],
+      to: "/chats/list",
+      icon: MessagesSquare,
+      title: "Conversas",
     },
   ];
 

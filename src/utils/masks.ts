@@ -34,6 +34,21 @@ export function maskCep(cep: string) {
   return cep.replace(/(\d{5})(\d{3})/, '$1-$2')
 }
 
-export function currencyMask(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+export function currencyMask(value: string) {
+  // Mantém apenas os dígitos
+  const digits = value.replace(/\D/g, "");
+
+  if (!digits) return "";
+
+  // Converte para número (centavos)
+  const number = Number(digits) / 100;
+
+  return number.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
+
+export function removeCurrencyMask(value: string) {
+  return value.replace(/[^0-9,-]+/g, "").replace(",", ".");
 }

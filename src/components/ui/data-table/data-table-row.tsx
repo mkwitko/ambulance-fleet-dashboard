@@ -234,44 +234,46 @@ export function DataTableRow<T extends Record<string, any>>({
                   "bg-background/95 backdrop-blur-md"
                 )}
               >
-                {actions.map((action, k) => (
-                  <motion.div
-                    key={k}
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2, delay: k * 0.04 }}
-                  >
-                    <DropdownMenuItem
-                      onClick={() => {
-                        if (action.type === "destructive") {
-                          setOpenDropdown(false);
-                          setPendingAction(() => () => action.onClick(row));
-                          setTimeout(() => setIsAlertOpen(true), 100);
-                        } else {
-                          action.onClick(row);
-                        }
-                      }}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg",
-                        "text-sm font-medium cursor-pointer",
-                        "transition-all duration-200",
-                        "hover:bg-accent active:scale-[0.97]",
-                        action.type === "destructive" && [
-                          "text-destructive",
-                          "hover:bg-destructive/10",
-                          "focus:bg-destructive/10",
-                        ]
-                      )}
+                {actions
+                  .filter((action) => action.nonActive !== true)
+                  .map((action, k) => (
+                    <motion.div
+                      key={k}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: k * 0.04 }}
                     >
-                      {action.icon && (
-                        <span className="shrink-0 opacity-70">
-                          {action.icon}
-                        </span>
-                      )}
-                      <span>{action.label}</span>
-                    </DropdownMenuItem>
-                  </motion.div>
-                ))}
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (action.type === "destructive") {
+                            setOpenDropdown(false);
+                            setPendingAction(() => () => action.onClick(row));
+                            setTimeout(() => setIsAlertOpen(true), 100);
+                          } else {
+                            action.onClick(row);
+                          }
+                        }}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                          "text-sm font-medium cursor-pointer",
+                          "transition-all duration-200",
+                          "hover:bg-accent active:scale-[0.97]",
+                          action.type === "destructive" && [
+                            "text-destructive",
+                            "hover:bg-destructive/10",
+                            "focus:bg-destructive/10",
+                          ]
+                        )}
+                      >
+                        {action.icon && (
+                          <span className="shrink-0 opacity-70">
+                            {action.icon}
+                          </span>
+                        )}
+                        <span>{action.label}</span>
+                      </DropdownMenuItem>
+                    </motion.div>
+                  ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </TableCell>

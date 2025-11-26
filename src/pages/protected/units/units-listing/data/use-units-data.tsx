@@ -15,6 +15,10 @@ export default function useUnitsData({
   const columns: Column<GetUnits200DataItem>[] = [
     { key: "name", label: "Nome" },
     {
+      key: "companyGroup.name",
+      label: "Grupo Empresa",
+    },
+    {
       key: "company.name",
       label: "Empresa",
     },

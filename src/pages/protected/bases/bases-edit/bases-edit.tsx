@@ -46,7 +46,6 @@ export default function BaseEdit() {
     handleSubmit,
     setValue,
     watch,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<BaseFormValues>({
     resolver: zodResolver(baseSchema),

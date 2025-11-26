@@ -18,7 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -96,10 +95,9 @@ export function Header() {
             <DropdownMenuContent
               align="end"
               sideOffset={10}
-              className="bg-white border border-white shadow-lg"
+              className="bg-white border border-white shadow-lg space-y-2"
             >
               <DropdownMenuItem>Editar Perfil</DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut}>
                 Sair da conta
               </DropdownMenuItem>

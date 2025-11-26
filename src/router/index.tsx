@@ -6,6 +6,10 @@ import { CompanyGroupRoute } from "./company-group-route";
 import { CompaniesRoute } from "./companies-route";
 import { UnitsRoute } from "./units-route";
 import { BasesRoute } from "./bases-route";
+import { UsersRoute } from "./users-route";
+import { AmbulancesRoute } from "./ambulances-route";
+import { ModulesRoute } from "./modules-route";
+import { ChatsRoute } from "./chats-route";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +30,10 @@ export const router = createBrowserRouter([
       ...CompaniesRoute,
       ...UnitsRoute,
       ...BasesRoute,
+      ...UsersRoute,
+      ...AmbulancesRoute,
+      ...ModulesRoute,
+      ...ChatsRoute,
     ],
   },
 ]);

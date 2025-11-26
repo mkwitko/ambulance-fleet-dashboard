@@ -17,9 +17,9 @@ const buttonVariants = cva(
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 hover:scale-105 transition-all duration-200",
         outline: cn(
           // Base
-          "border border-border bg-transparent text-foreground shadow-sm",
+          "border border-input bg-transparent text-foreground shadow-sm",
           // Hover
-          "hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200",
+          // "hover:bg-primary/70 hover:text-primary-foreground transition-all duration-200",
           // Focus
           "focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
         ),
@@ -81,7 +81,7 @@ function Button({
 
   const classes = cn(buttonVariants({ variant, size, className }));
 
-  if (animated) {
+  if (animated && !props.disabled) {
     return (
       <motion.div {...hoverTap}>
         <Comp

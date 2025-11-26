@@ -6,6 +6,7 @@ export interface Action<T> {
   onClick: (row: T) => void
   icon?: React.ReactNode
   type?: string
+  nonActive?: boolean
 }
 
 export interface BulkAction {
@@ -52,5 +53,5 @@ export interface DataTableProps<T> {
   onNew?: () => void
   title?: string
   getChildren?: (row: T) => React.ReactNode
-  hasChildren?: (row: T) => boolean
+  hasChildren?: boolean
 }

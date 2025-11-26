@@ -155,7 +155,7 @@ export function DataTable<T extends Record<string, any>>({
                 <Table className="min-w-full min-h-full">
                   <TableHeader className="sticky top-0 z-10">
                     <TableRow>
-                      {(hasChildren || getChildren) && (
+                      {hasChildren && getChildren && (
                         <TableHead className="w-12" />
                       )}
 
@@ -263,8 +263,6 @@ export function DataTable<T extends Record<string, any>>({
                       paginated.map((row, i) => {
                         const globalIndex = (page - 1) * perPage + i;
                         const isExpanded = expanded.has(globalIndex);
-                        const rowHasChildren =
-                          hasChildren?.(row) || !!getChildren;
 
                         return (
                           <DataTableRow
@@ -276,7 +274,7 @@ export function DataTable<T extends Record<string, any>>({
                             actions={actions}
                             isSelected={selected.has(globalIndex)}
                             isExpanded={isExpanded}
-                            hasChildren={rowHasChildren}
+                            hasChildren={hasChildren || false}
                             onToggleSelect={() => toggleRow(globalIndex)}
                             onToggleExpand={() => toggleExpand(globalIndex)}
                             getChildren={getChildren}

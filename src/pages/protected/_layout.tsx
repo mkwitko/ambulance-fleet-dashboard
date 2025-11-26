@@ -9,7 +9,6 @@ export function AppLayout() {
 
   useEffect(() => {
     if (!data) return;
-    console.log("Auth data:", data);
     if (!data.isAuthenticated) {
       navigate("/authentication");
       return;

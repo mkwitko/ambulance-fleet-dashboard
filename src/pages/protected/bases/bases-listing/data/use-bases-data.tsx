@@ -15,6 +15,10 @@ export default function useBasesData({
   const columns: Column<GetBases200DataItem>[] = [
     { key: "name", label: "Nome" },
     {
+      key: "company.name",
+      label: "Empresa",
+    },
+    {
       key: "unit.name",
       label: "Unidade",
     },
