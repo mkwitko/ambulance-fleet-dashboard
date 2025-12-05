@@ -4,6 +4,7 @@ import {
   Group,
   Home,
   MessagesSquare,
+  Radio,
   Users,
 } from "lucide-react";
 import { SheetContent } from "../ui/sheet";
@@ -70,17 +71,24 @@ export function Sidebar({ handleClose }: SidebarProps) {
     },
     {
       type: "link",
-      role: Role["user:read"],
-      to: "/users/list",
-      icon: Users,
-      title: "Usuários",
-    },
-    {
-      type: "link",
       role: Role["ambulance:read"],
       to: "/ambulances/list",
       icon: AmbulanceIcon,
       title: "Ambulâncias",
+    },
+    {
+      type: "link",
+      role: Role["ambulance:read"],
+      to: "/ambulances/control",
+      icon: AmbulanceIcon,
+      title: "Controle de VTRs",
+    },
+    {
+      type: "link",
+      role: Role["user:read"],
+      to: "/users/list",
+      icon: Users,
+      title: "Usuários",
     },
     {
       type: "link",
@@ -95,6 +103,13 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/chats/list",
       icon: MessagesSquare,
       title: "Conversas",
+    },
+    {
+      type: "link",
+      role: Role["chat:read"],
+      to: "/radio/list",
+      icon: Radio,
+      title: "Rádio",
     },
   ];
 

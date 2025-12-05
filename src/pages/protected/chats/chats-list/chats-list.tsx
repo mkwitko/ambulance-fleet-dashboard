@@ -3,29 +3,29 @@ import type {
   GetChats200DataItem,
 } from "@/http/generated/connectServer.schemas";
 import { useState } from "react";
-import ChatsSidebar from "./components/chats-sidebar";
+import ChatsSidebar from "./components/chats-sidebar/chats-sidebar";
 import Chat from "./components/chat/chat";
 import * as Ably from "ably";
 import { playNotification } from "@/utils/notification";
 import useAbly from "@/hooks/use-ably";
+import { AblyEvents } from "@/@types/ably-events";
+
 export default function ChatsList() {
   const [selectedChat, setSelectedChat] = useState<
     GetChats200DataItem | undefined
   >();
-
   const [incomingMessage, setIncomingMessage] = useState<Ably.InboundMessage>();
 
   const { user } = useAbly({
-    events: ["messages", "status"],
+    events: [AblyEvents.messages, AblyEvents.status, AblyEvents.readChat],
     handleMessageReceived: (message) => {
       setIncomingMessage(message);
 
-      if (message.name === "messages") {
+      if (message.name === AblyEvents.messages) {
         chatMessageReceived(message);
       }
     },
   });
-
   const chatMessageReceived = (message: Ably.InboundMessage) => {
     const parsedMessage = message.data as GetChatMessages200DataItem;
     playNotification(parsedMessage, user);
@@ -44,6 +44,7 @@ export default function ChatsList() {
         onBack={() => setSelectedChat(undefined)}
         user={user?.data}
         incomingMessage={incomingMessage}
+        setIncomingMessage={setIncomingMessage}
       />
     </div>
   );

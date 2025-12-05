@@ -22,6 +22,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useSignIn } from "@/http/generated/auth/auth";
 import { useNavigate } from "react-router-dom";
+import { queryClient } from "@/lib/react-query";
 
 const signInForm = z.object({
   document: z.string(),
@@ -47,7 +48,7 @@ export default function SignIn() {
   const { mutateAsync: signInAsync, isPending } = useSignIn({
     mutation: {
       onSuccess: () => {
-        navigate("/company-group/list");
+        queryClient.invalidateQueries();
       },
     },
   });

@@ -44,6 +44,7 @@ export function AppMultiSelect({
       : [...value, itemValue];
 
     onValueChange(newValue);
+    setIsOpen(false);
   };
 
   const removeItem = (itemValue: string, e: React.MouseEvent) => {

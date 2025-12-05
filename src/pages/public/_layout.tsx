@@ -9,7 +9,7 @@ export function PublicLayout() {
   useEffect(() => {
     if (!data) return;
     if (data.isAuthenticated) {
-      navigate("/");
+      navigate("/chats/list");
       return;
     }
 

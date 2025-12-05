@@ -2,6 +2,8 @@ import { Search } from "lucide-react";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import FilteringScope from "@/components/filtering-scope";
+import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 
 interface DataTableHeaderProps {
   title: string;
@@ -9,6 +11,8 @@ interface DataTableHeaderProps {
   onQueryChange: (value: string) => void;
   searchPlaceholder: string;
   onNew?: () => void;
+  filteringScopeHook?: FilteringScopeHook;
+  headerActions?: React.ReactNode;
 }
 
 export function DataTableHeader({
@@ -17,6 +21,8 @@ export function DataTableHeader({
   onQueryChange,
   searchPlaceholder,
   onNew,
+  filteringScopeHook,
+  headerActions,
 }: DataTableHeaderProps) {
   return (
     <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 space-y-0">
@@ -34,6 +40,12 @@ export function DataTableHeader({
             className="pl-10"
           />
         </div>
+
+        {headerActions && headerActions}
+
+        {filteringScopeHook && (
+          <FilteringScope filteringScopeHook={filteringScopeHook} />
+        )}
 
         {onNew && (
           <Button

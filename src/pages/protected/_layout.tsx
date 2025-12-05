@@ -8,8 +8,9 @@ export function AppLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!data) return;
-    if (!data.isAuthenticated) {
+    if (isLoading) return;
+    console.log("Auth data:", data);
+    if (!data?.isAuthenticated) {
       navigate("/authentication");
       return;
     }
@@ -21,7 +22,7 @@ export function AppLayout() {
       <Header />
 
       {/* Conteúdo principal */}
-      <div className="mx-auto max-w-8xl w-[95%] pt-28 pb-8">
+      <div className="mx-auto max-w-8xl w-[95%] pt-24 pb-8">
         <Outlet />
       </div>
     </main>

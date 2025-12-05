@@ -105,7 +105,7 @@ export default function AmbulanceEdit() {
 
   const { data: bases, isFetching: isFetchingBases } = useGetBases(
     {
-      unitId: watch("unitId"),
+      unitsId: [watch("unitId")],
     },
     {
       query: {

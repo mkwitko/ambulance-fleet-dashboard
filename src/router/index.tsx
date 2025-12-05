@@ -10,6 +10,8 @@ import { UsersRoute } from "./users-route";
 import { AmbulancesRoute } from "./ambulances-route";
 import { ModulesRoute } from "./modules-route";
 import { ChatsRoute } from "./chats-route";
+import { AmbulancesControlRoute } from "./ambulances-control-route";
+import { RadioRoute } from "./radio-route";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +36,8 @@ export const router = createBrowserRouter([
       ...AmbulancesRoute,
       ...ModulesRoute,
       ...ChatsRoute,
+      ...AmbulancesControlRoute,
+      ...RadioRoute,
     ],
   },
 ]);

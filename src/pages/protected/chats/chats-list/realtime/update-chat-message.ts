@@ -1,35 +1,34 @@
 import type {
-  GetChats200,
   GetChatMessages200DataItem,
+  GetChats200DataItem,
 } from "@/http/generated/connectServer.schemas";
 import * as Ably from "ably";
 
-export const realTimeUpdateChatMessage = ({
+export const realtTimeUpdateChatMessage = ({
   incomingMessage,
-  oldData,
+  selectedChat,
+  setMessages,
 }: {
   incomingMessage: Ably.InboundMessage;
-  oldData: GetChats200;
+  selectedChat: GetChats200DataItem | undefined;
+  setMessages: React.Dispatch<
+    React.SetStateAction<GetChatMessages200DataItem[]>
+  >;
 }) => {
-  const message = incomingMessage.data as GetChatMessages200DataItem;
-
-  // Atualiza o chat correspondente com a nova mensagem
-  const updatedData = oldData.data.map((chat) => {
+  const message = {
+    ...incomingMessage.data,
+    isNew: true,
+  } as GetChatMessages200DataItem;
+  // Atualiza a lista de mensagens do chat selecionado
+  setMessages((prevMessages) => {
+    // Verifica se a mensagem já existe na lista
     if (
       message &&
-      chat.id === message.chatId &&
-      !chat.messages?.some((msg) => msg.id === message.id)
+      message.chatId === selectedChat?.id &&
+      !prevMessages.some((msg) => msg.id === message.id)
     ) {
-      return {
-        ...chat,
-        messages: [message],
-      };
+      return [...prevMessages, message];
     }
-    return chat;
+    return prevMessages;
   });
-
-  return {
-    ...oldData,
-    data: updatedData,
-  };
 };

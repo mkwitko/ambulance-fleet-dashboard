@@ -27,9 +27,14 @@ export function DataTable<T extends Record<string, any>>({
   perPageOptions = [10, 20, 50, 100],
   defaultPerPage = 10,
   onNew,
+  filteringScopeHook,
   title = "Tabela",
   getChildren,
   hasChildren,
+  height = "520px",
+  autoPaginate = false,
+  autoPaginateInterval = 5000,
+  headerActions,
 }: DataTableProps<T>) {
   const [query, setQuery] = React.useState("");
   const [page, setPage] = React.useState(1);
@@ -121,6 +126,21 @@ export function DataTable<T extends Record<string, any>>({
 
   const hasBulkActions = bulkActions.length > 0;
 
+  // --- AUTO PAGINATION ---
+  React.useEffect(() => {
+    if (!autoPaginate) return;
+    if (totalPages <= 1) return;
+
+    const interval = setInterval(() => {
+      setPage((prev) => {
+        if (prev >= totalPages) return 1;
+        return prev + 1;
+      });
+    }, autoPaginateInterval || 5000); // default 5s
+
+    return () => clearInterval(interval);
+  }, [autoPaginate, autoPaginateInterval, totalPages]);
+
   return (
     <>
       <Card className="bg-connect shadow-md overflow-hidden">
@@ -133,7 +153,9 @@ export function DataTable<T extends Record<string, any>>({
             clearSelection();
           }}
           searchPlaceholder={`Buscar ${readableFilters || "..."}`}
+          filteringScopeHook={filteringScopeHook}
           onNew={onNew}
+          headerActions={headerActions}
         />
 
         <CardContent className="px-0 sm:px-4 pb-0">
@@ -151,7 +173,7 @@ export function DataTable<T extends Record<string, any>>({
 
           <div className="relative overflow-hidden">
             <div className="overflow-x-auto">
-              <div className="min-h-[520px] overflow-y-auto">
+              <div className={`min-h-[${height}] overflow-y-auto`}>
                 <Table className="min-w-full min-h-full">
                   <TableHeader className="sticky top-0 z-10">
                     <TableRow>
@@ -305,19 +327,6 @@ export function DataTable<T extends Record<string, any>>({
           />
         </CardContent>
       </Card>
-
-      {/* <DeleteDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={() => {
-          onDelete && onDelete(Array.from(selected));
-          clearSelection();
-          setDeleteDialogOpen(false);
-        }}
-        description={`Tem certeza que deseja excluir ${selected.size} registro${
-          selected.size > 1 ? "s" : ""
-        }? Esta ação não pode ser desfeita.`}
-      /> */}
     </>
   );
 }
