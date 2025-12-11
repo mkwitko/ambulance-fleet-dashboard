@@ -26,7 +26,7 @@ export type DotNestedKeys<T> = T extends object
     }[Extract<keyof T, string>]
   : never;
 export interface Column<T> {
-  key: DotNestedKeys<T>;
+  key?: DotNestedKeys<T>;
   label: string;
   render?: (row: T) => React.ReactNode;
   align?: "left" | "right" | "center";
@@ -36,7 +36,7 @@ export interface Column<T> {
 }
 
 export interface SearchableKey<T> {
-  key: DotNestedKeys<T>;
+  key?: DotNestedKeys<T>;
   label?: string;
 }
 

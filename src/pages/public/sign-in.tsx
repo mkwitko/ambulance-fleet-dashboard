@@ -2,7 +2,6 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useHookFormMask } from "use-mask-input";
 import { z } from "zod";
 import inlineLogoSvg from "@/assets/svg/inline.svg";
 import { Button } from "@/components/ui/button";
@@ -21,29 +20,25 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { useSignIn } from "@/http/generated/auth/auth";
-import { useNavigate } from "react-router-dom";
 import { queryClient } from "@/lib/react-query";
 
 const signInForm = z.object({
-  document: z.string(),
+  mail: z.string(),
   password: z.string(),
 });
 
 type SignInForm = z.infer<typeof signInForm>;
 
 export default function SignIn() {
-  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<z.infer<typeof signInForm>>({
     resolver: standardSchemaResolver(signInForm),
     defaultValues: {
       password: "",
-      document: "",
+      mail: "",
     },
   });
-
-  const registerWithMask = useHookFormMask(form.register);
 
   const { mutateAsync: signInAsync, isPending } = useSignIn({
     mutation: {
@@ -77,7 +72,7 @@ export default function SignIn() {
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="document">CPF</Label>
+                  <Label htmlFor="document">E-mail</Label>
                   <InputGroup>
                     <InputGroupAddon>
                       <UserIcon />
@@ -85,13 +80,9 @@ export default function SignIn() {
 
                     <InputGroupInput
                       autoComplete="off"
-                      id="document"
-                      placeholder="Digite seu CPF"
-                      {...registerWithMask("document", "cpf", {
-                        showMaskOnFocus: false,
-                        showMaskOnHover: false,
-                        autoUnmask: true,
-                      })}
+                      id="mail"
+                      placeholder="Digite seu E-mail"
+                      {...form.register("mail")}
                     />
                   </InputGroup>
                 </div>

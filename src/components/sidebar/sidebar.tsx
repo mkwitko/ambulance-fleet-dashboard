@@ -1,5 +1,6 @@
 import {
   AmbulanceIcon,
+  Blocks,
   Building2,
   Group,
   Home,
@@ -28,53 +29,74 @@ export function Sidebar({ handleClose }: SidebarProps) {
   const navItems = [
     {
       type: "link",
-      role: Role["companyGroup:read"],
+      role:
+        Role["companyGroup:read"] ||
+        Role["company:read"] ||
+        Role["unit:read"] ||
+        Role["base:read"] ||
+        Role["ambulance:read"] ||
+        Role["user:read"],
       icon: Building2,
-      title: "Grupo Empresarial",
+      title: "Cadastros",
       children: [
         {
           type: "link",
           role: Role["companyGroup:read"],
-          to: "/company-group/list",
-          icon: Home,
-          title: "Detalhes",
+          icon: Building2,
+          title: "Grupo Empresarial",
+          children: [
+            {
+              type: "link",
+              role: Role["companyGroup:read"],
+              to: "/company-group/list",
+              icon: Home,
+              title: "Detalhes",
+            },
+            {
+              type: "link",
+              role: Role["sys_admin:accessAll"],
+              to: "/company-group/admin",
+              icon: Home,
+              title: "Administração",
+            },
+          ],
         },
         {
           type: "link",
-          role: Role["sys_admin:accessAll"],
-          to: "/company-group/admin",
+          role: Role["company:read"],
+          icon: Group,
+          to: "/companies/list",
+          title: "Empresas",
+        },
+        {
+          type: "link",
+          role: Role["unit:read"],
+          to: "/units/list",
           icon: Home,
-          title: "Administração",
+          title: "Unidades",
+        },
+        {
+          type: "link",
+          role: Role["base:read"],
+          to: "/bases/list",
+          icon: Home,
+          title: "Bases",
+        },
+        {
+          type: "link",
+          role: Role["ambulance:read"],
+          to: "/ambulances/list",
+          icon: AmbulanceIcon,
+          title: "Ambulâncias",
+        },
+        {
+          type: "link",
+          role: Role["user:read"],
+          to: "/users/list",
+          icon: Users,
+          title: "Usuários",
         },
       ],
-    },
-    {
-      type: "link",
-      role: Role["company:read"],
-      icon: Group,
-      to: "/companies/list",
-      title: "Empresas",
-    },
-    {
-      type: "link",
-      role: Role["unit:read"],
-      to: "/units/list",
-      icon: Home,
-      title: "Unidades",
-    },
-    {
-      type: "link",
-      role: Role["base:read"],
-      to: "/bases/list",
-      icon: Home,
-      title: "Bases",
-    },
-    {
-      type: "link",
-      role: Role["ambulance:read"],
-      to: "/ambulances/list",
-      icon: AmbulanceIcon,
-      title: "Ambulâncias",
     },
     {
       type: "link",
@@ -82,13 +104,6 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/ambulances/control",
       icon: AmbulanceIcon,
       title: "Controle de VTRs",
-    },
-    {
-      type: "link",
-      role: Role["user:read"],
-      to: "/users/list",
-      icon: Users,
-      title: "Usuários",
     },
     {
       type: "link",
@@ -110,6 +125,20 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/radio/list",
       icon: Radio,
       title: "Rádio",
+    },
+    {
+      type: "link",
+      role: Role["comms:read"],
+      to: "/comms/list",
+      icon: Radio,
+      title: "Intercomunicação",
+    },
+    {
+      type: "link",
+      role: Role["integrations:read"],
+      to: "/integrations/list",
+      icon: Blocks,
+      title: "Integrações",
     },
   ];
 

@@ -1,18 +1,23 @@
 import { Header } from "@/components/header/header";
 import { useCheckAuth } from "@/http/generated/auth/auth";
 import { useEffect } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 export function AppLayout() {
   const { data, isLoading } = useCheckAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isLoading) return;
-    console.log("Auth data:", data);
     if (!data?.isAuthenticated) {
       navigate("/authentication");
       return;
+    }
+
+    // Se autenticado e está no path raiz
+    if (location.pathname === "/") {
+      navigate("/chats/list", { replace: true });
     }
   }, [isLoading]);
 

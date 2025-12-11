@@ -30,9 +30,10 @@ import { format } from "date-fns";
 // --- 🔒 Schema de validação ---
 const usersSchema = z.object({
   name: z.string().min(2, "O nome é obrigatório"),
-  document: z.string({
-    message: "O documento é obrigatório",
+  mail: z.string().refine((val) => val.includes("@"), {
+    message: "O e-mail é obrigatório",
   }),
+  document: z.string().optional(),
   companyGroupId: z.string({
     message: "O grupo empresa é obrigatório",
   }),
@@ -178,6 +179,7 @@ export default function UsersEdit() {
     await createUser({
       data: {
         name: data.name,
+        mail: data.mail,
         document: data.document,
         companyGroupId: data.companyGroupId,
         companiesIds: data.companiesId,

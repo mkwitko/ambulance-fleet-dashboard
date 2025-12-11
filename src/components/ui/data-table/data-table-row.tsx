@@ -61,6 +61,8 @@ export function DataTableRow<T extends Record<string, any>>({
     return path.split(".").reduce((acc: any, key) => acc?.[key], obj);
   }
 
+  const hasActions = actions.length > 0;
+
   return (
     <>
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
@@ -182,7 +184,9 @@ export function DataTableRow<T extends Record<string, any>>({
                 : col.align === "center"
                 ? "text-center"
                 : "text-left",
-              "py-4"
+              "py-4",
+              // Adiciona padding extra na última coluna quando não há actions
+              !hasActions && col === columns[columns.length - 1] && "pr-6"
             )}
           >
             <div
@@ -199,13 +203,17 @@ export function DataTableRow<T extends Record<string, any>>({
                   "group-hover:text-foreground transition-colors duration-200"
                 )}
               >
-                {col.render ? col.render(row) : getByPath(row, col.key) ?? "—"}
+                {col.render
+                  ? col.render(row)
+                  : col.key
+                  ? getByPath(row, col.key)
+                  : "—"}
               </span>
             </div>
           </TableCell>
         ))}
 
-        {actions.length > 0 && (
+        {hasActions && (
           <TableCell className="text-right w-14 pr-4">
             <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
               <DropdownMenuTrigger asChild>
@@ -290,7 +298,8 @@ export function DataTableRow<T extends Record<string, any>>({
           <TableCell
             colSpan={
               columns.length +
-              (actions.length > 0 ? 2 : 1) +
+              (hasActions ? 1 : 0) +
+              (hasBulkActions ? 1 : 0) +
               (hasChildren ? 1 : 0)
             }
             className="bg-gradient-to-r from-accent/30 via-accent/20 to-transparent p-0 border-b border-border/50"
