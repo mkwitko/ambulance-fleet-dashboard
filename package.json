@@ -9,8 +9,6 @@
     "build": "yarn orval && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "orval": "cross-env TERMINAL_ENV=local npx orval --config ./src/orval.config.ts",
-    "orvalProd": "cross-env TERMINAL_ENV=production npx orval --config ./src/orval.config.ts"
   },
   "dependencies": {
     "@cloudflare/realtimekit-react": "^1.2.1",
