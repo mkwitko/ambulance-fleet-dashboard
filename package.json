@@ -6,7 +6,7 @@
  "scripts": {
     "dev": "yarn orval && vite",
     "start": "yarn orvalProd && vite",
-    "build": "tsc -b && yarn orval && vite build",
+    "build": "yarn orval && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "orval": "cross-env TERMINAL_ENV=local npx orval --config ./src/orval.config.ts",
