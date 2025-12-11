@@ -1,4 +1,7 @@
 import { defineConfig } from "orval";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default defineConfig({
   api: {
@@ -6,7 +9,7 @@ export default defineConfig({
     output: {
       biome: true,
       target: "src/http/generated",
-      baseUrl: "http://localhost:3000",
+      baseUrl: process.env.VITE_HTTP_API_URL,
       client: "react-query",
       clean: true,
       httpClient: "axios",
