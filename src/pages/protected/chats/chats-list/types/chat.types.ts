@@ -10,7 +10,7 @@ export interface Message {
   status?: "sending" | "sent" | "delivered" | "read";
 }
 
-export interface FilePreview {
+export interface FilePreviewType {
   type: GetChatMessages200DataItemMessageType;
   url: string;
   file: File;

@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { Send, X, FileText, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { FilePreview as FilePreviewType } from "../../../types/chat.types";
 import { GetChatMessages200DataItemMessageType } from "@/http/generated/connectServer.schemas";
+import type { FilePreviewType } from "../../../../types/chat.types";
 
 interface FilePreviewProps {
   filePreview: FilePreviewType;

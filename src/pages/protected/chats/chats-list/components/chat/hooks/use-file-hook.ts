@@ -10,7 +10,7 @@ import { useGetPressignedUrl } from "@/http/generated/upload/upload";
 import { generateNewFileWithCustomName } from "@/utils/get-file-name";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import type { FilePreview } from "../../../types/chat.types";
+import type { FilePreviewType } from "../../../types/chat.types";
 
 export default function useFileHook({
   selectedChat,
@@ -24,7 +24,7 @@ export default function useFileHook({
   setMessage: (value: string) => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [filePreview, setFilePreview] = useState<FilePreview | null>(null);
+  const [filePreview, setFilePreview] = useState<FilePreviewType | null>(null);
 
   const { mutateAsync: sendMessage } = useSendMessage();
   const { mutateAsync: getPressignedUrl } = useGetPressignedUrl();

@@ -5,8 +5,8 @@ import { ImageIcon, Mic, Paperclip, Send, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef } from "react";
-import type { FilePreview } from "../../../../types/chat.types";
 import { GetChatMessages200DataItemMessageType } from "@/http/generated/connectServer.schemas";
+import type { FilePreviewType } from "../../../../types/chat.types";
 
 interface ChatInputProps {
   message: string;
@@ -14,7 +14,7 @@ interface ChatInputProps {
   onSend: (message: string) => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
   onStartRecording: () => void;
-  setFilePreview: (preview: FilePreview | null) => void;
+  setFilePreview: (preview: FilePreviewType | null) => void;
 }
 
 export function ChatInput({

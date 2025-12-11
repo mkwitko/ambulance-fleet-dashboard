@@ -210,7 +210,7 @@ export function DataTable<T extends Record<string, any>>({
                           {col.sortable ? (
                             <button
                               className="flex items-center gap-2 hover:text-foreground transition-colors group"
-                              onClick={() => handleSort(col.key)}
+                              onClick={() => col.key && handleSort(col.key)}
                             >
                               <span>{col.label}</span>
                               <ArrowUpDown
