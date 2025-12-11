@@ -65,6 +65,7 @@ export default function UsersEdit() {
     if (isEdit && userToEdit) {
       reset({
         name: userToEdit?.data.name || "",
+        mail: userToEdit?.data.mail || "",
         document: userToEdit?.data.document || "",
         companyGroupId: userToEdit?.data.companyGroupId || "",
         companiesId:
@@ -222,18 +223,11 @@ export default function UsersEdit() {
 
                 {/* Documento */}
                 <div className="flex flex-col gap-2">
-                  <Label>Documento *</Label>
-                  <Input
-                    placeholder="Digite o documento"
-                    {...registerWithMask("document", "cpf", {
-                      showMaskOnFocus: false,
-                      showMaskOnHover: false,
-                      autoUnmask: true,
-                    })}
-                  />
-                  {errors.document && (
+                  <Label>E-mail *</Label>
+                  <Input placeholder="Digite o e-mail" {...register("mail")} />
+                  {errors.mail && (
                     <p className="text-sm text-destructive">
-                      {errors.document.message}
+                      {errors.mail.message}
                     </p>
                   )}
                 </div>
