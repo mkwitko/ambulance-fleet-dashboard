@@ -11,7 +11,7 @@ import {
   type FieldErrors,
   Controller,
 } from "react-hook-form";
-import type { PhoneFormValues } from "../phone-form";
+import type { PhoneFormValues } from "./phone-schema";
 
 export interface PhoneFieldProps {
   field: { id?: string };
