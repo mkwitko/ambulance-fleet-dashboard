@@ -248,14 +248,10 @@
                         "content"
                       ]
                     }
-                  },
-                  "baseId": {
-                    "type": "string"
                   }
                 },
                 "required": [
-                  "documents",
-                  "baseId"
+                  "documents"
                 ]
               }
             }
@@ -516,14 +512,10 @@
                         "content"
                       ]
                     }
-                  },
-                  "baseId": {
-                    "type": "string"
                   }
                 },
                 "required": [
-                  "documents",
-                  "baseId"
+                  "documents"
                 ]
               }
             }
@@ -5321,6 +5313,9 @@
                         "ambulance:delete",
                         "ambulance:switchBase",
                         "ambulance:switchStatus",
+                        "ambulance:switchShift",
+                        "ambulance:associateUser",
+                        "ambulanceControl:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
@@ -5335,10 +5330,16 @@
                         "driver:update",
                         "driver:delete",
                         "driver:driver",
+                        "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
                         "integrations:update",
                         "integrations:delete",
+                        "radio:access",
+                        "radio:read",
+                        "radio:create",
+                        "radio:update",
+                        "radio:delete",
                         "comms:access",
                         "comms:read",
                         "comms:create",
@@ -5780,6 +5781,9 @@
                         "ambulance:delete",
                         "ambulance:switchBase",
                         "ambulance:switchStatus",
+                        "ambulance:switchShift",
+                        "ambulance:associateUser",
+                        "ambulanceControl:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
@@ -5794,10 +5798,16 @@
                         "driver:update",
                         "driver:delete",
                         "driver:driver",
+                        "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
                         "integrations:update",
                         "integrations:delete",
+                        "radio:access",
+                        "radio:read",
+                        "radio:create",
+                        "radio:update",
+                        "radio:delete",
                         "comms:access",
                         "comms:read",
                         "comms:create",
@@ -5926,6 +5936,9 @@
                         "ambulance:delete",
                         "ambulance:switchBase",
                         "ambulance:switchStatus",
+                        "ambulance:switchShift",
+                        "ambulance:associateUser",
+                        "ambulanceControl:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
@@ -5940,10 +5953,16 @@
                         "driver:update",
                         "driver:delete",
                         "driver:driver",
+                        "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
                         "integrations:update",
                         "integrations:delete",
+                        "radio:access",
+                        "radio:read",
+                        "radio:create",
+                        "radio:update",
+                        "radio:delete",
                         "comms:access",
                         "comms:read",
                         "comms:create",
@@ -6090,6 +6109,9 @@
                               "ambulance:delete",
                               "ambulance:switchBase",
                               "ambulance:switchStatus",
+                              "ambulance:switchShift",
+                              "ambulance:associateUser",
+                              "ambulanceControl:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
@@ -6104,10 +6126,16 @@
                               "driver:update",
                               "driver:delete",
                               "driver:driver",
+                              "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
                               "integrations:update",
                               "integrations:delete",
+                              "radio:access",
+                              "radio:read",
+                              "radio:create",
+                              "radio:update",
+                              "radio:delete",
                               "comms:access",
                               "comms:read",
                               "comms:create",
@@ -6395,6 +6423,9 @@
                               "ambulance:delete",
                               "ambulance:switchBase",
                               "ambulance:switchStatus",
+                              "ambulance:switchShift",
+                              "ambulance:associateUser",
+                              "ambulanceControl:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
@@ -6409,10 +6440,16 @@
                               "driver:update",
                               "driver:delete",
                               "driver:driver",
+                              "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
                               "integrations:update",
                               "integrations:delete",
+                              "radio:access",
+                              "radio:read",
+                              "radio:create",
+                              "radio:update",
+                              "radio:delete",
                               "comms:access",
                               "comms:read",
                               "comms:create",
@@ -6542,6 +6579,177 @@
                       "required": [
                         "id",
                         "shift"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/permissions": {
+      "get": {
+        "operationId": "getAuthenticatedUserPermissions",
+        "summary": "Get authenticated user permissions",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "companyGroup:read",
+                              "companyGroup:update",
+                              "companyGroup:createPhoneNumber",
+                              "companyGroup:deletePhoneNumber",
+                              "companyGroup:updatePhoneNumber",
+                              "company:create",
+                              "company:read",
+                              "company:update",
+                              "company:delete",
+                              "company:createPhoneNumber",
+                              "company:deletePhoneNumber",
+                              "company:updatePhoneNumber",
+                              "unit:create",
+                              "unit:read",
+                              "unit:update",
+                              "unit:delete",
+                              "unit:createPhoneNumber",
+                              "unit:deletePhoneNumber",
+                              "unit:updatePhoneNumber",
+                              "base:create",
+                              "base:read",
+                              "base:update",
+                              "base:delete",
+                              "base:createPhoneNumber",
+                              "base:deletePhoneNumber",
+                              "base:updatePhoneNumber",
+                              "user:create",
+                              "user:read",
+                              "user:update",
+                              "user:delete",
+                              "user:assignRole",
+                              "ambulance:create",
+                              "ambulance:read",
+                              "ambulance:update",
+                              "ambulance:delete",
+                              "ambulance:switchBase",
+                              "ambulance:switchStatus",
+                              "ambulance:switchShift",
+                              "ambulance:associateUser",
+                              "ambulanceControl:read",
+                              "ambulanceDocuments:create",
+                              "ambulanceDocuments:update",
+                              "ambulanceDocuments:delete",
+                              "ambulanceDocuments:bulkUpdate",
+                              "sys_admin:accessAll",
+                              "chat:create",
+                              "chat:delete",
+                              "chat:read",
+                              "chat:sendMessage",
+                              "driver:read",
+                              "driver:create",
+                              "driver:update",
+                              "driver:delete",
+                              "driver:driver",
+                              "driver:associateDriver",
+                              "integrations:create",
+                              "integrations:read",
+                              "integrations:update",
+                              "integrations:delete",
+                              "radio:access",
+                              "radio:read",
+                              "radio:create",
+                              "radio:update",
+                              "radio:delete",
+                              "comms:access",
+                              "comms:read",
+                              "comms:create",
+                              "comms:update",
+                              "comms:delete"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "roles"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/ambulance": {
+      "get": {
+        "operationId": "getAuthenticatedUserCurrentAmbulance",
+        "summary": "Get authenticated user ambulance",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "ambulanceId": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "ambulanceId"
                       ],
                       "additionalProperties": false
                     }
@@ -7968,6 +8176,60 @@
         }
       }
     },
+    "/radio/ably-token": {
+      "post": {
+        "operationId": "createAblyToken",
+        "summary": "Create Ably token for radio intercomms",
+        "tags": [
+          "Radio"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channel": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "channel"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tokenRequest": {},
+                    "clientId": {
+                      "type": "string"
+                    },
+                    "expiresIn": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "tokenRequest",
+                    "clientId",
+                    "expiresIn"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/integrations": {
       "post": {
         "operationId": "createIntegration",
@@ -8020,7 +8282,8 @@
                   "name",
                   "url",
                   "password",
-                  "integrationType"
+                  "integrationType",
+                  "companyGroupId"
                 ]
               }
             }
@@ -8117,7 +8380,6 @@
                             ]
                           },
                           "companyGroup": {
-                            "nullable": true,
                             "type": "object",
                             "properties": {
                               "id": {
@@ -8450,6 +8712,229 @@
                   },
                   "required": [
                     "success"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drivers": {
+      "get": {
+        "operationId": "getDriversIntegration",
+        "summary": "Get drivers integration",
+        "tags": [
+          "Drivers"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "ambulanceId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "IdSocorrista": {
+                        "type": "number"
+                      },
+                      "NomeSocorrista": {
+                        "type": "string"
+                      },
+                      "CPFSocorrista": {
+                        "type": "number"
+                      },
+                      "UnidadeSocorrista": {
+                        "type": "number"
+                      },
+                      "NomeUnidade": {
+                        "type": "string"
+                      },
+                      "IdBase": {
+                        "type": "number"
+                      },
+                      "NomeBase": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "IdSocorrista",
+                      "NomeSocorrista"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drivers/associate": {
+      "post": {
+        "operationId": "associateDriver",
+        "summary": "Associate driver to ambulance",
+        "tags": [
+          "Drivers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ambulanceId": {
+                    "type": "string"
+                  },
+                  "driverId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ambulanceId",
+                  "driverId"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "idTurno": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "idTurno"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drivers/logout": {
+      "put": {
+        "operationId": "logoutDriver",
+        "summary": "Logout driver from ambulance",
+        "tags": [
+          "Drivers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "ambulanceId": {
+                    "type": "string"
+                  },
+                  "idTurno": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "ambulanceId",
+                  "idTurno"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/drivers/current": {
+      "get": {
+        "operationId": "getCurrentDriver",
+        "summary": "Get current driver",
+        "tags": [
+          "Drivers"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "ambulanceId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "nullable": true,
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "idTurno": {
+                      "type": "string"
+                    },
+                    "driverId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "idTurno",
+                    "driverId"
                   ],
                   "additionalProperties": false
                 }
@@ -8905,6 +9390,9 @@
                               "ambulance:delete",
                               "ambulance:switchBase",
                               "ambulance:switchStatus",
+                              "ambulance:switchShift",
+                              "ambulance:associateUser",
+                              "ambulanceControl:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
@@ -8919,10 +9407,16 @@
                               "driver:update",
                               "driver:delete",
                               "driver:driver",
+                              "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
                               "integrations:update",
                               "integrations:delete",
+                              "radio:access",
+                              "radio:read",
+                              "radio:create",
+                              "radio:update",
+                              "radio:delete",
                               "comms:access",
                               "comms:read",
                               "comms:create",

@@ -77,6 +77,7 @@ export default function CompaniesListing() {
           { key: "document", label: "Documento" },
         ]}
         onNew={() => navigate("new")}
+        addingRole={Role["company:create"]}
         getChildren={(row) => {
           setSelectedRow(row);
 

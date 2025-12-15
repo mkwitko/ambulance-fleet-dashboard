@@ -13,6 +13,7 @@ import { ChatsRoute } from "./chats-route";
 import { AmbulancesControlRoute } from "./ambulances-control-route";
 import { RadioRoute } from "./radio-route";
 import { CommsRoute } from "./comms-route";
+import { IntegrationsRoute } from "./integrations-route";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       ...ChatsRoute,
       ...AmbulancesControlRoute,
       ...RadioRoute,
-      // ...IntegrationsRoute,
+      ...IntegrationsRoute,
       ...CommsRoute,
     ],
   },

@@ -13,7 +13,6 @@ import type {
   GetAuthenticatedUser200,
   GetUsers200DataItem,
 } from "@/http/generated/connectServer.schemas";
-import { maskCpf } from "@/utils/masks";
 import { hasPermission } from "@/utils/permissions";
 import { Book, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -35,9 +34,8 @@ export default function useUsersData({
   const columns: Column<GetUsers200DataItem>[] = [
     { key: "name", label: "Nome" },
     {
-      key: "document",
-      label: "Documento",
-      render: (value) => (value.document ? maskCpf(value.document) : ""),
+      key: "mail",
+      label: "E-mail",
     },
 
     // --- GRUPO EMPRESA ---

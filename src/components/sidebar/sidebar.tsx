@@ -41,25 +41,10 @@ export function Sidebar({ handleClose }: SidebarProps) {
       children: [
         {
           type: "link",
-          role: Role["companyGroup:read"],
+          role: Role["sys_admin:accessAll"],
           icon: Building2,
           title: "Grupo Empresarial",
-          children: [
-            {
-              type: "link",
-              role: Role["companyGroup:read"],
-              to: "/company-group/list",
-              icon: Home,
-              title: "Detalhes",
-            },
-            {
-              type: "link",
-              role: Role["sys_admin:accessAll"],
-              to: "/company-group/admin",
-              icon: Home,
-              title: "Administração",
-            },
-          ],
+          to: "/company-group/admin",
         },
         {
           type: "link",
@@ -100,7 +85,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
     },
     {
       type: "link",
-      role: Role["ambulance:read"],
+      role: Role["ambulanceControl:read"],
       to: "/ambulances/control",
       icon: AmbulanceIcon,
       title: "Controle de VTRs",
@@ -121,7 +106,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
     },
     {
       type: "link",
-      role: Role["chat:read"],
+      role: Role["radio:read"],
       to: "/radio/list",
       icon: Radio,
       title: "Rádio",

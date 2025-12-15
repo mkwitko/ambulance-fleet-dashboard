@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { BADGE_STATUS_COLOR } from "@/utils/ambulance-status";
 import { useAgora } from "@/utils/agora";
-import { realtimeClient } from "@/utils/ably";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
+import useAbly from "@/hooks/use-ably";
 
 export default function useRadioData() {
   const { data: user } = useGetAuthenticatedUser();
@@ -30,6 +30,7 @@ export default function useRadioData() {
         handleLeave(currentAmbulanceId as string);
       },
     });
+  const { publish } = useAbly({});
   const { mutateAsync: createRadioMeeting } = useCreateRadioMeeting();
 
   // Timer para atualizar o tempo restante
@@ -111,11 +112,7 @@ export default function useRadioData() {
         uid: response.uid as string,
       });
 
-      const ablyChannel = realtimeClient.channels.get(
-        `connect-${user?.data.companyGroup?.id}`
-      );
-
-      ablyChannel.publish(AblyEvents.radioCall, {
+      publish(AblyEvents.radioCall, {
         ambulanceId,
         type: RadioCallTypeEvents.calling,
       });
@@ -131,11 +128,7 @@ export default function useRadioData() {
       setTryingToConnectToChannel(null);
       setChannelStartTime(null);
       setRemainingTime(null);
-      const ablyChannel = realtimeClient.channels.get(
-        `connect-${user?.data.companyGroup?.id}`
-      );
-
-      ablyChannel.publish(AblyEvents.radioCall, {
+      publish(AblyEvents.radioCall, {
         ambulanceId,
         type: RadioCallTypeEvents.ended,
       });

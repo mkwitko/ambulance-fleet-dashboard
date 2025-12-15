@@ -9,10 +9,10 @@ import { Radio, PhoneOff, Clock, Users, Edit, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAgora } from "@/utils/agora";
-import { realtimeClient } from "@/utils/ably";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
 import { useNavigate } from "react-router-dom";
+import useAbly from "@/hooks/use-ably";
 
 export default function useCommsData({
   handleDelete,
@@ -38,6 +38,7 @@ export default function useCommsData({
       },
     });
   const { mutateAsync: createRadioMeeting } = useCreateRadioIntercomms();
+  const { publish } = useAbly({});
 
   // Timer para atualizar o tempo restante
   useEffect(() => {
@@ -122,15 +123,17 @@ export default function useCommsData({
         uid: response.uid as string,
       });
 
-      const ablyChannel = realtimeClient.channels.get(
-        `connect-${user?.data.companyGroup?.id}`
-      );
-
-      ablyChannel.publish(AblyEvents.interCommunicationCall, {
+      publish(AblyEvents.interCommunicationPlaySound, {
         channelName: item.id,
-        baseId: item.base.id,
-        type: RadioCallTypeEvents.calling,
       });
+
+      setTimeout(() => {
+        publish(AblyEvents.interCommunicationCall, {
+          channelName: item.id,
+          baseId: item.base.id,
+          type: RadioCallTypeEvents.calling,
+        });
+      }, 3000);
     } catch (error: any) {
       console.error("Error calling:", error);
       setTryingToConnectToChannel(null);
@@ -143,11 +146,8 @@ export default function useCommsData({
       setTryingToConnectToChannel(null);
       setChannelStartTime(null);
       setRemainingTime(null);
-      const ablyChannel = realtimeClient.channels.get(
-        `connect-${user?.data.companyGroup?.id}`
-      );
 
-      ablyChannel.publish(AblyEvents.interCommunicationCall, {
+      publish(AblyEvents.interCommunicationCall, {
         channelName: commsId,
         type: RadioCallTypeEvents.ended,
       });

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useBasesHook from "./hooks/use-bases";
 import useBasesData from "./data/use-bases-data";
+import { Role } from "@/@types/roles";
 
 export default function BasesListing() {
   const { bases, handleDelete } = useBasesHook();
@@ -24,6 +25,7 @@ export default function BasesListing() {
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
+        addingRole={Role["base:create"]}
       />
     </motion.div>
   );

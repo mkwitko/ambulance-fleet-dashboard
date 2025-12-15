@@ -32,6 +32,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     await signOut();
+    queryClient.invalidateQueries();
     queryClient.clear();
     navigate("/authentication");
   };
@@ -97,7 +98,6 @@ export function Header() {
               sideOffset={10}
               className="bg-white border border-white shadow-lg space-y-2"
             >
-              <DropdownMenuItem>Editar Perfil</DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 Sair da conta
               </DropdownMenuItem>

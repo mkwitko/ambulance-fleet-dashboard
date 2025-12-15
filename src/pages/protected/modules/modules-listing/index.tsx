@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useModulesHook from "./hooks/use-modules";
 import useModulesData from "./data/use-bases-data";
+import { Role } from "@/@types/roles";
 
 export default function ModulesListing() {
   const { modules, handleDelete } = useModulesHook();
@@ -24,6 +25,7 @@ export default function ModulesListing() {
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
+        addingRole={Role["sys_admin:accessAll"]}
       />
     </motion.div>
   );

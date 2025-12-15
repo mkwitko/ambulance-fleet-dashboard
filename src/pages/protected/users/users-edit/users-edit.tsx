@@ -26,6 +26,8 @@ import { Separator } from "@radix-ui/react-separator";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { format } from "date-fns";
+import { queryClient } from "@/lib/react-query";
+import useUsersHook from "../users-listing/hooks/use-users";
 
 // --- 🔒 Schema de validação ---
 const usersSchema = z.object({
@@ -53,6 +55,8 @@ export default function UsersEdit() {
 
   // Routing
   const navigate = useNavigate();
+
+  const { queryKey } = useUsersHook();
 
   const { data: userToEdit, isFetching } = useGetUser(id as string, {
     query: {
@@ -137,7 +141,7 @@ export default function UsersEdit() {
   const { mutateAsync: createUser } = useCreateUser({
     mutation: {
       onSuccess: async () => {
-        // await queryClient.invalidateQueries({ queryKey: userQueryKey });
+        await queryClient.invalidateQueries({ queryKey });
         toast.success("Usuário criada com sucesso!");
         navigate("/users/list");
       },
@@ -152,7 +156,8 @@ export default function UsersEdit() {
 
   const { mutateAsync: updateUser } = useUpdateUser({
     mutation: {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey });
         toast.success("Usuário atualizado com sucesso!");
         navigate("/users/list");
       },
@@ -186,7 +191,7 @@ export default function UsersEdit() {
         companiesIds: data.companiesId,
         unitsIds: data.unitsId,
         birthDate,
-        roles: [Role["chat:read"], Role["chat:sendMessage"]],
+        roles: [Role["chat:read"], Role["chat:sendMessage"], Role["unit:read"]],
       },
     });
   };

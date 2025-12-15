@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useUsersData from "./data/use-ambulance-data";
 import useAmbulanceHook from "./hooks/use-ambulance";
+import { Role } from "@/@types/roles";
 
 export default function AmbulanceListing() {
   const { ambulances, handleDelete, queryKey } = useAmbulanceHook();
@@ -31,6 +32,7 @@ export default function AmbulanceListing() {
           },
         ]}
         onNew={() => navigate("new")}
+        addingRole={Role["ambulance:create"]}
       />
     </motion.div>
   );

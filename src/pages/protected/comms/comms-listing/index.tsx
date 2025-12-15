@@ -5,6 +5,7 @@ import { softEnter } from "@/components/motion/soft-enter";
 import useCommsHook from "./hooks/use-comms";
 import { useNavigate } from "react-router-dom";
 import useCommsData from "./data/use-comms-data";
+import { Role } from "@/@types/roles";
 
 export default function CommsListing() {
   const { commsUsers, handleDelete } = useCommsHook();
@@ -21,6 +22,7 @@ export default function CommsListing() {
         actions={actions}
         searchableKeys={columns.filter((c) => c.search)}
         onNew={() => navigate("new")}
+        addingRole={Role["comms:create"]}
       />
     </motion.div>
   );

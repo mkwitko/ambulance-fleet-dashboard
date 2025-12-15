@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useUsersHook from "./hooks/use-users";
 import useUsersData from "./data/use-users-data";
+import { Role } from "@/@types/roles";
 
 export default function UsersListing() {
   const { users, user, handleDelete } = useUsersHook();
@@ -25,6 +26,7 @@ export default function UsersListing() {
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
+        addingRole={Role["user:create"]}
       />
     </motion.div>
   );

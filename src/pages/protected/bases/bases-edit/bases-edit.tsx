@@ -52,9 +52,8 @@ export default function BaseEdit() {
   });
 
   // Queries
-  const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
-    {}
-  );
+  const { data: companies, isFetching: isFetchingCompanies } =
+    useGetCompanies();
 
   const { data: units, isFetching: isFetchingUnits } = useGetUnits(
     {

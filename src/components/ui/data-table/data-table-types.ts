@@ -1,3 +1,4 @@
+import type { Role } from "@/@types/roles";
 import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 import type React from "react";
 export type SortDirection = "asc" | "desc" | null;
@@ -50,6 +51,7 @@ export interface DataTableProps<T> {
   perPageOptions?: number[];
   defaultPerPage?: number;
   onNew?: () => void;
+  addingRole?: Role;
   filteringScopeHook?: FilteringScopeHook;
   title?: string;
   getChildren?: (row: T) => React.ReactNode;

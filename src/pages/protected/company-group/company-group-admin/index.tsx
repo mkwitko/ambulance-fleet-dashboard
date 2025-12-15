@@ -5,6 +5,7 @@ import useCompanyGroupAdminHook from "./hooks/use-company-group-admin";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
+import { Role } from "@/@types/roles";
 
 export default function CompanyGroupAdmin() {
   const { companyGroups, handleDelete } = useCompanyGroupAdminHook();
@@ -28,6 +29,7 @@ export default function CompanyGroupAdmin() {
             { key: "document", label: "Documento" },
           ]}
           onNew={() => navigate("new")}
+          addingRole={Role["sys_admin:accessAll"]}
         />
       </motion.div>
     </>

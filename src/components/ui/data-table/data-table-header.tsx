@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FilteringScope from "@/components/filtering-scope";
 import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
+import type { Role } from "@/@types/roles";
+import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { hasPermission } from "@/utils/permissions";
 
 interface DataTableHeaderProps {
   title: string;
@@ -11,6 +14,7 @@ interface DataTableHeaderProps {
   onQueryChange: (value: string) => void;
   searchPlaceholder: string;
   onNew?: () => void;
+  addingRole?: Role;
   filteringScopeHook?: FilteringScopeHook;
   headerActions?: React.ReactNode;
 }
@@ -21,9 +25,15 @@ export function DataTableHeader({
   onQueryChange,
   searchPlaceholder,
   onNew,
+  addingRole,
   filteringScopeHook,
   headerActions,
 }: DataTableHeaderProps) {
+  const { data: user } = useGetAuthenticatedUser({
+    query: {
+      enabled: !!addingRole,
+    },
+  });
   return (
     <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 space-y-0">
       <div className="flex items-center gap-4">
@@ -47,7 +57,7 @@ export function DataTableHeader({
           <FilteringScope filteringScopeHook={filteringScopeHook} />
         )}
 
-        {onNew && (
+        {onNew && addingRole && hasPermission(user?.data, addingRole) && (
           <Button
             onClick={onNew}
             className="px-6 py-2 bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200 font-medium"

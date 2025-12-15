@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useUnitsHook from "./hooks/use-units";
 import useUnitsData from "./data/use-units-data";
+import { Role } from "@/@types/roles";
 
 export default function UnitsListing() {
   const { units, handleDelete } = useUnitsHook();
@@ -24,6 +25,7 @@ export default function UnitsListing() {
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
+        addingRole={Role["unit:create"]}
       />
     </motion.div>
   );

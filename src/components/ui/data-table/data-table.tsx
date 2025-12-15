@@ -27,6 +27,7 @@ export function DataTable<T extends Record<string, any>>({
   perPageOptions = [10, 20, 50, 100],
   defaultPerPage = 10,
   onNew,
+  addingRole,
   filteringScopeHook,
   title = "Tabela",
   getChildren,
@@ -155,6 +156,7 @@ export function DataTable<T extends Record<string, any>>({
           searchPlaceholder={`Buscar ${readableFilters || "..."}`}
           filteringScopeHook={filteringScopeHook}
           onNew={onNew}
+          addingRole={addingRole}
           headerActions={headerActions}
         />
 
