@@ -191,9 +191,11 @@ export function DataTableRow<T extends Record<string, any>>({
           >
             <div
               className={cn(
-                "flex items-center gap-2.5",
-                col.align === "right" && "justify-end",
-                col.align === "center" && "justify-center"
+                "flex items-center",
+                (col.align === "right" || col.alignValue === "right") &&
+                  "justify-end",
+                (col.align === "center" || col.alignValue === "center") &&
+                  "justify-center"
               )}
             >
               <span

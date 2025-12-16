@@ -31,6 +31,7 @@ export interface Column<T> {
   label: string;
   render?: (row: T) => React.ReactNode;
   align?: "left" | "right" | "center";
+  alignValue?: "left" | "right" | "center";
   sortable?: boolean;
   width?: string;
   search?: boolean;

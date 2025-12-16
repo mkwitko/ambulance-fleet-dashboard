@@ -7,13 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { BADGE_STATUS_COLOR } from "@/utils/ambulance-status";
 import { useAgora } from "@/utils/agora";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
 import useAbly from "@/hooks/use-ably";
 
 export default function useRadioData() {
-  const { data: user } = useGetAuthenticatedUser();
-
   const [tryingToConnectToChannel, setTryingToConnectToChannel] = useState<
     string | null
   >(null);
@@ -231,7 +228,7 @@ export default function useRadioData() {
         },
       },
       {
-        label: "Ações",
+        label: "Ligação",
         render: (item) => {
           const { status } = getConnectionStatus(item);
           const isConnected = status === "connected";
@@ -260,6 +257,25 @@ export default function useRadioData() {
               <Radio className="h-4 w-4 mr-2" />
               Ligar
             </button>
+          );
+        },
+      },
+      {
+        label: "Microfone",
+        align: "center",
+        render: (item) => {
+          const { status } = getConnectionStatus(item);
+          const isConnected = status === "connected";
+          const totalUsers = getTotalUsers(item);
+          const isChannelFull = totalUsers >= 2;
+          return (
+            <div
+              className={cn("w-4 h-4 rounded-full", {
+                "bg-red-500": !isChannelFull,
+                "bg-green-500": isConnected && isChannelFull,
+                "bg-gray-500": !isConnected,
+              })}
+            />
           );
         },
       },

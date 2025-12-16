@@ -9,7 +9,6 @@ import { Radio, PhoneOff, Clock, Users, Edit, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAgora } from "@/utils/agora";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
 import { useNavigate } from "react-router-dom";
 import useAbly from "@/hooks/use-ably";
@@ -20,7 +19,6 @@ export default function useCommsData({
   handleDelete: (item: GetCommsUsers200DataItem) => void;
 }) {
   const navigate = useNavigate();
-  const { data: user } = useGetAuthenticatedUser();
 
   const [tryingToConnectToChannel, setTryingToConnectToChannel] = useState<
     string | null
@@ -123,6 +121,7 @@ export default function useCommsData({
         uid: response.uid as string,
       });
 
+      console.log("play sound:", item.id);
       publish(AblyEvents.interCommunicationPlaySound, {
         channelName: item.id,
       });
@@ -133,6 +132,7 @@ export default function useCommsData({
           baseId: item.base.id,
           type: RadioCallTypeEvents.calling,
         });
+        console.log("Call event published for channel:", item.id);
       }, 3000);
     } catch (error: any) {
       console.error("Error calling:", error);
@@ -277,6 +277,26 @@ export default function useCommsData({
               <Radio className="h-4 w-4 mr-2" />
               Ligar
             </button>
+          );
+        },
+      },
+      {
+        key: "updatedAt",
+        label: "Microfone",
+        align: "center",
+        render: (item) => {
+          const { status } = getConnectionStatus(item);
+          const isConnected = status === "connected";
+          const totalUsers = getTotalUsers(item);
+          const isChannelFull = totalUsers >= 2;
+          return (
+            <div
+              className={cn("w-4 h-4 rounded-full", {
+                "bg-red-500": !isChannelFull,
+                "bg-green-500": isConnected && isChannelFull,
+                "bg-gray-500": !isConnected,
+              })}
+            />
           );
         },
       },

@@ -196,9 +196,11 @@ export function DataTable<T extends Record<string, any>>({
                         </TableHead>
                       )}
 
-                      {columns.map((col) => (
+                      {columns.map((col, index) => (
                         <TableHead
-                          key={String(col.key)}
+                          key={
+                            col.key ? String(col.key) : `${col.label}-${index}`
+                          }
                           className={cn(
                             col.align === "right"
                               ? "text-right"

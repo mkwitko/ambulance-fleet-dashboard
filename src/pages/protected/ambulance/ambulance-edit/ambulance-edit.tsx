@@ -173,7 +173,6 @@ export default function AmbulanceEdit() {
           id: ambulance?.data.id as string,
           data: {
             documents: uploadedDocuments,
-            baseId: ambulance?.data.base.id as string,
           },
         });
       }
@@ -186,7 +185,6 @@ export default function AmbulanceEdit() {
         await updateAmbulanceDocuments({
           data: {
             documents: uploadedDocuments,
-            baseId: ambulance?.data.base.id as string,
           },
         });
       }
@@ -238,7 +236,6 @@ export default function AmbulanceEdit() {
       id: response.id,
       data: {
         documents: uploadedDocuments,
-        baseId: response.baseId,
       },
     });
     toast.success("Ambulância criada com sucesso!");
