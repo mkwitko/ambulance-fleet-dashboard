@@ -1,7 +1,7 @@
 import * as Ably from "ably";
 import { useEffect, useRef, useCallback } from "react";
 import { createAblyToken } from "../http/generated/radio/radio";
-import { useGetAuthenticatedUser } from "../http/generated/user/user";
+import { useGetAuthenticatedUserAssociations } from "../http/generated/user/user";
 
 export default function useAbly({
   events,
@@ -10,7 +10,7 @@ export default function useAbly({
   events?: string[];
   handleMessageReceived?: (message: Ably.InboundMessage) => void;
 }) {
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: user } = useGetAuthenticatedUserAssociations();
   const clientRef = useRef<Ably.Realtime | null>(null);
 
   // 1️⃣ Create client ONLY when user exists

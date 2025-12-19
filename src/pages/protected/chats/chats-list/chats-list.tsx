@@ -42,7 +42,6 @@ export default function ChatsList() {
       <Chat
         selectedChat={selectedChat}
         onBack={() => setSelectedChat(undefined)}
-        user={user?.data}
         incomingMessage={incomingMessage}
         setIncomingMessage={setIncomingMessage}
       />

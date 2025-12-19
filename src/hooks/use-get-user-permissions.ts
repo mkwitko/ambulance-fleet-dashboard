@@ -1,10 +1,18 @@
 import { Role } from "@/@types/roles";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import {
+  useGetAuthenticatedUserAssociations,
+  useGetAuthenticatedUserPermissions,
+} from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 
 export default function useGetUserPermissions() {
-  const { data: user } = useGetAuthenticatedUser();
-  const userData = user?.data;
+  const { data: userAssociations, isLoading: isLoadingAssociations } =
+    useGetAuthenticatedUserAssociations();
+  const { data: userPermissions, isLoading: isLoadingPermissions } =
+    useGetAuthenticatedUserPermissions();
+  const userData = userPermissions?.data;
+
+  const isReady = !isLoadingAssociations && !isLoadingPermissions;
 
   const perms = {
     isAdmin: hasPermission(userData, Role["sys_admin:accessAll"]),
@@ -15,23 +23,24 @@ export default function useGetUserPermissions() {
   };
 
   const hasSomePermission =
-    perms.isAdmin ||
-    perms.canCompanyGroup ||
-    perms.canCompany ||
-    perms.canUnit ||
-    perms.canBase;
+    isReady &&
+    (perms.isAdmin ||
+      perms.canCompanyGroup ||
+      perms.canCompany ||
+      perms.canUnit ||
+      perms.canBase);
 
   // Helpers
   const getCompanyGroupId = () => {
     if (perms.isAdmin || perms.canCompanyGroup) {
-      return userData?.companyGroup?.id;
+      return userAssociations?.data?.companyGroup?.id;
     }
     return undefined;
   };
 
   const getCompaniesId = () => {
     if (!perms.isAdmin && !perms.canCompanyGroup && perms.canCompany) {
-      return userData?.companies.map((c) => c.id);
+      return userAssociations?.data?.companies.map((c) => c.id);
     }
     return undefined;
   };
@@ -43,7 +52,7 @@ export default function useGetUserPermissions() {
       !perms.canCompany &&
       perms.canUnit
     ) {
-      return userData?.units.map((u) => u.id);
+      return userAssociations?.data?.units.map((u) => u.id);
     }
     return undefined;
   };

@@ -4,18 +4,14 @@ import {
   useGetCommsUsers,
 } from "@/http/generated/comms-user/comms-user";
 import type { GetCommsUsers200DataItem } from "@/http/generated/connectServer.schemas";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { toast } from "sonner";
 
 export default function useCommsHook() {
-  // Queries
-  const { data: user } = useGetAuthenticatedUser();
-
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
   const { data: commsUsers, refetch } = useGetCommsUsers(queryParams, {
     query: {
-      enabled: !!user && hasSomePermission,
+      enabled: hasSomePermission,
     },
   });
 
@@ -37,7 +33,6 @@ export default function useCommsHook() {
 
   return {
     commsUsers,
-    user,
     handleDelete,
     isPending,
   };

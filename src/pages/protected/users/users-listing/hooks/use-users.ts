@@ -1,34 +1,25 @@
-import { Role } from "@/@types/roles";
+import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import type { GetUsers200DataItem } from "@/http/generated/connectServer.schemas";
 import {
   useDeleteUser,
-  useGetAuthenticatedUser,
+  useGetAuthenticatedUserAssociations,
   useGetUsers,
 } from "@/http/generated/user/user";
-import { hasPermission } from "@/utils/permissions";
 import { toast } from "sonner";
 
 export default function useUsersHook() {
-  // Queries
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: userAssociations } = useGetAuthenticatedUserAssociations();
+  const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  // TODO - Ver como vai funcionar quando usuário tiver mais empresas
   const {
     data: users,
     refetch,
     queryKey,
-  } = useGetUsers(
-    {
-      companyGroupId: hasPermission(user?.data, Role["user:read"])
-        ? user?.data.companyGroup?.id
-        : undefined,
+  } = useGetUsers(queryParams, {
+    query: {
+      enabled: !!hasSomePermission,
     },
-    {
-      query: {
-        enabled: !!user,
-      },
-    }
-  );
+  });
 
   const { mutateAsync: deleteUser, isPending } = useDeleteUser({
     mutation: {
@@ -46,14 +37,13 @@ export default function useUsersHook() {
     await deleteUser({
       id: row.id,
       data: {
-        companyGroupId: user?.data.companyGroup?.id as string,
+        companyGroupId: userAssociations?.data.companyGroup?.id as string,
       },
     });
   };
 
   return {
     users,
-    user,
     handleDelete,
     isPending,
     queryKey,

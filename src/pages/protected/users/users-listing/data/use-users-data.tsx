@@ -9,10 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type {
-  GetAuthenticatedUser200,
-  GetUsers200DataItem,
-} from "@/http/generated/connectServer.schemas";
+import type { GetUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 import { Book, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -24,11 +22,10 @@ function truncate(text: string, limit = 20) {
 
 export default function useUsersData({
   handleDelete,
-  user,
 }: {
   handleDelete: (row: GetUsers200DataItem) => void;
-  user: GetAuthenticatedUser200 | undefined;
 }) {
+  const { data: user } = useGetAuthenticatedUserPermissions();
   const navigate = useNavigate();
 
   const columns: Column<GetUsers200DataItem>[] = [

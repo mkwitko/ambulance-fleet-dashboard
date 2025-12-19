@@ -11,7 +11,7 @@ import { usePermissions } from "./hooks/use-permissions";
 import { Role } from "@/@types/roles";
 import { hasPermission } from "@/utils/permissions";
 import {
-  useGetAuthenticatedUser,
+  useGetAuthenticatedUserPermissions,
   useGetUser,
   useUpdateUserPermissions,
 } from "@/http/generated/user/user";
@@ -20,7 +20,7 @@ import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
 
 export default function UsersPermissions() {
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: user } = useGetAuthenticatedUserPermissions();
 
   const { id } = useParams<string>();
   const isEdit = Boolean(id);

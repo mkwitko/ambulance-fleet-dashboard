@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import {
   GetChatMessages200DataItemMessageType,
   GetChatMessages200DataItemStatus,
-  type GetAuthenticatedUser200Data,
   type GetChatMessages200DataItem,
   type GetChats200DataItem,
 } from "@/http/generated/connectServer.schemas";
@@ -23,10 +22,10 @@ import { MessageBubble } from "./components/message-bubble/message-bubble";
 import useRealtimeChatMessages from "./hooks/use-realtime-chats-messages";
 import { connectDatabase } from "@/database/database";
 import { ChatTopOverlay } from "./components/chat-top-overlay";
+import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 
 interface ChatMainProps {
   selectedChat: GetChats200DataItem | undefined;
-  user: GetAuthenticatedUser200Data | undefined;
   onBack?: () => void;
   incomingMessage: Ably.InboundMessage | undefined;
   setIncomingMessage: React.Dispatch<
@@ -37,10 +36,10 @@ interface ChatMainProps {
 export default function Chat({
   selectedChat,
   onBack,
-  user,
   incomingMessage,
   setIncomingMessage,
 }: ChatMainProps) {
+  const { data: user } = useGetAuthenticatedUser();
   const [messages, setMessages] = useState<GetChatMessages200DataItem[]>([]);
   const [currentDateOnScreen, setCurrentDateOnScreen] = useState<string | null>(
     null
@@ -61,7 +60,7 @@ export default function Chat({
     prevScrollHeightRef,
   } = useMessageHook({
     selectedChat,
-    user,
+    user: user?.data,
     online,
     messages,
     setMessages,
@@ -86,7 +85,7 @@ export default function Chat({
     handleSendAudioMessage,
   } = useAudioHook({
     selectedChat,
-    user,
+    user: user?.data,
     online,
   });
 
@@ -98,7 +97,7 @@ export default function Chat({
     isLoading,
   } = useFileHook({
     selectedChat,
-    user,
+    user: user?.data,
     message,
     setMessage,
   });
@@ -122,7 +121,7 @@ export default function Chat({
       // docs = RxDocument[]
       const offlineMessages = docs
         .map((d) => d.toJSON())
-        .filter((d) => d.userId === user?.id) // Apenas mensagens do usuário atual
+        .filter((d) => d.userId === user?.data.id) // Apenas mensagens do usuário atual
         .sort(
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -273,7 +272,7 @@ export default function Chat({
                 return 0; // mantém a ordem
               })
               .map((msg, index) => {
-                const isCurrentUser = msg.user?.id === user?.id;
+                const isCurrentUser = msg.user?.id === user?.data?.id;
                 return (
                   <div id={`msg-${msg.id}`} key={msg.id}>
                     <MessageBubble

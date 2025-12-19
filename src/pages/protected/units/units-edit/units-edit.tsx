@@ -6,7 +6,7 @@ import { softEnter } from "@/components/motion/soft-enter";
 import { motion } from "framer-motion";
 import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user";
 import {
   useCreateUnit,
   useGetUnit,
@@ -37,7 +37,7 @@ export default function UnitEdit() {
   const navigate = useNavigate();
 
   // Queries
-  const { data: user } = useGetAuthenticatedUser({
+  const { data: user } = useGetAuthenticatedUserAssociations({
     query: {
       enabled: !isEdit,
     },

@@ -6066,235 +6066,6 @@
                         "avatarUrl": {
                           "nullable": true,
                           "type": "string"
-                        },
-                        "roles": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "enum": [
-                              "companyGroup:read",
-                              "companyGroup:update",
-                              "companyGroup:createPhoneNumber",
-                              "companyGroup:deletePhoneNumber",
-                              "companyGroup:updatePhoneNumber",
-                              "company:create",
-                              "company:read",
-                              "company:update",
-                              "company:delete",
-                              "company:createPhoneNumber",
-                              "company:deletePhoneNumber",
-                              "company:updatePhoneNumber",
-                              "unit:create",
-                              "unit:read",
-                              "unit:update",
-                              "unit:delete",
-                              "unit:createPhoneNumber",
-                              "unit:deletePhoneNumber",
-                              "unit:updatePhoneNumber",
-                              "base:create",
-                              "base:read",
-                              "base:update",
-                              "base:delete",
-                              "base:createPhoneNumber",
-                              "base:deletePhoneNumber",
-                              "base:updatePhoneNumber",
-                              "user:create",
-                              "user:read",
-                              "user:update",
-                              "user:delete",
-                              "user:assignRole",
-                              "ambulance:create",
-                              "ambulance:read",
-                              "ambulance:update",
-                              "ambulance:delete",
-                              "ambulance:switchBase",
-                              "ambulance:switchStatus",
-                              "ambulance:switchShift",
-                              "ambulance:associateUser",
-                              "ambulanceControl:read",
-                              "ambulanceDocuments:create",
-                              "ambulanceDocuments:update",
-                              "ambulanceDocuments:delete",
-                              "ambulanceDocuments:bulkUpdate",
-                              "sys_admin:accessAll",
-                              "chat:create",
-                              "chat:delete",
-                              "chat:read",
-                              "chat:sendMessage",
-                              "driver:read",
-                              "driver:create",
-                              "driver:update",
-                              "driver:delete",
-                              "driver:driver",
-                              "driver:associateDriver",
-                              "integrations:create",
-                              "integrations:read",
-                              "integrations:update",
-                              "integrations:delete",
-                              "radio:access",
-                              "radio:read",
-                              "radio:create",
-                              "radio:update",
-                              "radio:delete",
-                              "comms:access",
-                              "comms:read",
-                              "comms:create",
-                              "comms:update",
-                              "comms:delete"
-                            ]
-                          }
-                        },
-                        "companyGroup": {
-                          "nullable": true,
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "name"
-                          ],
-                          "additionalProperties": false
-                        },
-                        "companies": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name"
-                            ],
-                            "additionalProperties": false
-                          }
-                        },
-                        "units": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name"
-                            ],
-                            "additionalProperties": false
-                          }
-                        },
-                        "ambulance": {
-                          "nullable": true,
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "status": {
-                              "type": "string"
-                            },
-                            "ambulanceShiftHistories": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "shiftStart": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                  },
-                                  "shiftEnd": {
-                                    "nullable": true,
-                                    "type": "string",
-                                    "format": "date-time"
-                                  }
-                                },
-                                "required": [
-                                  "shiftStart",
-                                  "shiftEnd"
-                                ],
-                                "additionalProperties": false
-                              }
-                            },
-                            "licensePlate": {
-                              "type": "string"
-                            },
-                            "chats": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "readByAppAt": {
-                                    "nullable": true,
-                                    "type": "string",
-                                    "format": "date-time"
-                                  },
-                                  "readByWebAt": {
-                                    "nullable": true,
-                                    "type": "string",
-                                    "format": "date-time"
-                                  },
-                                  "messages": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "properties": {
-                                        "createdAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        }
-                                      },
-                                      "required": [
-                                        "createdAt"
-                                      ],
-                                      "additionalProperties": false
-                                    }
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "readByAppAt",
-                                  "readByWebAt",
-                                  "messages"
-                                ],
-                                "additionalProperties": false
-                              }
-                            },
-                            "unitId": {
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "name",
-                            "status",
-                            "ambulanceShiftHistories",
-                            "licensePlate",
-                            "chats",
-                            "unitId"
-                          ],
-                          "additionalProperties": false
                         }
                       },
                       "required": [
@@ -6302,12 +6073,7 @@
                         "name",
                         "mail",
                         "document",
-                        "avatarUrl",
-                        "roles",
-                        "companyGroup",
-                        "companies",
-                        "units",
-                        "ambulance"
+                        "avatarUrl"
                       ],
                       "additionalProperties": false
                     }
@@ -6750,6 +6516,343 @@
                       "required": [
                         "id",
                         "ambulanceId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/roles": {
+      "get": {
+        "operationId": "getAuthenticatedUserRoles",
+        "summary": "Get authenticated user roles",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "companyGroup:read",
+                              "companyGroup:update",
+                              "companyGroup:createPhoneNumber",
+                              "companyGroup:deletePhoneNumber",
+                              "companyGroup:updatePhoneNumber",
+                              "company:create",
+                              "company:read",
+                              "company:update",
+                              "company:delete",
+                              "company:createPhoneNumber",
+                              "company:deletePhoneNumber",
+                              "company:updatePhoneNumber",
+                              "unit:create",
+                              "unit:read",
+                              "unit:update",
+                              "unit:delete",
+                              "unit:createPhoneNumber",
+                              "unit:deletePhoneNumber",
+                              "unit:updatePhoneNumber",
+                              "base:create",
+                              "base:read",
+                              "base:update",
+                              "base:delete",
+                              "base:createPhoneNumber",
+                              "base:deletePhoneNumber",
+                              "base:updatePhoneNumber",
+                              "user:create",
+                              "user:read",
+                              "user:update",
+                              "user:delete",
+                              "user:assignRole",
+                              "ambulance:create",
+                              "ambulance:read",
+                              "ambulance:update",
+                              "ambulance:delete",
+                              "ambulance:switchBase",
+                              "ambulance:switchStatus",
+                              "ambulance:switchShift",
+                              "ambulance:associateUser",
+                              "ambulanceControl:read",
+                              "ambulanceDocuments:create",
+                              "ambulanceDocuments:update",
+                              "ambulanceDocuments:delete",
+                              "ambulanceDocuments:bulkUpdate",
+                              "sys_admin:accessAll",
+                              "chat:create",
+                              "chat:delete",
+                              "chat:read",
+                              "chat:sendMessage",
+                              "driver:read",
+                              "driver:create",
+                              "driver:update",
+                              "driver:delete",
+                              "driver:driver",
+                              "driver:associateDriver",
+                              "integrations:create",
+                              "integrations:read",
+                              "integrations:update",
+                              "integrations:delete",
+                              "radio:access",
+                              "radio:read",
+                              "radio:create",
+                              "radio:update",
+                              "radio:delete",
+                              "comms:access",
+                              "comms:read",
+                              "comms:create",
+                              "comms:update",
+                              "comms:delete"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "roles"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/associations": {
+      "get": {
+        "operationId": "getAuthenticatedUserAssociations",
+        "summary": "Get authenticated user associations",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "companyGroup": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "companies": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "units": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "companyGroup",
+                        "companies",
+                        "units"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/ambulance/info": {
+      "get": {
+        "operationId": "getAuthenticatedUserAmbulance",
+        "summary": "Get authenticated user ambulance info",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "ambulance": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            },
+                            "chats": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "ambulanceShiftHistories": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "shiftStart": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  },
+                                  "shiftEnd": {
+                                    "nullable": true,
+                                    "type": "string",
+                                    "format": "date-time"
+                                  }
+                                },
+                                "required": [
+                                  "shiftStart",
+                                  "shiftEnd"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "licensePlate": {
+                              "type": "string"
+                            },
+                            "unitId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "status",
+                            "chats",
+                            "ambulanceShiftHistories",
+                            "licensePlate",
+                            "unitId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "ambulance"
                       ],
                       "additionalProperties": false
                     }

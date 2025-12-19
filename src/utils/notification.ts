@@ -1,12 +1,12 @@
 import type {
-  GetAuthenticatedUser200,
+  GetAuthenticatedUserAssociations200,
   GetChatMessages200DataItem,
 } from "@/http/generated/connectServer.schemas";
 import { CACHE_KEYS, getCachedItem } from "./cache";
 
 export const playNotification = (
   message: GetChatMessages200DataItem,
-  user: GetAuthenticatedUser200 | undefined
+  user: GetAuthenticatedUserAssociations200 | undefined
 ) => {
   if (message.user.id === user?.data?.id) return; // Don't play sound for own messages
 

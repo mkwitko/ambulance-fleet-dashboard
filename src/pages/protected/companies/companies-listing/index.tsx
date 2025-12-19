@@ -16,7 +16,7 @@ import {
 } from "@/http/generated/company/company";
 import { queryClient } from "@/lib/react-query";
 import { Role } from "@/@types/roles";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 import CompanyModulesChildren from "./components/company-modules-listing";
 
@@ -29,9 +29,12 @@ export default function CompaniesListing() {
   const [selectedRow, setSelectedRow] =
     useState<GetCompanies200DataItem | null>(null);
 
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
 
-  const isAdmin = hasPermission(user?.data, Role["sys_admin:accessAll"]);
+  const isAdmin = hasPermission(
+    userPermissions?.data,
+    Role["sys_admin:accessAll"]
+  );
 
   const { data: companyModules, queryKey } = useGetCompanyModules(
     selectedRow?.id as string,

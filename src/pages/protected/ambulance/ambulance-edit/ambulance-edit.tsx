@@ -8,7 +8,10 @@ import { motion } from "framer-motion";
 import { useGetUnits } from "@/http/generated/unit/unit";
 import { useGetCompanies } from "@/http/generated/company/company";
 import { AppSelect } from "@/components/app-select";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import {
+  useGetAuthenticatedUserAssociations,
+  useGetAuthenticatedUserPermissions,
+} from "@/http/generated/user/user";
 import { Role } from "@/@types/roles";
 import { useGetCompanyGroups } from "@/http/generated/company-group/company-group";
 import { hasPermission } from "@/utils/permissions";
@@ -65,7 +68,8 @@ export default function AmbulanceEdit() {
   const { handleUploadDocuments } = useUploadDocuments();
 
   // Queries
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: user } = useGetAuthenticatedUserPermissions();
+  const { data: userAssociations } = useGetAuthenticatedUserAssociations();
 
   const isAdmin = hasPermission(user?.data, Role["sys_admin:accessAll"]);
 
@@ -83,7 +87,7 @@ export default function AmbulanceEdit() {
     {
       companyGroupId: isAdmin
         ? watch("companyGroupId")
-        : user?.data.companyGroup?.id,
+        : userAssociations?.data.companyGroup?.id,
     },
     {
       query: {

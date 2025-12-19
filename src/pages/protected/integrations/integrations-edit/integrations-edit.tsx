@@ -30,7 +30,10 @@ import {
   type UpdateIntegrationBody,
 } from "@/http/generated/connectServer.schemas";
 import { Role } from "@/@types/roles";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import {
+  useGetAuthenticatedUserAssociations,
+  useGetAuthenticatedUserPermissions,
+} from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 import { translateIntegrationType } from "@/utils/integrations-types";
 import useIntegrationshook from "../integrations-list/hooks/use-integrations";
@@ -88,17 +91,21 @@ export default function IntegrationsEdit() {
   // -----------------------
   // Queries
   // -----------------------
-  const { data: user } = useGetAuthenticatedUser();
-  const isAdmin = hasPermission(user?.data, Role["sys_admin:accessAll"]);
-  hasPermission(user?.data, Role["sys_admin:accessAll"]);
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
+  const { data: userAssociations } = useGetAuthenticatedUserAssociations();
+  const isAdmin = hasPermission(
+    userPermissions?.data,
+    Role["sys_admin:accessAll"]
+  );
+  hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
     {
-      companyGroupId: user?.data.companyGroup?.id,
+      companyGroupId: userAssociations?.data.companyGroup?.id,
     },
     {
       query: {
-        enabled: !!user && watch("tipoVinculo") !== "GROUP",
+        enabled: !!userPermissions && watch("tipoVinculo") !== "GROUP",
       },
     }
   );
@@ -110,7 +117,7 @@ export default function IntegrationsEdit() {
     {
       query: {
         enabled:
-          !!user &&
+          !!userPermissions &&
           watch("tipoVinculo") === "UNIT" &&
           Array.isArray(watch("companiesId")) &&
           (watch("companiesId")?.length ?? 0) > 0,
@@ -152,7 +159,7 @@ export default function IntegrationsEdit() {
       login: data.login,
       password: data.password,
       integrationType: data.integrationType,
-      companyGroupId: user?.data.companyGroup?.id,
+      companyGroupId: userAssociations?.data.companyGroup?.id,
     };
 
     if (data.tipoVinculo === "COMPANY") {
@@ -310,7 +317,10 @@ export default function IntegrationsEdit() {
                   setValue("unitsId", []);
 
                   if (v === "GROUP" && !isAdmin) {
-                    setValue("companyGroupId", user?.data.companyGroup?.id);
+                    setValue(
+                      "companyGroupId",
+                      userAssociations?.data.companyGroup?.id
+                    );
                   }
                 }}
                 placeholder="Selecione"

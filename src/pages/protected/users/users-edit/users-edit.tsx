@@ -13,7 +13,8 @@ import { AppSelect } from "@/components/app-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useCreateUser,
-  useGetAuthenticatedUser,
+  useGetAuthenticatedUserAssociations,
+  useGetAuthenticatedUserPermissions,
   useGetUser,
   useUpdateUser,
 } from "@/http/generated/user/user";
@@ -96,17 +97,21 @@ export default function UsersEdit() {
   });
 
   // Queries
-  const { data: user } = useGetAuthenticatedUser();
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
+  const { data: userAssociations } = useGetAuthenticatedUserAssociations();
 
-  const isAdmin = hasPermission(user?.data, Role["sys_admin:accessAll"]);
-  hasPermission(user?.data, Role["sys_admin:accessAll"]);
+  const isAdmin = hasPermission(
+    userPermissions?.data,
+    Role["sys_admin:accessAll"]
+  );
+  hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
 
   const { data: companyGroups, isFetching: isFetchingCompanyGroup } =
     useGetCompanyGroups(
       {},
       {
         query: {
-          enabled: user && isAdmin,
+          enabled: isAdmin,
         },
       }
     );
@@ -115,11 +120,11 @@ export default function UsersEdit() {
     {
       companyGroupId: isAdmin
         ? watch("companyGroupId")
-        : user?.data.companyGroup?.id,
+        : userAssociations?.data.companyGroup?.id,
     },
     {
       query: {
-        enabled: !!user && (isAdmin ? !!watch("companyGroupId") : true),
+        enabled: isAdmin ? !!watch("companyGroupId") : true,
       },
     }
   );
@@ -131,7 +136,7 @@ export default function UsersEdit() {
     {
       query: {
         enabled:
-          !!user &&
+          !!userAssociations &&
           !!watch("companiesId")?.length &&
           watch("companiesId")?.length > 0,
       },

@@ -4,15 +4,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type {
-  GetAuthenticatedUser200Data,
-  GetAuthenticatedUser200DataRolesItem,
+  GetAuthenticatedUserPermissions200Data,
+  GetAuthenticatedUserPermissions200DataRolesItem,
 } from "@/http/generated/connectServer.schemas";
 import { hasPermission } from "@/utils/permissions";
 import { useState } from "react";
 
 export interface NavLinkItem {
   type: string;
-  role: GetAuthenticatedUser200DataRolesItem;
+  role: GetAuthenticatedUserPermissions200DataRolesItem;
   to: string;
   icon: LucideIcon;
   title: string;
@@ -22,7 +22,7 @@ export interface NavLinkItem {
 interface SidebarItemProps {
   item: NavLinkItem;
   handleClose: () => void;
-  user?: GetAuthenticatedUser200Data;
+  user?: GetAuthenticatedUserPermissions200Data;
   level?: number;
 }
 

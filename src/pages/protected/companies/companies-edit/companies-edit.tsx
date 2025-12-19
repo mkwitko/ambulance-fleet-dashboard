@@ -18,7 +18,7 @@ import {
   useUpdateCompany,
 } from "@/http/generated/company/company";
 import CompaniesPhone from "./components/companies-phone";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user";
 
 // --- 🔒 Schema de validação ---
 const companySchema = z.object({
@@ -35,7 +35,7 @@ export default function CompanyEdit() {
   // Params
   const { id } = useParams<string>();
   const isEdit = Boolean(id);
-  const { data: user } = useGetAuthenticatedUser({
+  const { data: user } = useGetAuthenticatedUserAssociations({
     query: {
       enabled: !isEdit,
     },

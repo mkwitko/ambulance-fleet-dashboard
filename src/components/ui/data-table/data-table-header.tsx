@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import FilteringScope from "@/components/filtering-scope";
 import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 import type { Role } from "@/@types/roles";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 
 interface DataTableHeaderProps {
@@ -29,7 +29,7 @@ export function DataTableHeader({
   filteringScopeHook,
   headerActions,
 }: DataTableHeaderProps) {
-  const { data: user } = useGetAuthenticatedUser({
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions({
     query: {
       enabled: !!addingRole,
     },
@@ -57,14 +57,16 @@ export function DataTableHeader({
           <FilteringScope filteringScopeHook={filteringScopeHook} />
         )}
 
-        {onNew && addingRole && hasPermission(user?.data, addingRole) && (
-          <Button
-            onClick={onNew}
-            className="px-6 py-2 bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200 font-medium"
-          >
-            Adicionar
-          </Button>
-        )}
+        {onNew &&
+          addingRole &&
+          hasPermission(userPermissions?.data, addingRole) && (
+            <Button
+              onClick={onNew}
+              className="px-6 py-2 bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200 font-medium"
+            >
+              Adicionar
+            </Button>
+          )}
       </div>
     </CardHeader>
   );

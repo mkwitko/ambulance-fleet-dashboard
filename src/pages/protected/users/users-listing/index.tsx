@@ -8,11 +8,10 @@ import useUsersData from "./data/use-users-data";
 import { Role } from "@/@types/roles";
 
 export default function UsersListing() {
-  const { users, user, handleDelete } = useUsersHook();
+  const { users, handleDelete } = useUsersHook();
 
   const { columns, actions } = useUsersData({
     handleDelete,
-    user,
   });
 
   const navigate = useNavigate();

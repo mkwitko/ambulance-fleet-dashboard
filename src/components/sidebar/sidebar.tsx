@@ -11,7 +11,10 @@ import {
 import { SheetContent } from "../ui/sheet";
 import { motion } from "framer-motion";
 
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import {
+  useGetAuthenticatedUser,
+  useGetAuthenticatedUserPermissions,
+} from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 import { SidebarItem, type NavLinkItem } from "./nav-item";
 import { Separator } from "../ui/separator";
@@ -25,6 +28,7 @@ interface SidebarProps {
 
 export function Sidebar({ handleClose }: SidebarProps) {
   const { data: user } = useGetAuthenticatedUser();
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
 
   const navItems = [
     {
@@ -180,7 +184,8 @@ export function Sidebar({ handleClose }: SidebarProps) {
               );
             }
 
-            if (!hasPermission(user?.data, item.role as string)) return null;
+            if (!hasPermission(userPermissions?.data, item.role as string))
+              return null;
 
             return (
               <motion.div
@@ -196,7 +201,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
                 <SidebarItem
                   item={item as NavLinkItem}
                   handleClose={handleClose}
-                  user={user?.data}
+                  user={userPermissions?.data}
                 />
               </motion.div>
             );

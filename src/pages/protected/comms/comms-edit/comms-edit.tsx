@@ -32,7 +32,6 @@ import {
 
 import { useGetBases } from "@/http/generated/base/base";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 
 // --- Schema ---
 const usersSchema = z.object({
@@ -72,13 +71,12 @@ export default function UsersCommsEdit() {
   });
 
   // Permissions + bases
-  const { data: user } = useGetAuthenticatedUser();
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
   const { data: bases, isFetching: isFetchingBases } = useGetBases(
     queryParams,
     {
-      query: { enabled: !!user && hasSomePermission },
+      query: { enabled: hasSomePermission },
     }
   );
 
