@@ -6,6 +6,7 @@ import {
   type GetChatMessages200DataItem,
   SendMessageBodyMessageType,
   SendMessageBodyPlatform,
+  GetChatMessages200DataItemStatus,
 } from "@/http/generated/connectServer.schemas";
 import type { InboundMessage } from "ably";
 import React, { useEffect, useRef, useState } from "react";
@@ -118,24 +119,18 @@ export default function useMessageHook({
     const offlineId = crypto.randomUUID();
 
     if (!online) {
-      const offlineMessage: GetChatMessages200DataItem = {
+      const offlineMessage = {
         id: offlineId,
-        chatId: selectedChat?.id as string,
+        selectedChatId: selectedChat?.id as string,
+        content: message,
+        messageType: SendMessageBodyMessageType.TEXT,
         user: {
           id: user?.id as string,
           name: user?.name as string,
-          avatarUrl: user?.avatarUrl || null,
+          avatarUrl: user?.avatarUrl || "",
         },
-        file: "",
-        messageType: SendMessageBodyMessageType.TEXT,
         createdAt: new Date().toISOString(),
-        content: message,
-        status: "PENDING",
-        platform: SendMessageBodyPlatform.WEB,
-        chat: {
-          id: selectedChat?.id as string,
-          ambulance: selectedChat?.ambulance as any,
-        },
+        status: GetChatMessages200DataItemStatus.PENDING,
       };
       await connectDatabase.messages.insert(offlineMessage);
       return;

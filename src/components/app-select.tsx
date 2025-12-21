@@ -7,7 +7,7 @@ import {
   SelectLabel,
   SelectItem,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { SelectProps } from "@radix-ui/react-select";
 
@@ -24,10 +24,13 @@ interface AppSelectProps extends SelectProps {
   placeholder?: string;
   loading?: boolean;
   className?: string;
+  clearable?: boolean;
 }
 
 export function AppSelect({
   label,
+  value,
+  onValueChange,
   items = [],
   emptyMessage = "Nenhum item encontrado",
   disabledMessage = "Selecione um valor anterior",
@@ -35,14 +38,35 @@ export function AppSelect({
   loading = false,
   disabled,
   className,
+  clearable = false,
   ...props
 }: AppSelectProps) {
   const hasItems = items.length > 0;
   const isDisabled = disabled || loading;
+  const hasValue = value && value !== "";
+
+  // Wrapper elegante que previne valores vazios
+  const handleValueChange = (newValue: string) => {
+    if (newValue && onValueChange) {
+      onValueChange(newValue);
+    }
+  };
+
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onValueChange) {
+      onValueChange("");
+    }
+  };
 
   return (
     <div className="flex w-full flex-col gap-1">
-      <Select disabled={isDisabled} {...props}>
+      <Select
+        disabled={isDisabled}
+        value={value}
+        onValueChange={handleValueChange}
+        {...props}
+      >
         <SelectTrigger className={className}>
           <SelectValue
             placeholder={
@@ -53,6 +77,16 @@ export function AppSelect({
                 : placeholder
             }
           />
+          {clearable && hasValue && !isDisabled && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="ml-auto mr-2 rounded-sm opacity-50 hover:opacity-100 transition-opacity"
+              aria-label="Limpar seleção"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </SelectTrigger>
 
         {!isDisabled && (

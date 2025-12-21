@@ -9,18 +9,14 @@ import { softEnter } from "@/components/motion/soft-enter";
 import { motion } from "framer-motion";
 import { useGetUnits } from "@/http/generated/unit/unit";
 import { useGetCompanies } from "@/http/generated/company/company";
-import { AppSelect } from "@/components/app-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useCreateUser,
   useGetAuthenticatedUserAssociations,
-  useGetAuthenticatedUserPermissions,
   useGetUser,
   useUpdateUser,
 } from "@/http/generated/user/user";
 import { Role } from "@/@types/roles";
-import { useGetCompanyGroups } from "@/http/generated/company-group/company-group";
-import { hasPermission } from "@/utils/permissions";
 import { AppMultiSelect } from "@/components/app-multi-select";
 import { useHookFormMask } from "use-mask-input";
 import { Separator } from "@radix-ui/react-separator";
@@ -37,9 +33,6 @@ const usersSchema = z.object({
     message: "O e-mail é obrigatório",
   }),
   document: z.string().optional(),
-  companyGroupId: z.string({
-    message: "O grupo empresa é obrigatório",
-  }),
   companiesId: z.array(z.string()).min(1, "A empresa é obrigatória"),
   unitsId: z.array(z.string()).min(1, "A unidade é obrigatória"),
   birthDate: z.string({
@@ -54,35 +47,6 @@ export default function UsersEdit() {
   const { id } = useParams<string>();
   const isEdit = Boolean(id);
 
-  // Routing
-  const navigate = useNavigate();
-
-  const { queryKey } = useUsersHook();
-
-  const { data: userToEdit, isFetching } = useGetUser(id as string, {
-    query: {
-      enabled: isEdit && !!id,
-    },
-  });
-
-  useEffect(() => {
-    if (isFetching) return;
-    if (isEdit && userToEdit) {
-      reset({
-        name: userToEdit?.data.name || "",
-        mail: userToEdit?.data.mail || "",
-        document: userToEdit?.data.document || "",
-        companyGroupId: userToEdit?.data.companyGroupId || "",
-        companiesId:
-          userToEdit?.data.companies?.map((company) => company.id) || [],
-        unitsId: userToEdit?.data.units?.map((unit) => unit.id) || [],
-        birthDate: userToEdit?.data.birthDate
-          ? format(new Date(userToEdit.data.birthDate), "dd/MM/yyyy")
-          : "",
-      });
-    }
-  }, [isFetching]);
-
   // Form
   const {
     register,
@@ -96,35 +60,25 @@ export default function UsersEdit() {
     mode: "all",
   });
 
-  // Queries
-  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
+  // Routing
+  const navigate = useNavigate();
+
+  const { queryKey } = useUsersHook();
+
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
-
-  const isAdmin = hasPermission(
-    userPermissions?.data,
-    Role["sys_admin:accessAll"]
-  );
-  hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
-
-  const { data: companyGroups, isFetching: isFetchingCompanyGroup } =
-    useGetCompanyGroups(
-      {},
-      {
-        query: {
-          enabled: isAdmin,
-        },
-      }
-    );
+  const { data: userToEdit, isFetching } = useGetUser(id as string, {
+    query: {
+      enabled: isEdit && !!id,
+    },
+  });
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
     {
-      companyGroupId: isAdmin
-        ? watch("companyGroupId")
-        : userAssociations?.data.companyGroup?.id,
+      companyGroupId: userAssociations?.data.companyGroup?.id,
     },
     {
       query: {
-        enabled: isAdmin ? !!watch("companyGroupId") : true,
+        enabled: !!userAssociations,
       },
     }
   );
@@ -169,6 +123,23 @@ export default function UsersEdit() {
     },
   });
 
+  useEffect(() => {
+    if (isFetching) return;
+    if (isEdit && userToEdit) {
+      reset({
+        name: userToEdit?.data.name || "",
+        mail: userToEdit?.data.mail || "",
+        document: userToEdit?.data.document || "",
+        companiesId:
+          userToEdit?.data.companies?.map((company) => company.id) || [],
+        unitsId: userToEdit?.data.units?.map((unit) => unit.id) || [],
+        birthDate: userToEdit?.data.birthDate
+          ? format(new Date(userToEdit.data.birthDate), "dd/MM/yyyy")
+          : "",
+      });
+    }
+  }, [isFetching]);
+
   // Submit
   const onSubmit = async (data: UsersFormValues) => {
     const [day, month, year] = data.birthDate.split("/");
@@ -180,7 +151,7 @@ export default function UsersEdit() {
           name: data.name,
           document: data.document,
           birthDate,
-          companyGroupId: data.companyGroupId,
+          companyGroupId: userAssociations?.data.companyGroup?.id as string,
           companiesIds: data.companiesId,
           unitsIds: data.unitsId,
         },
@@ -192,7 +163,7 @@ export default function UsersEdit() {
         name: data.name,
         mail: data.mail,
         document: data.document,
-        companyGroupId: data.companyGroupId,
+        companyGroupId: userAssociations?.data.companyGroup?.id as string,
         companiesIds: data.companiesId,
         unitsIds: data.unitsId,
         birthDate,
@@ -268,36 +239,6 @@ export default function UsersEdit() {
               <h3 className="font-medium">Vínculos</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Grupo empresa */}
-                {isAdmin && (
-                  <div className="flex flex-col gap-2">
-                    <Label>Grupo Empresa *</Label>
-                    <AppSelect
-                      value={watch("companyGroupId")}
-                      onValueChange={(value) =>
-                        setValue("companyGroupId", value, {
-                          shouldValidate: true,
-                        })
-                      }
-                      placeholder="Selecione o Grupo Empresa"
-                      disabled={companyGroups?.data.length === 0}
-                      items={
-                        companyGroups?.data?.map((g) => ({
-                          label: g.name,
-                          value: g.id,
-                        })) || []
-                      }
-                      emptyMessage="Nenhum grupo encontrado."
-                      loading={isFetchingCompanyGroup}
-                    />
-                    {errors.companyGroupId && (
-                      <p className="text-sm text-destructive">
-                        {errors.companyGroupId.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-
                 {/* Empresas */}
                 <div className="flex flex-col gap-2">
                   <Label>Empresas *</Label>

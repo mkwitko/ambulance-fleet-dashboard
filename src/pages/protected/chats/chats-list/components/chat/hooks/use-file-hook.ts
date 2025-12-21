@@ -11,17 +11,20 @@ import { generateNewFileWithCustomName } from "@/utils/get-file-name";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import type { FilePreviewType } from "../../../types/chat.types";
+import { toast } from "sonner";
 
 export default function useFileHook({
   selectedChat,
   user,
   message,
   setMessage,
+  online,
 }: {
   selectedChat: GetChats200DataItem | undefined;
   user: GetAuthenticatedUser200Data | undefined;
   message: string;
   setMessage: (value: string) => void;
+  online: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [filePreview, setFilePreview] = useState<FilePreviewType | null>(null);
@@ -31,6 +34,13 @@ export default function useFileHook({
 
   const handleSendFile = async () => {
     if (!filePreview) return;
+    if (!online) {
+      toast.error(
+        "Você está offline. Não é possível enviar arquivos no momento."
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     const file = filePreview.file;

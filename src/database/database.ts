@@ -29,7 +29,10 @@ await connectDatabase.addCollections({
           type: "string",
           maxLength: 100,
         },
-        chatId: {
+        selectedChatId: {
+          type: "string",
+        },
+        content: {
           type: "string",
         },
         user: {
@@ -43,32 +46,29 @@ await connectDatabase.addCollections({
               type: "string",
               maxLength: 100,
             },
+            avatarUrl: {
+              type: "string",
+            },
           },
         },
-        content: {
-          type: "string",
-        },
         messageType: {
-          type: "string",
-        },
-        status: {
           type: "string",
         },
         retries: {
           type: "number",
         },
-        file: {
-          type: "string",
-        },
-        fileToUpload: {
+        status: {
           type: "string",
         },
         createdAt: {
           type: "string",
           format: "date-time",
         },
+        file: {
+          type: "string",
+        },
       },
-      required: ["id", "chatId", "messageType", "status", "createdAt"],
+      required: ["id", "selectedChatId", "messageType", "createdAt", "status"],
     },
   },
 });

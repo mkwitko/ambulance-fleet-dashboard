@@ -73,12 +73,9 @@ export default function UsersCommsEdit() {
   // Permissions + bases
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: bases, isFetching: isFetchingBases } = useGetBases(
-    queryParams,
-    {
-      query: { enabled: hasSomePermission },
-    }
-  );
+  const { data: bases, isLoading: isFetchingBases } = useGetBases(queryParams, {
+    query: { enabled: hasSomePermission },
+  });
 
   useEffect(() => {
     if (isFetching || isFetchingBases) return;
@@ -91,6 +88,10 @@ export default function UsersCommsEdit() {
       });
     }
   }, [isFetching, isFetchingBases]);
+
+  useEffect(() => {
+    console.log("base id - ", watch("baseId"));
+  }, [watch("baseId")]);
 
   // Mutations
   const { mutateAsync: createUser } = useCreateCommsUser({

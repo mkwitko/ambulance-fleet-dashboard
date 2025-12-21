@@ -11,7 +11,7 @@ import { generateNewFileWithCustomName } from "@/utils/get-file-name";
 import { useGetPressignedUrl } from "@/http/generated/upload/upload";
 import { env } from "@/env";
 import axios from "axios";
-import { connectDatabase } from "@/database/database";
+import { toast } from "sonner";
 
 export default function useAudioHook({
   selectedChat,
@@ -108,31 +108,31 @@ export default function useAudioHook({
   const handleSendAudioMessage = async (audioBlob: Blob | null) => {
     if (!audioBlob) return;
 
+    if (!online) {
+      toast.error("Você está offline. Ainda não é possível enviar áudio.");
+      return;
+      // const offlineId = crypto.randomUUID();
+      // const offlineMessage = {
+      //   id: offlineId,
+      //   selectedChatId: selectedChat?.id as string,
+      //   content: "",
+      //   messageType: SendMessageBodyMessageType.AUDIO,
+      //   user: {
+      //     id: user?.id as string,
+      //     name: user?.name as string,
+      //     avatarUrl: user?.avatarUrl || "",
+      //   },
+      //   createdAt: new Date().toISOString(),
+      //   status: GetChatMessages200DataItemStatus.PENDING,
+      //   file: audioBlob,
+      // };
+      // await connectDatabase.messages.insert(offlineMessage);
+      // return;
+    }
+
     setAudioPreview(null);
     setIsPlayingPreview(false);
     setRecordingTime(0);
-
-    const offlineId = crypto.randomUUID();
-
-    if (!online) {
-      const offlineMessage = {
-        id: offlineId,
-        chatId: selectedChat?.id as string,
-        user: {
-          id: user?.id as string,
-          name: user?.name as string,
-          avatarUrl: user?.avatarUrl || null,
-        },
-        file: "",
-        fileToUpload: audioBlob,
-        messageType: SendMessageBodyMessageType.TEXT,
-        createdAt: new Date().toISOString(),
-        content: "",
-        status: "PENDING",
-      };
-      await connectDatabase.messages.insert(offlineMessage);
-      return;
-    }
 
     const file = new File([audioBlob], "recording.wav", {
       type: audioBlob.type,

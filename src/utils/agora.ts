@@ -20,7 +20,7 @@ export function useAgora({ onExpire }: { onExpire?: () => void }) {
   // -------------------------
   useEffect(() => {
     const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    AgoraRTC.setLogLevel(2);
+    AgoraRTC.setLogLevel(4);
     clientRef.current = client;
     return () => {
       clientRef.current?.removeAllListeners();

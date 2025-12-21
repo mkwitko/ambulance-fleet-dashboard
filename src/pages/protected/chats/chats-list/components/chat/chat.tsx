@@ -100,6 +100,7 @@ export default function Chat({
     user: user?.data,
     message,
     setMessage,
+    online,
   });
 
   useRealtimeChatMessages({
@@ -113,7 +114,7 @@ export default function Chat({
 
     const offlineMessages$ = connectDatabase.messages.find({
       selector: {
-        chatId: selectedChat.id,
+        selectedChatId: selectedChat.id,
       },
     }).$;
 
@@ -121,7 +122,7 @@ export default function Chat({
       // docs = RxDocument[]
       const offlineMessages = docs
         .map((d) => d.toJSON())
-        .filter((d) => d.userId === user?.data.id) // Apenas mensagens do usuário atual
+        .filter((d) => d.user.id === user?.data.id) // Apenas mensagens do usuário atual
         .sort(
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -181,6 +182,7 @@ export default function Chat({
 
       if (message.messageType === GetChatMessages200DataItemMessageType.TEXT) {
         response = await handleSendMessage(message.content as string);
+        console.log("Resent text message:", response);
       }
 
       if (!response) {

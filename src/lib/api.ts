@@ -20,7 +20,6 @@ export const customInstance = <T>(
   })
     .then(({ data }) => data)
     .catch((error: any) => {
-      console.log("API ERROR:", error);
       if (error.response.data.details.showError) {
         toast.error(error.response.data.details.message);
       }
