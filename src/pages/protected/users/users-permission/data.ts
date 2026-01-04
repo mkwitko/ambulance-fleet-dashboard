@@ -16,6 +16,11 @@ export const actionTranslations: Record<string, string> = {
   bulkUpdate: "Edição em Massa",
   accessAll: "Acesso Total",
   sendMessage: "Enviar Mensagem",
+  driver: "Motorista",
+  associateDriver: "Associar Motorista",
+  access: "Acessar",
+  switchShift: "Trocar Turno",
+  associateUser: "Associar Usuário",
 };
 
 export const resourceTranslations: Record<string, string> = {
@@ -32,6 +37,7 @@ export const resourceTranslations: Record<string, string> = {
   comms: "Intercomunicação",
   driver: "Motorista",
   radio: "Rádio",
+  integrations: "Integrações",
 };
 
 export const presetRoles: PresetRole[] = [
@@ -81,7 +87,7 @@ export const presetRoles: PresetRole[] = [
       Role["chat:sendMessage"],
       Role["unit:read"],
       Role["ambulance:associateUser"],
-      // Role["driver:associateDriver"],
+      Role["driver:associateDriver"],
     ],
   },
   {

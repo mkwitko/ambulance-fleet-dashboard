@@ -182,7 +182,6 @@ export default function Chat({
 
       if (message.messageType === GetChatMessages200DataItemMessageType.TEXT) {
         response = await handleSendMessage(message.content as string);
-        console.log("Resent text message:", response);
       }
 
       if (!response) {

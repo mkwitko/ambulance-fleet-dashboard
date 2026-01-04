@@ -9047,6 +9047,41 @@
         }
       }
     },
+    "/drivers/has-integration": {
+      "get": {
+        "operationId": "hasDriversIntegration",
+        "summary": "Has drivers integration",
+        "tags": [
+          "Drivers"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasIntegration": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "hasIntegration"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/comms-user": {
       "post": {
         "operationId": "createCommsUser",
