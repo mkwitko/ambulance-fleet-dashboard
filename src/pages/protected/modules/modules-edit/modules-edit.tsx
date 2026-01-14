@@ -182,7 +182,7 @@ export default function ModulesEdit() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => navigate("/companies/list")}
+                onClick={() => navigate("/modules/list")}
                 disabled={isSubmitting}
               >
                 Cancelar

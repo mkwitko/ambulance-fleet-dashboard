@@ -3,10 +3,7 @@ import { useGetBases } from "@/http/generated/base/base";
 import { useGetCompanyGroups } from "@/http/generated/company-group/company-group";
 import { useGetCompanies } from "@/http/generated/company/company";
 import { useGetUnits } from "@/http/generated/unit/unit";
-import {
-  useGetAuthenticatedUserAssociations,
-  useGetAuthenticatedUserRoles,
-} from "@/http/generated/user/user";
+import { useGetAuthenticatedUserRoles } from "@/http/generated/user/user";
 import { hasPermission } from "@/utils/permissions";
 import { useState } from "react";
 import { Filter } from "lucide-react";
@@ -55,7 +52,6 @@ export default function FilteringScope({
   } = filteringScopeHook;
 
   const { data: user } = useGetAuthenticatedUserRoles();
-  const { data: userAssociations } = useGetAuthenticatedUserAssociations();
   const userData = user?.data;
 
   // Permissions
@@ -92,11 +88,7 @@ export default function FilteringScope({
     );
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
-    {
-      companyGroupId: perms.isAdmin
-        ? (uiCompanyGroupId as string)
-        : userAssociations?.data.companyGroup?.id,
-    },
+    {},
     {
       query: {
         enabled:

@@ -9,16 +9,17 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { useEffect } from "react";
 import { softEnter } from "@/components/motion/soft-enter";
 import { motion } from "framer-motion";
-import { queryClient } from "@/lib/react-query";
 import { useHookFormMask } from "use-mask-input";
 import { toast } from "sonner";
 import {
   useCreateCompany,
+  useGetCompanies,
   useGetCompany,
   useUpdateCompany,
 } from "@/http/generated/company/company";
 import CompaniesPhone from "./components/companies-phone";
 import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user";
+import { queryClient } from "@/lib/react-query";
 
 // --- 🔒 Schema de validação ---
 const companySchema = z.object({
@@ -48,26 +49,33 @@ export default function CompanyEdit() {
   const {
     data: company,
     isFetching: isFetchingCompany,
-    queryKey: companyQueryKey,
+    queryKey: getCompanyByIdQueryKey,
   } = useGetCompany(id as string, {
     query: {
       enabled: isEdit,
     },
   });
+  const { queryKey: getCompaniesQueryKey } = useGetCompanies();
 
   const { mutateAsync: createCompany } = useCreateCompany({
     mutation: {
-      onSuccess: async (response) => {
-        await queryClient.invalidateQueries({ queryKey: companyQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: getCompaniesQueryKey });
         toast.success("Empresa criado com sucesso!");
-        navigate("/companies/list/" + response.id);
+        navigate("/companies/list");
       },
     },
   });
   const { mutateAsync: updateCompany } = useUpdateCompany({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: companyQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: getCompaniesQueryKey });
+        await queryClient.invalidateQueries({
+          queryKey: getCompanyByIdQueryKey,
+        });
+
+        toast.success("Empresa atualizada com sucesso!");
+        navigate("/companies/list");
       },
     },
   });

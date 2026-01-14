@@ -17,6 +17,7 @@ export interface NavLinkItem {
   icon: LucideIcon;
   title: string;
   children?: NavLinkItem[];
+  onlySuperAdmin?: boolean;
 }
 
 interface SidebarItemProps {
@@ -36,7 +37,7 @@ export function SidebarItem({
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
-  if (!hasPermission(user, item.role as string)) return null;
+  if (!hasPermission(user, item.role, item.onlySuperAdmin)) return null;
 
   const isActive = location.pathname === item.to;
   const isParentActive = item.children?.some(

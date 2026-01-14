@@ -3,8 +3,13 @@ import {
   useDeleteAmbulance,
   useGetAmbulances,
 } from "@/http/generated/ambulance/ambulance";
-import type { GetAmbulances200DataItem } from "@/http/generated/connectServer.schemas";
+import { useGetChats } from "@/http/generated/chat/chat";
+import {
+  GetChatsPlatform,
+  type GetAmbulances200DataItem,
+} from "@/http/generated/connectServer.schemas";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
 
 export default function useAmbulanceHook() {
@@ -12,6 +17,18 @@ export default function useAmbulanceHook() {
   const { data: user } = useGetAuthenticatedUser();
 
   const { queryParams, hasSomePermission } = useGetUserPermissions();
+
+  const { queryKey: chatsQueryKey } = useGetChats(
+    {
+      ...queryParams,
+      platform: GetChatsPlatform.WEB,
+    },
+    {
+      query: {
+        enabled: hasSomePermission,
+      },
+    }
+  );
 
   const {
     data: ambulances,
@@ -37,6 +54,7 @@ export default function useAmbulanceHook() {
 
   const handleDelete = async (row: GetAmbulances200DataItem) => {
     await deleteAmbulance({ id: row.id });
+    await queryClient.invalidateQueries({ queryKey: chatsQueryKey });
   };
 
   return {

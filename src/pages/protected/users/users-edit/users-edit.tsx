@@ -73,9 +73,7 @@ export default function UsersEdit() {
   });
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
-    {
-      companyGroupId: userAssociations?.data.companyGroup?.id,
-    },
+    {},
     {
       query: {
         enabled: !!userAssociations,

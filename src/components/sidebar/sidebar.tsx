@@ -49,6 +49,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
           icon: Building2,
           title: "Grupo Empresarial",
           to: "/company-group/admin",
+          onlySuperAdmin: true,
         },
         {
           type: "link",
@@ -100,6 +101,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/modules/list",
       icon: Home,
       title: "Módulos",
+      onlySuperAdmin: true,
     },
     {
       type: "link",
@@ -184,8 +186,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
               );
             }
 
-            if (!hasPermission(userPermissions?.data, item.role as string))
-              return null;
+            if (!hasPermission(userPermissions?.data, item.role)) return null;
 
             return (
               <motion.div

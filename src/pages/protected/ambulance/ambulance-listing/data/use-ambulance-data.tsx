@@ -2,10 +2,10 @@ import type {
   Action,
   Column,
 } from "@/components/ui/data-table/data-table-types";
-import type {
-  GetAmbulances200,
-  GetAmbulances200DataItem,
-  SwitchAmbulanceStatusBodyStatus,
+import {
+  type GetAmbulances200,
+  type GetAmbulances200DataItem,
+  type SwitchAmbulanceStatusBodyStatus,
 } from "@/http/generated/connectServer.schemas";
 import { Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";

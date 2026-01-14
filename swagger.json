@@ -2600,6 +2600,12 @@
                   },
                   "longitude": {
                     "type": "number"
+                  },
+                  "companyId": {
+                    "type": "string"
+                  },
+                  "unitId": {
+                    "type": "string"
                   }
                 }
               }
@@ -4833,10 +4839,14 @@
                 "properties": {
                   "name": {
                     "type": "string"
+                  },
+                  "companyId": {
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "companyId"
                 ]
               }
             }
@@ -5313,6 +5323,7 @@
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
+                        "companyGroup_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -5781,6 +5792,7 @@
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
+                        "companyGroup_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -5936,6 +5948,7 @@
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
+                        "companyGroup_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -6189,6 +6202,7 @@
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
+                              "companyGroup_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -6428,6 +6442,7 @@
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
+                              "companyGroup_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -6599,6 +6614,7 @@
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
+                              "companyGroup_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -9528,6 +9544,7 @@
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
+                              "companyGroup_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",

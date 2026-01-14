@@ -12,9 +12,6 @@ import {
   useGetAuthenticatedUserAssociations,
   useGetAuthenticatedUserPermissions,
 } from "@/http/generated/user/user";
-import { Role } from "@/@types/roles";
-import { useGetCompanyGroups } from "@/http/generated/company-group/company-group";
-import { hasPermission } from "@/utils/permissions";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -23,6 +20,7 @@ import {
   useCreateAmbulanceDocuments,
   useDeleteAmbulanceDocument,
   useGetAmbulance,
+  useGetAmbulances,
   useUpdateAmbulance,
   useUpdateAmbulanceDocumentsInBulk,
 } from "@/http/generated/ambulance/ambulance";
@@ -32,6 +30,10 @@ import type { AmbulanceFormValues } from "./form/ambulance-schema";
 import { DocumentField } from "@/components/document-picker";
 import useDocumentsHook from "./hooks/use-documents-hook";
 import useUploadDocuments from "./hooks/upload-documents";
+import useGetUserPermissions from "@/hooks/use-get-user-permissions";
+import { queryClient } from "@/lib/react-query";
+import { useGetChats } from "@/http/generated/chat/chat";
+import { GetChatsPlatform } from "@/http/generated/connectServer.schemas";
 
 export default function AmbulanceEdit() {
   // Params
@@ -40,12 +42,6 @@ export default function AmbulanceEdit() {
 
   // Routing
   const navigate = useNavigate();
-
-  const { data: ambulance, isFetching } = useGetAmbulance(id as string, {
-    query: {
-      enabled: isEdit && !!id,
-    },
-  });
 
   const formMethods = useAmbulanceResolver();
   const {
@@ -71,30 +67,38 @@ export default function AmbulanceEdit() {
   const { data: user } = useGetAuthenticatedUserPermissions();
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
 
-  const isAdmin = hasPermission(user?.data, Role["sys_admin:accessAll"]);
+  const {
+    data: ambulance,
+    isFetching,
+    queryKey: ambulanceQueryKey,
+  } = useGetAmbulance(id as string, {
+    query: {
+      enabled: isEdit && !!id,
+    },
+  });
 
-  const { data: companyGroups, isFetching: isFetchingCompanyGroup } =
-    useGetCompanyGroups(
-      {},
-      {
-        query: {
-          enabled: user && isAdmin,
-        },
-      }
-    );
+  const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
+  const { queryKey: chatsQueryKey } = useGetChats(
     {
-      companyGroupId: isAdmin
-        ? watch("companyGroupId")
-        : userAssociations?.data.companyGroup?.id,
+      ...queryParams,
+      platform: GetChatsPlatform.WEB,
     },
     {
       query: {
-        enabled: !!user && isAdmin ? !!watch("companyGroupId") : true,
+        enabled: hasSomePermission,
       },
     }
   );
+
+  const { queryKey: ambulancesQueryKey } = useGetAmbulances(queryParams, {
+    query: {
+      enabled: !!user && hasSomePermission,
+    },
+  });
+
+  const { data: companies, isFetching: isFetchingCompanies } =
+    useGetCompanies();
 
   const { data: units, isFetching: isFetchingUnits } = useGetUnits(
     {
@@ -131,9 +135,11 @@ export default function AmbulanceEdit() {
 
   const { mutateAsync: updateAmbulance } = useUpdateAmbulance({
     mutation: {
-      onSuccess: () => {
-        toast.success("Ambulância atualizada com sucesso!");
-        navigate("/ambulances/list");
+      onError: (error: any) => {
+        toast.error(
+          error.response.data.message ||
+            "Houve um erro ao atualizar a ambulância. Tente novamente."
+        );
       },
     },
   });
@@ -210,12 +216,18 @@ export default function AmbulanceEdit() {
           name: data.name,
           licensePlate: data.licensePlate,
           ambulanceCode: data.ambulanceCode,
-          companyGroupId: data.companyGroupId,
+          companyGroupId: userAssociations?.data.companyGroup?.id as string,
           companyId: data.companyId,
           unitId: data.unitId,
           baseId: data.baseId,
         },
       });
+
+      await Promise.allSettled([
+        queryClient.invalidateQueries({ queryKey: ambulancesQueryKey }),
+        queryClient.invalidateQueries({ queryKey: ambulanceQueryKey }),
+        queryClient.invalidateQueries({ queryKey: chatsQueryKey }),
+      ]);
 
       toast.success("Ambulância atualizada com sucesso!");
       navigate("/ambulances/list");
@@ -226,7 +238,7 @@ export default function AmbulanceEdit() {
         name: data.name,
         licensePlate: data.licensePlate,
         ambulanceCode: data.ambulanceCode,
-        companyGroupId: data.companyGroupId,
+        companyGroupId: userAssociations?.data.companyGroup?.id as string,
         companyId: data.companyId,
         unitId: data.unitId,
         baseId: data.baseId,
@@ -242,6 +254,12 @@ export default function AmbulanceEdit() {
         documents: uploadedDocuments,
       },
     });
+
+    await Promise.allSettled([
+      queryClient.invalidateQueries({ queryKey: ambulancesQueryKey }),
+      queryClient.invalidateQueries({ queryKey: chatsQueryKey }),
+    ]);
+
     toast.success("Ambulância criada com sucesso!");
     navigate("/ambulances/list");
   };
@@ -289,7 +307,6 @@ export default function AmbulanceEdit() {
         name: ambulance.data.name,
         licensePlate: ambulance.data.licensePlate,
         ambulanceCode: ambulance.data.ambulanceCode,
-        companyGroupId: ambulance.data.companyGroup.id,
         companyId: ambulance.data.company.id,
         unitId: ambulance.data.unit.id,
         baseId: ambulance.data.base.id,
@@ -304,13 +321,7 @@ export default function AmbulanceEdit() {
         }))
       );
     }
-  }, [
-    isEdit,
-    isFetching,
-    isFetchingCompanies,
-    isFetchingUnits,
-    isFetchingBases,
-  ]);
+  }, [isEdit, isFetching]);
 
   return (
     <motion.div {...softEnter} className="h-full w-full flex justify-center">
@@ -377,36 +388,6 @@ export default function AmbulanceEdit() {
               <h3 className="font-medium">Vínculos</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Grupo empresa */}
-                {isAdmin && (
-                  <div className="flex flex-col gap-2">
-                    <Label>Grupo Empresa *</Label>
-                    <AppSelect
-                      value={watch("companyGroupId")}
-                      onValueChange={(value) =>
-                        setValue("companyGroupId", value, {
-                          shouldValidate: true,
-                        })
-                      }
-                      placeholder="Selecione o Grupo Empresa"
-                      disabled={companyGroups?.data.length === 0}
-                      items={
-                        companyGroups?.data?.map((g) => ({
-                          label: g.name,
-                          value: g.id,
-                        })) || []
-                      }
-                      emptyMessage="Nenhum grupo encontrado."
-                      loading={isFetchingCompanyGroup}
-                    />
-                    {errors.companyGroupId && (
-                      <p className="text-sm text-destructive">
-                        {errors.companyGroupId.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-
                 {/* Empresas */}
                 <div className="flex flex-col gap-2">
                   <Label>Empresas *</Label>

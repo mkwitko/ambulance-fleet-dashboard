@@ -212,7 +212,7 @@ export function DocumentField({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <Label className="text-sm">Título do Documento *</Label>
+                <Label className="text-sm">Título do Documento</Label>
                 <Input
                   placeholder="Ex: CNH, RG, Certificado..."
                   value={doc.title}
@@ -284,7 +284,7 @@ export function DocumentField({
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label className="text-sm">Arquivo *</Label>
+              <Label className="text-sm">Arquivo</Label>
               {!hasFile ? (
                 <div
                   className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${

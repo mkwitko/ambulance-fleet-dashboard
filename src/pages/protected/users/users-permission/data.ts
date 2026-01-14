@@ -1,5 +1,5 @@
 import { Shield, Search } from "lucide-react";
-import { Role, RolesData } from "@/@types/roles";
+import { Role } from "@/@types/roles";
 import type { PresetRole } from "./@types/user-permissions-types";
 
 export const actionTranslations: Record<string, string> = {
@@ -30,6 +30,7 @@ export const resourceTranslations: Record<string, string> = {
   base: "Base",
   user: "Usuário",
   ambulance: "Ambulância",
+  companyGroup_admin: "Administrador do Grupo Empresarial",
   ambulanceDocuments: "Documentos de Ambulância",
   ambulanceControl: "Controle de VTRs",
   sys_admin: "Administrador do Sistema",
@@ -47,9 +48,7 @@ export const presetRoles: PresetRole[] = [
     description: "Acesso total ao sistema",
     icon: Shield,
     color: "from-purple-500 to-pink-500",
-    permissions: RolesData.filter(
-      (permission) => permission !== Role["sys_admin:accessAll"]
-    ),
+    permissions: [Role["companyGroup_admin:accessAll"]],
   },
   {
     id: "rop",

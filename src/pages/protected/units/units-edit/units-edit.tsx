@@ -10,6 +10,7 @@ import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user"
 import {
   useCreateUnit,
   useGetUnit,
+  useGetUnits,
   useUpdateUnit,
 } from "@/http/generated/unit/unit";
 import { useGetCompanies } from "@/http/generated/company/company";
@@ -18,15 +19,8 @@ import type { UnitFormValues } from "./form/units-schema";
 import useUnitsForm from "./form/use-units-form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import useGetUserPermissions from "@/hooks/use-get-user-permissions";
+import { AppSelect } from "@/components/app-select";
 
 export default function UnitEdit() {
   // Params
@@ -43,31 +37,43 @@ export default function UnitEdit() {
     },
   });
 
-  const { data: companies } = useGetCompanies();
+  const { data: companies, isFetching: isFetchingCompanies } =
+    useGetCompanies();
 
   const {
     data: unit,
     isFetching: isFetchingUnit,
-    queryKey: unitQueryKey,
+    queryKey: unitByIdQueryKey,
   } = useGetUnit(id as string, {
     query: {
       enabled: isEdit,
     },
   });
 
+  const { queryParams, hasSomePermission } = useGetUserPermissions();
+
+  const { queryKey: unitsQueryKey } = useGetUnits(queryParams, {
+    query: {
+      enabled: !!hasSomePermission,
+    },
+  });
+
   const { mutateAsync: createUnit } = useCreateUnit({
     mutation: {
-      onSuccess: async (response) => {
-        await queryClient.invalidateQueries({ queryKey: unitQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: unitsQueryKey });
         toast.success("Unidade criada com sucesso!");
-        navigate("/units/list/" + response.id);
+        navigate("/units/list/");
       },
     },
   });
   const { mutateAsync: updateUnit } = useUpdateUnit({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: unitQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: unitsQueryKey });
+        await queryClient.invalidateQueries({ queryKey: unitByIdQueryKey });
+        toast.success("Unidade atualizada com sucesso!");
+        navigate("/units/list/");
       },
     },
   });
@@ -89,6 +95,7 @@ export default function UnitEdit() {
         unitId: unit?.data.id as string,
         data: {
           name: data.name,
+          companyId: data.companyId,
         },
       });
       return;
@@ -109,7 +116,7 @@ export default function UnitEdit() {
       setValue("name", unit.data.name);
       setValue("companyId", unit.data.company.id);
     }
-  }, [isFetchingUnit, isEdit]);
+  }, [isFetchingUnit, isEdit, unit, companies]);
 
   return (
     <motion.div {...softEnter} className="space-y-8 h-full">
@@ -133,26 +140,28 @@ export default function UnitEdit() {
 
               <div className="grid gap-2">
                 <Label>Empresa *</Label>
-                <Select
+                <AppSelect
                   value={watch("companyId")}
-                  onValueChange={(value) => setValue("companyId", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione a Empresa" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Empresas</SelectLabel>
-                      {companies?.data?.map((company) => {
-                        return (
-                          <SelectItem key={company.id} value={company.id}>
-                            {company.name}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  onValueChange={(value) =>
+                    setValue("companyId", value, { shouldValidate: true })
+                  }
+                  placeholder="Selecione a Empresa"
+                  disabled={!companies || companies?.data.length === 0}
+                  disabledMessage={
+                    !companies
+                      ? "Selecione um grupo empresa primeiro."
+                      : companies?.data.length === 0
+                      ? "Nenhuma empresa encontrada."
+                      : undefined
+                  }
+                  items={
+                    companies?.data?.map((company) => ({
+                      label: company.name,
+                      value: company.id,
+                    })) || []
+                  }
+                  loading={isFetchingCompanies}
+                />
                 {errors.name && (
                   <p className="text-sm text-destructive">
                     {errors.name.message}
@@ -165,7 +174,7 @@ export default function UnitEdit() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => navigate("/companies/list")}
+                onClick={() => navigate("/units/list")}
                 disabled={isSubmitting}
               >
                 Cancelar

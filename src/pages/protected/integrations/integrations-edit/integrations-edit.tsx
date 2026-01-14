@@ -100,9 +100,7 @@ export default function IntegrationsEdit() {
   hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
-    {
-      companyGroupId: userAssociations?.data.companyGroup?.id,
-    },
+    {},
     {
       query: {
         enabled: !!userPermissions && watch("tipoVinculo") !== "GROUP",

@@ -27,11 +27,13 @@ import { toast } from "sonner";
 import {
   useCreateCommsUser,
   useGetCommsUserById,
+  useGetCommsUsers,
   useUpdateCommsUser,
 } from "@/http/generated/comms-user/comms-user";
 
 import { useGetBases } from "@/http/generated/base/base";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
+import { queryClient } from "@/lib/react-query";
 
 // --- Schema ---
 const usersSchema = z.object({
@@ -66,12 +68,22 @@ export default function UsersCommsEdit() {
   });
 
   // Get user to edit
-  const { data: userToEdit, isFetching } = useGetCommsUserById(id as string, {
+  const {
+    data: userToEdit,
+    isFetching,
+    queryKey: userToEditQueryKey,
+  } = useGetCommsUserById(id as string, {
     query: { enabled: isEdit && !!id },
   });
 
   // Permissions + bases
   const { queryParams, hasSomePermission } = useGetUserPermissions();
+
+  const { queryKey } = useGetCommsUsers(queryParams, {
+    query: {
+      enabled: hasSomePermission,
+    },
+  });
 
   const { data: bases, isLoading: isFetchingBases } = useGetBases(queryParams, {
     query: { enabled: hasSomePermission },
@@ -89,14 +101,11 @@ export default function UsersCommsEdit() {
     }
   }, [isFetching, isFetchingBases]);
 
-  useEffect(() => {
-    console.log("base id - ", watch("baseId"));
-  }, [watch("baseId")]);
-
   // Mutations
   const { mutateAsync: createUser } = useCreateCommsUser({
     mutation: {
       onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey });
         toast.success("Usuário criado com sucesso!");
         navigate("/comms/list");
       },
@@ -111,7 +120,9 @@ export default function UsersCommsEdit() {
 
   const { mutateAsync: updateUser } = useUpdateCommsUser({
     mutation: {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey });
+        await queryClient.invalidateQueries({ queryKey: userToEditQueryKey });
         toast.success("Usuário atualizado com sucesso!");
         navigate("/comms/list");
       },

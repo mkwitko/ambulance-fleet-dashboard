@@ -1,21 +1,27 @@
 import {
-  GetAuthenticatedUserRoles200DataRolesItem,
+  GetAuthenticatedUserRoles200DataRolesItem as Role,
   type GetAuthenticatedUserRoles200Data,
 } from "@/http/generated/connectServer.schemas";
 
 export function hasPermission(
   user: GetAuthenticatedUserRoles200Data | undefined,
-  permission: string
+  permission: Role,
+  onlySuperAdmin = false
 ): boolean {
-  if (!user) return false;
-  if (
-    user.roles.includes(
-      GetAuthenticatedUserRoles200DataRolesItem["sys_admin:accessAll"]
-    )
-  )
-    return true;
+  if (!user?.roles?.length) return false;
 
-  return user.roles.includes(
-    permission as GetAuthenticatedUserRoles200DataRolesItem
-  );
+  const roles = user.roles;
+
+  const isCompanyAdmin = roles.includes(Role["companyGroup_admin:accessAll"]);
+  const isSysAdmin = roles.includes(Role["sys_admin:accessAll"]);
+
+  if (onlySuperAdmin) {
+    return isSysAdmin;
+  }
+
+  if (isSysAdmin || isCompanyAdmin) {
+    return true;
+  }
+
+  return roles.includes(permission);
 }

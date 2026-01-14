@@ -7,9 +7,9 @@ export const ambulanceSchema = z.object({
     .string({
       message: "A placa é obrigatória",
     })
-    .min(7, "Minimo de 7 caracteres para a placa").max(8, "Máximo de 8 caracteres para a placa"),
+    .min(7, "Minimo de 7 caracteres para a placa")
+    .max(8, "Máximo de 8 caracteres para a placa"),
   ambulanceCode: z.string().min(1, "O código da ambulância é obrigatório"),
-  companyGroupId: z.string().min(1, "O grupo empresa é obrigatório"),
   companyId: z.string().min(1, "A empresa é obrigatória"),
   unitId: z.string().min(1, "A unidade é obrigatória"),
   baseId: z.string().min(1, "A base é obrigatória"),

@@ -15,11 +15,13 @@ import { useGetCompanies } from "@/http/generated/company/company";
 import {
   useCreateBase,
   useGetBase,
+  useGetBases,
   useUpdateBase,
 } from "@/http/generated/base/base";
 import BasePhone from "./components/base-phone";
 import { AppSelect } from "@/components/app-select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 
 // --- 🔒 Schema de validação ---
 const baseSchema = z.object({
@@ -76,20 +78,31 @@ export default function BaseEdit() {
     },
   });
 
+  const { queryParams, hasSomePermission } = useGetUserPermissions();
+
+  const { queryKey: basesQueryKey } = useGetBases(queryParams, {
+    query: {
+      enabled: hasSomePermission,
+    },
+  });
+
   const { mutateAsync: createBase } = useCreateBase({
     mutation: {
-      onSuccess: async (response) => {
-        await queryClient.invalidateQueries({ queryKey: baseQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: basesQueryKey });
         toast.success("Base criada com sucesso!");
-        navigate("/units/list/" + response.id);
+        navigate("/bases/list");
       },
     },
   });
 
   const { mutateAsync: updateBase } = useUpdateBase({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: baseQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: basesQueryKey });
+        await queryClient.invalidateQueries({ queryKey: baseQueryKey });
+        toast.success("Base atualizada com sucesso!");
+        navigate("/bases/list");
       },
     },
   });
@@ -101,6 +114,10 @@ export default function BaseEdit() {
         baseId: base?.data.id as string,
         data: {
           name: data.name,
+          companyId: data.companyId,
+          unitId: data.unitId,
+          latitude: data.latitude ? parseFloat(data.latitude) : undefined,
+          longitude: data.longitude ? parseFloat(data.longitude) : undefined,
         },
       });
       return;
@@ -117,7 +134,7 @@ export default function BaseEdit() {
 
   // Effects
   useEffect(() => {
-    if (isFetchingBase || isFetchingCompanies) return;
+    if (isFetchingBase) return;
     if (base && isEdit) {
       setValue("name", base.data.name);
       setValue("companyId", base.data.unit.company.id);
@@ -131,7 +148,7 @@ export default function BaseEdit() {
         base.data.longitude ? String(base.data.longitude) : ""
       );
     }
-  }, [isFetchingBase, isFetchingCompanies, isFetchingUnits, isEdit]);
+  }, [isFetchingBase, isEdit]);
 
   return (
     <motion.div {...softEnter} className="space-y-8 h-full">
@@ -161,6 +178,7 @@ export default function BaseEdit() {
                   value={watch("companyId")}
                   onValueChange={(value) => {
                     setValue("companyId", value);
+                    setValue("unitId", "");
                   }}
                   placeholder="Selecione a Empresa"
                   disabled={companies?.data.length === 0}
@@ -251,7 +269,7 @@ export default function BaseEdit() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => navigate("/companies/list")}
+                onClick={() => navigate("/bases/list")}
                 disabled={isSubmitting}
               >
                 Cancelar
