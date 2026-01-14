@@ -3166,14 +3166,6 @@
             "in": "query",
             "name": "document",
             "required": false
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "companyGroupId",
-            "required": false
           }
         ],
         "security": [
