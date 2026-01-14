@@ -126,6 +126,7 @@ export default function UsersEdit() {
   useEffect(() => {
     if (isFetching) return;
     if (isEdit && userToEdit) {
+      console.log({ userToEdit });
       reset({
         name: userToEdit?.data.name || "",
         mail: userToEdit?.data.mail || "",

@@ -21,6 +21,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useSignIn } from "@/http/generated/auth/auth";
 import { queryClient } from "@/lib/react-query";
+import { useNavigate } from "react-router-dom";
 
 const signInForm = z.object({
   mail: z.string(),
@@ -30,6 +31,7 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<z.infer<typeof signInForm>>({
@@ -43,7 +45,8 @@ export default function SignIn() {
   const { mutateAsync: signInAsync, isPending } = useSignIn({
     mutation: {
       onSuccess: () => {
-        queryClient.invalidateQueries();
+        queryClient.clear();
+        navigate("/", { replace: true });
       },
     },
   });
