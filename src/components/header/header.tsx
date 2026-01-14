@@ -6,7 +6,7 @@ import Logo from "@/assets/svg/inline.svg";
 import { getInitials } from "@/utils/get-initials";
 import { queryClient } from "@/lib/react-query";
 
-import { useSignOut } from "@/http/generated/auth/auth";
+import { useCheckAuth, useSignOut } from "@/http/generated/auth/auth";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 
 import { Sheet, SheetTrigger } from "../ui/sheet";
@@ -26,15 +26,14 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: user } = useGetAuthenticatedUser();
+  const { queryKey } = useCheckAuth();
   const { mutateAsync: signOut } = useSignOut();
 
   const [open, setOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
-    queryClient.invalidateQueries();
-    queryClient.clear();
-    navigate("/authentication");
+    queryClient.invalidateQueries({ queryKey });
   };
 
   // Divide o pathname em partes, ignorando vazios (ex: "" antes do primeiro /)

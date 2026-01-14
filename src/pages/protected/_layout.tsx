@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 export function AppLayout() {
-  const { data, isLoading } = useCheckAuth();
+  const { data, isFetching } = useCheckAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isFetching) return;
     if (!data?.isAuthenticated) {
       navigate("/authentication");
       return;
@@ -19,7 +19,7 @@ export function AppLayout() {
     if (location.pathname === "/") {
       navigate("/chats/list", { replace: true });
     }
-  }, [isLoading]);
+  }, [isFetching]);
 
   return (
     <main className="min-h-screen relative w-full max-w-8xl bg-linear-to-t from-primary/20 via-primary/10 to-primary/25">
