@@ -44,6 +44,9 @@ export default function Chat({
   const [currentDateOnScreen, setCurrentDateOnScreen] = useState<string | null>(
     null
   );
+  const [resendingMessageId, setResendingMessageId] = useState<string | null>(
+    null
+  );
 
   const { online } = useOfflineHook();
 
@@ -178,6 +181,8 @@ export default function Chat({
 
   const onResend = async (message: GetChatMessages200DataItem) => {
     try {
+      setResendingMessageId(message.id);
+
       let response;
 
       if (message.messageType === GetChatMessages200DataItemMessageType.TEXT) {
@@ -186,6 +191,7 @@ export default function Chat({
 
       if (!response) {
         console.warn("No response returned when resending message");
+        setResendingMessageId(null);
         return;
       }
 
@@ -202,6 +208,12 @@ export default function Chat({
       setMessages((prev) => {
         // remove a mensagem offline antiga
         const withoutOld = prev.filter((m) => m.id !== message.id);
+
+        // Verifica se a mensagem de resposta já existe na lista (via realtime)
+        if (withoutOld.some((m) => m.id === response.id)) {
+          return withoutOld;
+        }
+
         const merge = [...withoutOld, response].sort((a, b) => {
           const isA = a.status === GetChatMessages200DataItemStatus.PENDING;
           const isB = b.status === GetChatMessages200DataItemStatus.PENDING;
@@ -215,6 +227,8 @@ export default function Chat({
       });
     } catch (error) {
       console.log("Failed to resend message:", error);
+    } finally {
+      setResendingMessageId(null);
     }
   };
 
@@ -284,6 +298,7 @@ export default function Chat({
                       onDelete={onDelete}
                       online={online}
                       selectedChat={selectedChat}
+                      isResending={resendingMessageId === msg.id}
                     />
                   </div>
                 );

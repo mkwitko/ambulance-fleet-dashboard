@@ -3,6 +3,7 @@ import type { GetAmbulancesControl200DataItem } from "@/http/generated/connectSe
 import { getStatusStyle } from "@/utils/ambulance-status";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { formatDateBrazilian } from "@/utils/format-date";
 
 export default function useAmbulanceData() {
   const columns: Column<GetAmbulancesControl200DataItem>[] = [
@@ -14,15 +15,15 @@ export default function useAmbulanceData() {
       label: "Entrada",
       render: (r) => {
         const entry = r.ambulanceShiftHistories?.[0];
-        return entry ? new Date(entry.shiftStart).toLocaleString() : "-";
+        return entry ? formatDateBrazilian(entry.shiftStart) : "-";
       },
     },
-    {
+    { 
       key: "ambulanceShiftHistories",
       label: "Saída",
       render: (r) => {
         const entry = r.ambulanceShiftHistories?.[0];
-        return entry ? new Date(entry.shiftEnd).toLocaleString() : "-";
+        return entry ? formatDateBrazilian(entry.shiftEnd) : "-";
       },
     },
     {

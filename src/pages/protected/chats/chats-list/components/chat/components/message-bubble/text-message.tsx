@@ -26,14 +26,21 @@ export default function TextMessage({
         scale: { delay: 0.15, type: "spring", stiffness: 400, damping: 25 },
       }}
       className={cn(
-        "relative w-full rounded-2xl px-4 py-3 shadow-md hover:shadow-lg transition-shadow",
+        "relative max-w-full min-w-0 rounded-2xl px-4 py-3 shadow-md hover:shadow-lg transition-shadow overflow-hidden",
         isCurrentUser
           ? "bg-primary text-primary-foreground rounded-br-md"
           : "bg-white/70 border border-input rounded-bl-md"
       )}
     >
       {message.messageType === GetChatMessages200DataItemMessageType.TEXT && (
-        <p className="text-sm wrap-break-word min-w-[50px] whitespace-pre-wrap">
+        <p 
+          className="text-sm break-words min-w-[50px] whitespace-pre-wrap"
+          style={{ 
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            maxWidth: '100%'
+          }}
+        >
           {linkify(message.content as string)}
         </p>
       )}

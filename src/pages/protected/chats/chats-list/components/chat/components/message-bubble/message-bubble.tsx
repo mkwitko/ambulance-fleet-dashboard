@@ -29,6 +29,7 @@ interface MessageBubbleProps {
   onDelete: (msg: GetChatMessages200DataItem) => void;
   online: boolean;
   selectedChat: GetChats200DataItem;
+  isResending?: boolean;
 }
 
 export function MessageBubble({
@@ -39,6 +40,7 @@ export function MessageBubble({
   onDelete,
   online,
   selectedChat,
+  isResending,
 }: MessageBubbleProps) {
   const initials = getInitials(message.user.name);
 
@@ -55,7 +57,7 @@ export function MessageBubble({
     >
       <div
         className={cn(
-          "flex gap-2 items-end",
+          "flex gap-2 items-end min-w-0",
           isCurrentUser ? "justify-end" : "justify-start"
         )}
       >
@@ -89,6 +91,7 @@ export function MessageBubble({
           onResend={onResend}
           onDelete={onDelete}
           online={online}
+          isResending={isResending}
         >
           {message.messageType ===
             GetChatMessages200DataItemMessageType.TEXT && (

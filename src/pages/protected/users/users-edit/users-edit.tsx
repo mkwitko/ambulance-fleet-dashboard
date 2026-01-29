@@ -332,7 +332,7 @@ export default function UsersEdit() {
               </Button>
 
               <Button
-                disabled={!isValid}
+                disabled={!isValid || isSubmitting}
                 type="submit"
                 animated
                 isSubmitting={isSubmitting}

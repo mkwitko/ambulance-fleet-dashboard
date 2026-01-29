@@ -17,6 +17,7 @@ export default function ResendWrapper({
   onDelete,
   children,
   online,
+  isResending,
 }: {
   isCurrentUser: boolean;
   message: GetChatMessages200DataItem;
@@ -24,13 +25,14 @@ export default function ResendWrapper({
   onDelete: (msg: GetChatMessages200DataItem) => void;
   children: React.ReactNode;
   online: boolean;
+  isResending?: boolean;
 }) {
   const notSent = message.status === GetChatMessages200DataItemStatus.PENDING;
 
   return (
     <div
       className={cn(
-        "flex items-center gap-4 max-w-[70%]",
+        "flex items-center gap-4 max-w-[70%] min-w-0",
         isCurrentUser ? "justify-end" : "justify-start"
       )}
     >
@@ -53,11 +55,20 @@ export default function ResendWrapper({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => online && onResend(message)}
-                disabled={!online}
-                className="p-2 rounded-full bg-white/70 border border-input hover:bg-white active:scale-90 transition shadow-sm disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:active:scale-100"
+                onClick={() => online && !isResending && onResend(message)}
+                disabled={!online || isResending}
+                className={cn(
+                  "p-2 rounded-full bg-white/70 border border-input hover:bg-white active:scale-90 transition shadow-sm disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:active:scale-100",
+                  isResending && "opacity-50 cursor-wait"
+                )}
               >
-                <RefreshCw size={14} className="text-muted-foreground" />
+                <RefreshCw
+                  size={14}
+                  className={cn(
+                    "text-muted-foreground",
+                    isResending && "animate-spin"
+                  )}
+                />
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -73,7 +84,7 @@ export default function ResendWrapper({
 
       <div
         className={cn(
-          "flex items-center justify-end ",
+          "flex items-center justify-end min-w-0 flex-1",
           notSent && "opacity-60"
         )}
       >

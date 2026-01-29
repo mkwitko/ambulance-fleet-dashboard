@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Search, X, Volume2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import {
   ReadChatBodyPlatform,
   type GetChats200DataItem,
+  type GetChatsStatusItem,
 } from "@/http/generated/connectServer.schemas";
 import { getInitials } from "@/utils/get-initials";
 import * as Ably from "ably";
@@ -47,10 +48,18 @@ export default function ChatsSidebar({
     setSettingsOpen,
   } = useSettingsHook();
 
-  const { chats, queryKey } = useChatListHook();
+  // Primeiro, precisamos definir o statusFilter inicial
+  const [statusFilter, setStatusFilter] = useState<GetChatsStatusItem[]>(
+    STATUS_ORDER.filter((s) => s !== "FA" && s !== "MN") as GetChatsStatusItem[]
+  );
 
-  const { search, setSearch, statusFilter, setStatusFilter, filteredChats } =
-    useSearchChatListHook({ chats });
+  const { chats, queryKey } = useChatListHook({ statusFilter });
+
+  // Agora usamos o hook de busca com os chats carregados
+  const { search, setSearch, filteredChats: actualFilteredChats } =
+    useSearchChatListHook({
+      chats,
+    });
 
   useChatsSidebarRealtimeUpdateHook({
     incomingMessage,
@@ -67,8 +76,8 @@ export default function ChatsSidebar({
         <div>
           <h2 className="text-sm font-semibold">Conversas</h2>
           <p className="text-xs text-muted-foreground">
-            {filteredChats.length} conversa
-            {filteredChats.length !== 1 ? "s" : ""}
+            {actualFilteredChats.length} conversa
+            {actualFilteredChats.length !== 1 ? "s" : ""}
           </p>
         </div>
         <Button
@@ -92,14 +101,14 @@ export default function ChatsSidebar({
                 setSearch(e.target.value);
               }}
               placeholder="Buscar conversa..."
-              className="pl-10"
+              className={cn("pl-10", search && "pr-10")}
             />
             {search && (
               <button
                 onClick={() => {
                   setSearch("");
                 }}
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -113,20 +122,22 @@ export default function ChatsSidebar({
           onValueChange={(value) => {
             // garante array
             const newValue = Array.isArray(value) ? value : [value];
-            setStatusFilter(newValue);
+            setStatusFilter(newValue as typeof statusFilter);
           }}
           items={STATUS_ORDER.map((status) => ({
             value: status,
             label: status,
           }))}
+
           placeholder="Todos os status"
         />
       </div>
 
+
       {/* Chat List */}
       <ScrollArea className="flex-1 px-2">
         <AnimatePresence mode="wait">
-          {chats?.data.length === 0 ? (
+          {actualFilteredChats.length === 0 ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 20 }}
@@ -146,7 +157,7 @@ export default function ChatsSidebar({
             </motion.div>
           ) : (
             <div className="space-y-2 pb-2">
-              {chats?.data
+              {actualFilteredChats
                 .sort((a, b) => {
                   return sortByStatusOrder(
                     a.ambulance.status,

@@ -1,5 +1,6 @@
-import type { GetChats200 } from "@/http/generated/connectServer.schemas";
-import { STATUS_ORDER } from "@/utils/ambulance-status";
+import type {
+  GetChats200,
+} from "@/http/generated/connectServer.schemas";
 import { useMemo, useState } from "react";
 
 export default function useSearchChatListHook({
@@ -8,7 +9,6 @@ export default function useSearchChatListHook({
   chats: GetChats200 | undefined;
 }) {
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string[]>(STATUS_ORDER);
 
   const filteredChats = useMemo(() => {
     let result = chats?.data || [];
@@ -20,25 +20,12 @@ export default function useSearchChatListHook({
       );
     }
 
-    // Se statusFilter incluir 'all' ou estiver vazio => não filtrar por status
-    if (!statusFilter || statusFilter.length === 0) {
-      return result;
-    }
-
-    const wanted = new Set(statusFilter);
-    result = result.filter((c: any) => {
-      const st = c?.ambulance?.status;
-      return st && wanted.has(st);
-    });
-
     return result;
-  }, [search, statusFilter, chats?.data]);
+  }, [search, chats?.data]);
 
   return {
     search,
     setSearch,
-    statusFilter,
-    setStatusFilter,
     filteredChats,
   };
 }

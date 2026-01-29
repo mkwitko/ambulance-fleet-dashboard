@@ -2,11 +2,15 @@ import { Header } from "@/components/header/header";
 import { useCheckAuth } from "@/http/generated/auth/auth";
 import { useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import useGlobalPageTitle from "@/hooks/use-global-page-title";
 
 export function AppLayout() {
   const { data, isFetching } = useCheckAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Atualiza o título da aba com notificações não lidas em todas as páginas protegidas
+  useGlobalPageTitle();
 
   useEffect(() => {
     if (isFetching) return;
