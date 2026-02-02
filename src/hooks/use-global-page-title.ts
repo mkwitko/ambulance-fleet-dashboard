@@ -1,11 +1,17 @@
 import { useEffect } from "react";
 import { useGetChats } from "@/http/generated/chat/chat";
-import { GetChatsPlatform, type GetChatsStatusItem } from "@/http/generated/connectServer.schemas";
+import {
+  GetChatsPlatform,
+  type GetChatsStatusItem,
+} from "@/http/generated/connectServer.schemas";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import useAbly from "@/hooks/use-ably";
 import { AblyEvents } from "@/@types/ably-events";
 import { queryClient } from "@/lib/react-query";
-import type { GetChats200, GetChatMessages200DataItem } from "@/http/generated/connectServer.schemas";
+import type {
+  GetChats200,
+  GetChatMessages200DataItem,
+} from "@/http/generated/connectServer.schemas";
 import { getUnreadChatMessages } from "@/http/generated/chat/chat";
 import { realTimeUpdateChatListMessage } from "@/pages/protected/chats/chats-list/realtime/update-chat-sidebar-message";
 import { realTimeUpdateChatReadAt } from "@/pages/protected/chats/chats-list/realtime/update-chat-read-at";
@@ -29,11 +35,11 @@ export default function useGlobalPageTitle() {
         // Refetch em background para manter atualizado
         refetchInterval: 30000, // 30 segundos
       },
-    }
+    },
   );
 
   // Escuta eventos do websocket para atualizar em tempo real
-  const { user } = useAbly({
+  useAbly({
     events: [AblyEvents.messages, AblyEvents.readChat],
     handleMessageReceived: async (message) => {
       if (!queryKey) return;
@@ -42,10 +48,13 @@ export default function useGlobalPageTitle() {
       if (message.name === AblyEvents.messages) {
         const parsedMessage = message.data as GetChatMessages200DataItem;
         try {
-          const unreadChatData = await getUnreadChatMessages(parsedMessage.chatId, {
-            unitId: parsedMessage.chat.ambulance.unitId,
-          });
-          
+          const unreadChatData = await getUnreadChatMessages(
+            parsedMessage.chatId,
+            {
+              unitId: parsedMessage.chat.ambulance.unitId,
+            },
+          );
+
           queryClient.setQueryData(
             queryKey,
             (oldData: GetChats200 | undefined) => {
@@ -55,7 +64,7 @@ export default function useGlobalPageTitle() {
                 oldData,
                 unreadChatData,
               });
-            }
+            },
           );
         } catch (error) {
           console.error("Error updating unread count:", error);
@@ -75,7 +84,7 @@ export default function useGlobalPageTitle() {
             });
             // Retorna apenas os dados atualizados, ignorando o setSelectedChat
             return result;
-          }
+          },
         );
       }
     },
