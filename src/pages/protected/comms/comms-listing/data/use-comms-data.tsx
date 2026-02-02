@@ -121,7 +121,6 @@ export default function useCommsData({
         uid: response.uid as string,
       });
 
-      console.log("play sound:", item.id);
       publish(AblyEvents.interCommunicationPlaySound, {
         channelName: item.id,
       });
@@ -184,7 +183,7 @@ export default function useCommsData({
             <Badge
               className={cn(
                 variants[status as keyof typeof variants],
-                "transition-all duration-300"
+                "transition-all duration-300",
               )}
             >
               {label}
@@ -206,7 +205,7 @@ export default function useCommsData({
                   "flex items-center gap-1 w-fit",
                   remainingTime < 300
                     ? "border-destructive text-destructive bg-destructive/10 animate-pulse"
-                    : "border-primary text-primary"
+                    : "border-primary text-primary",
                 )}
               >
                 <Clock className="h-3 w-3" />
@@ -234,7 +233,7 @@ export default function useCommsData({
                   "flex items-center gap-1 w-fit",
                   isChannelFull
                     ? "border-red-500 text-red-600 bg-red-50"
-                    : "bg-primary text-white"
+                    : "bg-primary text-white",
                 )}
               >
                 <Users className="h-3 w-3" />
@@ -308,7 +307,7 @@ export default function useCommsData({
       tryingToConnectToChannel,
       remainingTime,
       remoteUsers,
-    ]
+    ],
   );
 
   const actions: Action<GetCommsUsers200DataItem>[] = [

@@ -89,12 +89,4 @@ export const presetRoles: PresetRole[] = [
       Role["driver:associateDriver"],
     ],
   },
-  {
-    id: "driver",
-    name: "Motorista",
-    description: "Motorista de ambulância",
-    icon: Search,
-    color: "from-blue-500 to-cyan-500",
-    permissions: [Role["driver:driver"]],
-  },
 ];

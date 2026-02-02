@@ -855,6 +855,9 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "ambulanceCode": {
+                            "type": "string"
+                          },
                           "licensePlate": {
                             "type": "string"
                           },
@@ -1067,6 +1070,7 @@
                           "name",
                           "status",
                           "observations",
+                          "ambulanceCode",
                           "licensePlate",
                           "companyGroup",
                           "company",
@@ -2248,6 +2252,65 @@
                 },
                 "required": [
                   "mail",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "format": "jwt"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "format": "jwt"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-in/driver": {
+      "post": {
+        "operationId": "signInDriver",
+        "summary": "Sign in driver user",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Sign in to the application informing the cpf and password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cpf",
                   "password"
                 ]
               }
@@ -5358,7 +5421,6 @@
                         "driver:create",
                         "driver:update",
                         "driver:delete",
-                        "driver:driver",
                         "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
@@ -5827,7 +5889,6 @@
                         "driver:create",
                         "driver:update",
                         "driver:delete",
-                        "driver:driver",
                         "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
@@ -5983,7 +6044,6 @@
                         "driver:create",
                         "driver:update",
                         "driver:delete",
-                        "driver:driver",
                         "driver:associateDriver",
                         "integrations:create",
                         "integrations:read",
@@ -6237,7 +6297,6 @@
                               "driver:create",
                               "driver:update",
                               "driver:delete",
-                              "driver:driver",
                               "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
@@ -6477,7 +6536,6 @@
                               "driver:create",
                               "driver:update",
                               "driver:delete",
-                              "driver:driver",
                               "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
@@ -6649,7 +6707,6 @@
                               "driver:create",
                               "driver:update",
                               "driver:delete",
-                              "driver:driver",
                               "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
@@ -8873,6 +8930,14 @@
             "in": "query",
             "name": "ambulanceId",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "isDriver",
+            "required": false
           }
         ],
         "security": [
@@ -8941,13 +9006,16 @@
                   "ambulanceId": {
                     "type": "string"
                   },
-                  "driverId": {
+                  "logFrotaId": {
                     "type": "string"
+                  },
+                  "isDriver": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
                   "ambulanceId",
-                  "driverId"
+                  "logFrotaId"
                 ]
               }
             }
@@ -8967,12 +9035,117 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "message": {
+                      "default": "Driver associado com sucesso",
+                      "type": "string"
+                    },
                     "idTurno": {
                       "type": "string"
                     }
                   },
                   "required": [
+                    "message",
                     "idTurno"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drivers-user": {
+      "get": {
+        "operationId": "getDriversUser",
+        "summary": "Get authenticated driver user",
+        "tags": [
+          "Drivers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "logFrotaId": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    },
+                    "companies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "driverAssociation": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "idTurno": {
+                            "type": "string"
+                          },
+                          "ambulance": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "licensePlate": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "licensePlate"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "idTurno",
+                          "ambulance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "logFrotaId",
+                    "cpf",
+                    "companies",
+                    "driverAssociation"
                   ],
                   "additionalProperties": false
                 }
@@ -9002,6 +9175,9 @@
                     "type": "string"
                   },
                   "idTurno": {
+                    "type": "string"
+                  },
+                  "isDriver": {
                     "type": "string"
                   }
                 },
@@ -9042,6 +9218,14 @@
             "in": "query",
             "name": "ambulanceId",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "isDriver",
+            "required": false
           }
         ],
         "security": [
@@ -9066,12 +9250,16 @@
                     },
                     "driverId": {
                       "type": "string"
+                    },
+                    "logFrotaId": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "idTurno",
-                    "driverId"
+                    "driverId",
+                    "logFrotaId"
                   ],
                   "additionalProperties": false
                 }
@@ -9112,6 +9300,43 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/drivers/import/company": {
+      "post": {
+        "operationId": "importDriversLogFrotaCompany",
+        "summary": "Import drivers ",
+        "tags": [
+          "Drivers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "integrationId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "integrationId"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
           }
         }
       }
@@ -9579,7 +9804,6 @@
                               "driver:create",
                               "driver:update",
                               "driver:delete",
-                              "driver:driver",
                               "driver:associateDriver",
                               "integrations:create",
                               "integrations:read",
