@@ -10,8 +10,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { GetUsers200DataItem } from "@/http/generated/connectServer.schemas";
-import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
-import { hasPermission } from "@/utils/permissions";
 import { Book, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +23,6 @@ export default function useUsersData({
 }: {
   handleDelete: (row: GetUsers200DataItem) => void;
 }) {
-  const { data: user } = useGetAuthenticatedUserPermissions();
   const navigate = useNavigate();
 
   const columns: Column<GetUsers200DataItem>[] = [
@@ -94,6 +91,7 @@ export default function useUsersData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["user:update"],
     },
     {
       label: "Permissões",
@@ -101,7 +99,7 @@ export default function useUsersData({
       icon: (
         <Book className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
-      nonActive: !hasPermission(user?.data, Role["user:assignRole"]),
+      role: Role["user:assignRole"],
     },
     {
       label: "Excluir",
@@ -110,6 +108,7 @@ export default function useUsersData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["user:delete"],
     },
   ];
 

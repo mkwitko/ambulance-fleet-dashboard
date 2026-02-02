@@ -1,3 +1,4 @@
+import { Role } from "@/@types/roles";
 import { PhoneForm } from "@/components/phone-form/phone-form";
 import {
   useCreateUnitPhoneNumber,
@@ -20,8 +21,9 @@ export default function UnitsPhone({
       query: {
         enabled: isEdit,
       },
-    }
+    },
   );
+
   const {
     mutateAsync: createPhoneNumbers,
     isPending: creatingPhoneNumbersPending,
@@ -62,6 +64,10 @@ export default function UnitsPhone({
       deletingPhonePending={deletingPhoneNumberPending}
       isEdit={isEdit}
       blockedMessage="Para adicionar ou remover telefones, crie a unidade primeiro."
+      readPermission={Role["unit:createPhoneNumber"]}
+      createPermission={Role["unit:createPhoneNumber"]}
+      updatePermissions={Role["unit:updatePhoneNumber"]}
+      deletePermission={Role["unit:deletePhoneNumber"]}
     />
   );
 }

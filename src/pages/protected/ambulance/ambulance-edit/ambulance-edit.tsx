@@ -34,6 +34,8 @@ import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { queryClient } from "@/lib/react-query";
 import { useGetChats } from "@/http/generated/chat/chat";
 import { GetChatsPlatform } from "@/http/generated/connectServer.schemas";
+import { hasPermission } from "@/utils/permissions";
+import { Role } from "@/@types/roles";
 
 export default function AmbulanceEdit() {
   // Params
@@ -88,7 +90,7 @@ export default function AmbulanceEdit() {
       query: {
         enabled: hasSomePermission,
       },
-    }
+    },
   );
 
   const { queryKey: ambulancesQueryKey } = useGetAmbulances(queryParams, {
@@ -108,7 +110,7 @@ export default function AmbulanceEdit() {
       query: {
         enabled: !!user && !!watch("companyId"),
       },
-    }
+    },
   );
 
   const { data: bases, isFetching: isFetchingBases } = useGetBases(
@@ -119,7 +121,7 @@ export default function AmbulanceEdit() {
       query: {
         enabled: !!user && !!watch("unitId"),
       },
-    }
+    },
   );
 
   const { mutateAsync: createAmbulance } = useCreateAmbulance({
@@ -127,7 +129,7 @@ export default function AmbulanceEdit() {
       onError: (error: any) => {
         toast.error(
           error.response.data.message ||
-            "Houve um erro ao criar a ambulância. Tente novamente."
+            "Houve um erro ao criar a ambulância. Tente novamente.",
         );
       },
     },
@@ -138,7 +140,7 @@ export default function AmbulanceEdit() {
       onError: (error: any) => {
         toast.error(
           error.response.data.message ||
-            "Houve um erro ao atualizar a ambulância. Tente novamente."
+            "Houve um erro ao atualizar a ambulância. Tente novamente.",
         );
       },
     },
@@ -156,11 +158,11 @@ export default function AmbulanceEdit() {
   const onSubmit = async (data: AmbulanceFormValues) => {
     if (isEdit) {
       const ambulanceDocuments = ambulance?.data.documents || [];
-      const addedDocuments = data.documents?.filter(
-        (doc) => !ambulanceDocuments.some((ad) => ad.id === doc.id)
-      );
+      const addedDocuments = data.documents
+        ?.filter((doc) => !ambulanceDocuments.some((ad) => ad.id === doc.id))
+        .filter((doc) => doc.content && doc.content !== "");
       const removedDocuments = ambulanceDocuments.filter(
-        (ad) => !data.documents?.some((doc) => doc.id === ad.id)
+        (ad) => !data.documents?.some((doc) => doc.id === ad.id),
       );
       const updatedDocuments =
         data.documents?.filter((doc) => {
@@ -174,10 +176,12 @@ export default function AmbulanceEdit() {
           );
         }) || [];
 
+      console.log({ addedDocuments });
+
       if (addedDocuments && addedDocuments.length > 0) {
         const uploadedDocuments = await handleUploadDocuments(
           addedDocuments,
-          ambulance?.data.id as string
+          ambulance?.data.id as string,
         );
         await createAmbulanceDocuments({
           id: ambulance?.data.id as string,
@@ -190,7 +194,7 @@ export default function AmbulanceEdit() {
       if (updatedDocuments && updatedDocuments.length > 0) {
         const uploadedDocuments = await handleUploadDocuments(
           updatedDocuments,
-          ambulance?.data.id as string
+          ambulance?.data.id as string,
         );
         await updateAmbulanceDocuments({
           data: {
@@ -206,7 +210,7 @@ export default function AmbulanceEdit() {
               id: doc.id,
               baseId: ambulance?.data.base.id as string,
             });
-          })
+          }),
         );
       }
 
@@ -244,16 +248,19 @@ export default function AmbulanceEdit() {
         baseId: data.baseId,
       },
     });
-    const uploadedDocuments = await handleUploadDocuments(
-      data.documents,
-      response.id
-    );
-    await createAmbulanceDocuments({
-      id: response.id,
-      data: {
-        documents: uploadedDocuments,
-      },
-    });
+
+    if (data.documents && data.documents.length > 0) {
+      const uploadedDocuments = await handleUploadDocuments(
+        data.documents,
+        response.id,
+      );
+      await createAmbulanceDocuments({
+        id: response.id,
+        data: {
+          documents: uploadedDocuments,
+        },
+      });
+    }
 
     await Promise.allSettled([
       queryClient.invalidateQueries({ queryKey: ambulancesQueryKey }),
@@ -318,7 +325,7 @@ export default function AmbulanceEdit() {
         initialDocuments().map((doc) => ({
           ...doc,
           type: doc.type as "DOCUMENT" | "TEXT" | "CRLV" | "ALVARA",
-        }))
+        })),
       );
     }
   }, [isEdit, isFetching]);
@@ -402,8 +409,8 @@ export default function AmbulanceEdit() {
                       !companies
                         ? "Selecione um grupo empresa primeiro."
                         : companies?.data.length === 0
-                        ? "Nenhuma empresa encontrada."
-                        : undefined
+                          ? "Nenhuma empresa encontrada."
+                          : undefined
                     }
                     items={
                       companies?.data?.map((company) => ({
@@ -434,8 +441,8 @@ export default function AmbulanceEdit() {
                       !watch("companyId") || watch("companyId")?.length === 0
                         ? "Selecione empresas primeiro."
                         : units?.data.length === 0
-                        ? "Nenhuma unidade disponível."
-                        : undefined
+                          ? "Nenhuma unidade disponível."
+                          : undefined
                     }
                     items={
                       units?.data?.map((unit) => ({
@@ -466,8 +473,8 @@ export default function AmbulanceEdit() {
                       !watch("unitId") || watch("unitId")?.length === 0
                         ? "Selecione a unidade primeiro."
                         : bases?.data.length === 0
-                        ? "Nenhuma base disponível."
-                        : undefined
+                          ? "Nenhuma base disponível."
+                          : undefined
                     }
                     items={
                       bases?.data?.map((base) => ({
@@ -489,17 +496,19 @@ export default function AmbulanceEdit() {
             <Separator />
 
             {/* --- DOCUMENTOS ------------------------------------- */}
-            <section className="space-y-6">
-              <h3 className="font-medium">Documentos</h3>
+            {hasPermission(user?.data, Role["ambulanceDocuments:read"]) && (
+              <section className="space-y-6">
+                <h3 className="font-medium">Documentos</h3>
 
-              <DocumentField
-                documents={documents}
-                addDocument={addDocument}
-                removeDocument={removeDocument}
-                updateDocument={updateDocument}
-                errors={errors.documents}
-              />
-            </section>
+                <DocumentField
+                  documents={documents}
+                  addDocument={addDocument}
+                  removeDocument={removeDocument}
+                  updateDocument={updateDocument}
+                  errors={errors.documents}
+                />
+              </section>
+            )}
 
             {/* --- AÇÕES ----------------------------------------------- */}
             <div className="flex justify-end gap-3 pt-4">

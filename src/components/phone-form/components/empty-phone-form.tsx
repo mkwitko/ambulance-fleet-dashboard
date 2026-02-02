@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import { Phone, Sparkles, PlusCircle } from "lucide-react";
 export default function EmptyPhoneForm({
   handleAddPhone,
+  canCreate,
 }: {
   handleAddPhone: () => void;
+  canCreate: boolean;
 }) {
   return (
     <motion.div
@@ -43,9 +45,10 @@ export default function EmptyPhoneForm({
           variant="default"
           onClick={handleAddPhone}
           animated
+          disabled={!canCreate}
         >
           <PlusCircle className="w-4 h-4" />
-          Adicionar telefone
+          {canCreate ? "Adicionar Telefone" : "Sem Permissão para Adicionar"}
         </Button>
       </div>
     </motion.div>

@@ -9,6 +9,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import {
   useCreateCompanyGroup,
   useGetCompanyGroup,
+  useGetCompanyGroups,
   useUpdateCompanyGroup,
 } from "@/http/generated/company-group/company-group";
 import { useEffect } from "react";
@@ -49,19 +50,25 @@ export default function CompanyGroupAdminEdit() {
     },
   });
 
+  const { queryKey } = useGetCompanyGroups();
+
   const { mutateAsync: createCompanyGroup } = useCreateCompanyGroup({
     mutation: {
-      onSuccess: async (response) => {
+      onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: companyGroupQueryKey });
+        await queryClient.invalidateQueries({ queryKey });
         toast.success("Grupo empresarial criado com sucesso!");
-        navigate("/company-group/admin/" + response.id);
+        navigate("/company-group/admin/");
       },
     },
   });
   const { mutateAsync: updateCompanyGroup } = useUpdateCompanyGroup({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: companyGroupQueryKey });
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: companyGroupQueryKey });
+        await queryClient.invalidateQueries({ queryKey });
+        toast.success("Grupo empresarial atualizado com sucesso!");
+        navigate("/company-group/admin");
       },
     },
   });

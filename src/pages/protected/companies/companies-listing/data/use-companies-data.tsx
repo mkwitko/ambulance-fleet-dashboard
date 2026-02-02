@@ -1,3 +1,4 @@
+import { Role } from "@/@types/roles";
 import type {
   Action,
   Column,
@@ -33,6 +34,7 @@ export default function useCompaniesData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["company:update"],
     },
     {
       label: "Excluir",
@@ -41,6 +43,7 @@ export default function useCompaniesData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["company:delete"],
     },
   ];
 

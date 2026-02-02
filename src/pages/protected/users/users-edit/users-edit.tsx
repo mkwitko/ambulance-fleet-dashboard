@@ -78,7 +78,7 @@ export default function UsersEdit() {
       query: {
         enabled: !!userAssociations,
       },
-    }
+    },
   );
 
   const { data: units, isFetching: isFetchingUnits } = useGetUnits(
@@ -92,7 +92,7 @@ export default function UsersEdit() {
           !!watch("companiesId")?.length &&
           watch("companiesId")?.length > 0,
       },
-    }
+    },
   );
 
   const { mutateAsync: createUser } = useCreateUser({
@@ -105,7 +105,7 @@ export default function UsersEdit() {
       onError: (error: any) => {
         toast.error(
           error.response.data.message ||
-            "Houve um erro ao criar a usuário. Tente novamente."
+            "Houve um erro ao criar a usuário. Tente novamente.",
         );
       },
     },
@@ -255,9 +255,9 @@ export default function UsersEdit() {
                         setValue(
                           "unitsId",
                           watch("unitsId").filter((id) =>
-                            updatedUnits.includes(id)
+                            updatedUnits.includes(id),
                           ),
-                          { shouldValidate: true }
+                          { shouldValidate: true },
                         );
                       }
                     }}
@@ -267,8 +267,8 @@ export default function UsersEdit() {
                       !companies
                         ? "Selecione um grupo empresa primeiro."
                         : companies?.data.length === 0
-                        ? "Nenhuma empresa encontrada."
-                        : undefined
+                          ? "Nenhuma empresa encontrada."
+                          : undefined
                     }
                     items={
                       companies?.data?.map((company) => ({
@@ -300,8 +300,8 @@ export default function UsersEdit() {
                       watch("companiesId")?.length === 0
                         ? "Selecione empresas primeiro."
                         : units?.data.length === 0
-                        ? "Nenhuma unidade disponível."
-                        : undefined
+                          ? "Nenhuma unidade disponível."
+                          : undefined
                     }
                     items={
                       units?.data?.map((unit) => ({

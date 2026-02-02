@@ -12,6 +12,7 @@ import { useAgora } from "@/utils/agora";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
 import { useNavigate } from "react-router-dom";
 import useAbly from "@/hooks/use-ably";
+import { Role } from "@/@types/roles";
 
 export default function useCommsData({
   handleDelete,
@@ -317,6 +318,7 @@ export default function useCommsData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["comms:update"],
     },
     {
       label: "Excluir",
@@ -325,6 +327,7 @@ export default function useCommsData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["comms:delete"],
     },
   ];
 

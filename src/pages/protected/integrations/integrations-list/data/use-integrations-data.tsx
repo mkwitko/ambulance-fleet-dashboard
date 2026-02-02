@@ -1,3 +1,4 @@
+import { Role } from "@/@types/roles";
 import type {
   Action,
   Column,
@@ -86,6 +87,7 @@ export default function useIntegrationsData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["integrations:update"],
     },
     {
       label: "Excluir",
@@ -94,6 +96,7 @@ export default function useIntegrationsData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["integrations:delete"],
     },
   ];
 

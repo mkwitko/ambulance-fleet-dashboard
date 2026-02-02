@@ -10,6 +10,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import EmptyPhoneForm from "./components/empty-phone-form";
 import { maskPhoneNumber } from "@/utils/masks";
 import AlertDialogWrapper from "../dialogs/alert-dialog";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
+import { hasPermission } from "@/utils/permissions";
+import { Role } from "@/@types/roles";
 
 interface PhoneFormProps {
   phones: {
@@ -23,7 +26,7 @@ interface PhoneFormProps {
       number: string;
       name?: string;
       isWhatsapp?: boolean;
-    }>
+    }>,
   ) => Promise<void> | void;
   onPhoneDelete: (phoneId: string) => Promise<void> | void;
   title?: string;
@@ -31,6 +34,10 @@ interface PhoneFormProps {
   deletingPhonePending?: boolean;
   isEdit: boolean;
   blockedMessage?: string;
+  readPermission?: Role;
+  createPermission?: Role;
+  updatePermissions?: Role;
+  deletePermission?: Role;
 }
 
 export function PhoneForm({
@@ -42,8 +49,14 @@ export function PhoneForm({
   deletingPhonePending,
   isEdit,
   blockedMessage,
+  readPermission,
+  createPermission,
+  updatePermissions,
+  deletePermission,
 }: PhoneFormProps) {
   const [phonesState, setPhonesState] = useState(phones);
+
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
 
   useEffect(() => {
     setPhonesState(phones);
@@ -107,13 +120,17 @@ export function PhoneForm({
           number: p.number,
           name: p.name || undefined,
           isWhatsapp: p.isWhatsapp || undefined,
-        }))
+        })),
       );
       toast.success("Telefones salvos com sucesso!");
     } catch {
       toast.error("Erro ao salvar telefones.");
     }
   };
+
+  if (!hasPermission(userPermissions?.data, readPermission as Role)) {
+    return null;
+  }
 
   const LockedState = () => (
     <motion.div
@@ -127,6 +144,7 @@ export function PhoneForm({
       </p>
     </motion.div>
   );
+
   return (
     <Card className="bg-connect">
       <CardHeader>
@@ -139,7 +157,13 @@ export function PhoneForm({
           {isEdit && (
             <>
               {phonesState.length === 0 ? (
-                <EmptyPhoneForm handleAddPhone={handleAddPhone} />
+                <EmptyPhoneForm
+                  handleAddPhone={handleAddPhone}
+                  canCreate={hasPermission(
+                    userPermissions?.data,
+                    createPermission as Role,
+                  )}
+                />
               ) : (
                 <div className="space-y-3">
                   {phonesState.map((field, index) => (
@@ -168,7 +192,7 @@ export function PhoneForm({
                               updateField(
                                 index,
                                 "number",
-                                maskPhoneNumber(e.target.value)
+                                maskPhoneNumber(e.target.value),
                               )
                             }
                           />
@@ -206,37 +230,45 @@ export function PhoneForm({
 
                         {/* Remover */}
                         <div className="relative z-10">
-                          {field.id && (
-                            <AlertDialogWrapper
-                              onConfirm={() => {
-                                handleRemovePhone(index);
-                              }}
-                            >
+                          {field.id &&
+                            hasPermission(
+                              userPermissions?.data,
+                              deletePermission as Role,
+                            ) && (
+                              <AlertDialogWrapper
+                                onConfirm={() => {
+                                  handleRemovePhone(index);
+                                }}
+                              >
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="px-4 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                                  disabled={deletingPhonePending}
+                                  animated
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogWrapper>
+                            )}
+                          {!field.id &&
+                            hasPermission(
+                              userPermissions?.data,
+                              deletePermission as Role,
+                            ) && (
                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="px-4 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
                                 disabled={deletingPhonePending}
                                 animated
+                                onClick={() => handleRemovePhone(index)}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
-                            </AlertDialogWrapper>
-                          )}
-                          {!field.id && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
-                              disabled={deletingPhonePending}
-                              animated
-                              onClick={() => handleRemovePhone(index)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
+                            )}
                         </div>
                       </div>
                     </motion.div>
@@ -247,26 +279,27 @@ export function PhoneForm({
           )}
         </AnimatePresence>
 
-        {phonesState.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6"
-          >
-            <Button type="button" variant="ghost" onClick={handleAddPhone}>
-              <PlusCircle className="w-4 h-4" />
-              Adicionar telefone
-            </Button>
-
-            <Button
-              animated
-              onClick={handleSave}
-              isSubmitting={creatingPhonePending || deletingPhonePending}
+        {phonesState.length > 0 &&
+          hasPermission(userPermissions?.data, updatePermissions as Role) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6"
             >
-              Salvar Alterações
-            </Button>
-          </motion.div>
-        )}
+              <Button type="button" variant="ghost" onClick={handleAddPhone}>
+                <PlusCircle className="w-4 h-4" />
+                Adicionar telefone
+              </Button>
+
+              <Button
+                animated
+                onClick={handleSave}
+                isSubmitting={creatingPhonePending || deletingPhonePending}
+              >
+                Salvar Alterações
+              </Button>
+            </motion.div>
+          )}
       </CardContent>
     </Card>
   );

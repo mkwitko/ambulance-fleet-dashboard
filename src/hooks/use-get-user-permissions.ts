@@ -64,5 +64,6 @@ export default function useGetUserPermissions() {
       unitsId: getUnitsId(),
     },
     hasSomePermission,
+    userPermissions,
   };
 }

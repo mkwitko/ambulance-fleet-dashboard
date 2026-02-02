@@ -31,6 +31,7 @@ export const resourceTranslations: Record<string, string> = {
   user: "Usuário",
   ambulance: "Ambulância",
   companyGroup_admin: "Administrador do Grupo Empresarial",
+  company_admin: "Administrador da Empresa",
   ambulanceDocuments: "Documentos de Ambulância",
   ambulanceControl: "Controle de VTRs",
   sys_admin: "Administrador do Sistema",
@@ -44,11 +45,21 @@ export const resourceTranslations: Record<string, string> = {
 export const presetRoles: PresetRole[] = [
   {
     id: "admin",
-    name: "Administrador da Empresa",
+    name: "Administrador do Grupo Empresarial",
     description: "Acesso total ao sistema",
     icon: Shield,
     color: "from-purple-500 to-pink-500",
     permissions: [Role["companyGroup_admin:accessAll"]],
+    showTo: [Role["sys_admin:accessAll"]],
+  },
+  {
+    id: "admin",
+    name: "Administrador da Empresa",
+    description: "Acesso total às empresas que estiver vinculado",
+    icon: Shield,
+    color: "from-purple-500 to-pink-500",
+    permissions: [Role["company_admin:accessAll"]],
+    showTo: [Role["sys_admin:accessAll"], Role["companyGroup_admin:accessAll"]],
   },
   {
     id: "rop",

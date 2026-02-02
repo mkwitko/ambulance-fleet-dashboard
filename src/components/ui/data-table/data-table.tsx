@@ -17,6 +17,9 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTableRow } from "./data-table-row";
 import { DataTablePagination } from "./data-table-pagination";
 import type { DataTableProps, SortDirection } from "./data-table-types";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
+import type { Role } from "@/@types/roles";
+import { hasPermission } from "@/utils/permissions";
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -44,6 +47,8 @@ export function DataTable<T extends Record<string, any>>({
   const [sortKey, setSortKey] = React.useState<keyof T | null>(null);
   const [sortDir, setSortDir] = React.useState<SortDirection>(null);
   const [expanded, setExpanded] = React.useState<Set<number>>(new Set());
+
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
 
   const fuse = useMemo(() => {
     if (!searchableKeys.length) return null;
@@ -127,6 +132,11 @@ export function DataTable<T extends Record<string, any>>({
 
   const hasBulkActions = bulkActions.length > 0;
 
+  const filteredActions = actions.filter(
+    (a) => !a.nonActive && hasPermission(userPermissions?.data, a.role as Role),
+  );
+  const hasActions = actions.length > 0 && filteredActions.length > 0;
+
   // --- AUTO PAGINATION ---
   React.useEffect(() => {
     if (!autoPaginate) return;
@@ -205,10 +215,10 @@ export function DataTable<T extends Record<string, any>>({
                             col.align === "right"
                               ? "text-right"
                               : col.align === "center"
-                              ? "text-center"
-                              : "text-left",
+                                ? "text-center"
+                                : "text-left",
                             "select-none font-semibold text-xs uppercase tracking-wider text-accent-foreground",
-                            col.width
+                            col.width,
                           )}
                         >
                           {col.sortable ? (
@@ -222,7 +232,7 @@ export function DataTable<T extends Record<string, any>>({
                                   "h-3.5 w-3.5 transition-all duration-200",
                                   sortKey === col.key
                                     ? "text-primary scale-110"
-                                    : "text-accent-foreground group-hover:text-foreground group-hover:scale-105"
+                                    : "text-accent-foreground group-hover:text-foreground group-hover:scale-105",
                                 )}
                               />
                             </button>
@@ -232,7 +242,7 @@ export function DataTable<T extends Record<string, any>>({
                         </TableHead>
                       ))}
 
-                      {actions.length > 0 && (
+                      {hasActions && (
                         <TableHead className="w-20 text-right font-semibold text-xs uppercase tracking-wider text-accent-foreground">
                           Ações
                         </TableHead>
@@ -251,11 +261,11 @@ export function DataTable<T extends Record<string, any>>({
                         <td
                           colSpan={
                             columns.length +
-                            (actions.length > 0 ? 1 : 0) +
+                            (filteredActions.length > 0 ? 1 : 0) +
                             (hasBulkActions ? 1 : 0) +
                             (hasChildren ? 1 : 0)
                           }
-                          className="h-[400px] text-center align-middle"
+                          className="h-100 text-center align-middle"
                         >
                           <div className="flex flex-col items-center justify-center gap-2 text-accent-foreground/70">
                             <svg
@@ -297,7 +307,7 @@ export function DataTable<T extends Record<string, any>>({
                             index={i}
                             globalIndex={globalIndex}
                             columns={columns}
-                            actions={actions}
+                            actions={filteredActions}
                             isSelected={selected.has(globalIndex)}
                             isExpanded={isExpanded}
                             hasChildren={hasChildren || false}

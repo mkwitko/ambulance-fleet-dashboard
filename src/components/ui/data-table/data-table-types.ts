@@ -9,6 +9,7 @@ export interface Action<T> {
   icon?: React.ReactNode;
   type?: string;
   nonActive?: boolean;
+  role?: Role;
 }
 
 export interface BulkAction {

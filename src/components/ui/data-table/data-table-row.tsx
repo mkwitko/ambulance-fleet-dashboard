@@ -61,7 +61,8 @@ export function DataTableRow<T extends Record<string, any>>({
     return path.split(".").reduce((acc: any, key) => acc?.[key], obj);
   }
 
-  const hasActions = actions.length > 0;
+  const hasActions =
+    actions.length > 0 && actions.filter((a) => !a.nonActive).length > 0;
 
   return (
     <>
@@ -130,7 +131,7 @@ export function DataTableRow<T extends Record<string, any>>({
 
           // Transições suaves
           "transition-all duration-300 ease-out",
-          "group cursor-pointer"
+          "group cursor-pointer",
         )}
       >
         {hasChildren && (
@@ -142,7 +143,7 @@ export function DataTableRow<T extends Record<string, any>>({
                 "h-8 w-8 rounded-lg transition-all duration-200",
                 "hover:bg-primary/10 hover:scale-110",
                 "active:scale-95",
-                isExpanded && "bg-primary/15 text-primary"
+                isExpanded && "bg-primary/15 text-primary",
               )}
               onClick={onToggleExpand}
             >
@@ -168,7 +169,7 @@ export function DataTableRow<T extends Record<string, any>>({
                   "data-[state=checked]:bg-primary data-[state=checked]:border-primary",
                   "data-[state=checked]:scale-110",
                   "hover:border-primary/50 hover:scale-105",
-                  "focus-visible:ring-2 focus-visible:ring-primary/30"
+                  "focus-visible:ring-2 focus-visible:ring-primary/30",
                 )}
               />
             </div>
@@ -182,11 +183,11 @@ export function DataTableRow<T extends Record<string, any>>({
               col.align === "right"
                 ? "text-right"
                 : col.align === "center"
-                ? "text-center"
-                : "text-left",
+                  ? "text-center"
+                  : "text-left",
               "py-4",
               // Adiciona padding extra na última coluna quando não há actions
-              !hasActions && col === columns[columns.length - 1] && "pr-6"
+              !hasActions && col === columns[columns.length - 1] && "pr-6",
             )}
           >
             <div
@@ -195,21 +196,21 @@ export function DataTableRow<T extends Record<string, any>>({
                 (col.align === "right" || col.alignValue === "right") &&
                   "justify-end",
                 (col.align === "center" || col.alignValue === "center") &&
-                  "justify-center"
+                  "justify-center",
               )}
             >
               <span
                 className={cn(
                   "truncate text-sm font-medium",
                   "text-foreground/70",
-                  "group-hover:text-foreground transition-colors duration-200"
+                  "group-hover:text-foreground transition-colors duration-200",
                 )}
               >
                 {col.render
                   ? col.render(row)
                   : col.key
-                  ? getByPath(row, col.key)
-                  : "—"}
+                    ? getByPath(row, col.key)
+                    : "—"}
               </span>
             </div>
           </TableCell>
@@ -228,7 +229,7 @@ export function DataTableRow<T extends Record<string, any>>({
                     "active:scale-95",
                     "transition-all duration-200",
                     "opacity-30 group-hover:opacity-100",
-                    "focus-visible:opacity-100"
+                    "focus-visible:opacity-100",
                   )}
                 >
                   <MoreHorizontal className="h-4 w-4" />
@@ -241,7 +242,7 @@ export function DataTableRow<T extends Record<string, any>>({
                 className={cn(
                   "w-52 rounded-xl p-2",
                   "border border-border/60 shadow-xl shadow-black/10",
-                  "bg-background/95 backdrop-blur-md"
+                  "bg-background/95 backdrop-blur-md",
                 )}
               >
                 {actions
@@ -272,7 +273,7 @@ export function DataTableRow<T extends Record<string, any>>({
                             "text-destructive",
                             "hover:bg-destructive/10",
                             "focus:bg-destructive/10",
-                          ]
+                          ],
                         )}
                       >
                         {action.icon && (

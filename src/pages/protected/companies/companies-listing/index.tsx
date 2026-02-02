@@ -33,14 +33,15 @@ export default function CompaniesListing() {
 
   const isAdmin = hasPermission(
     userPermissions?.data,
-    Role["sys_admin:accessAll"]
+    Role["sys_admin:accessAll"],
+    true,
   );
 
   const { data: companyModules, queryKey } = useGetCompanyModules(
     selectedRow?.id as string,
     {
       query: { enabled: !!selectedRow?.id && isAdmin },
-    }
+    },
   );
 
   const { mutateAsync: updateCompanyModule } = useUpdateCompanyModule({
@@ -55,14 +56,14 @@ export default function CompaniesListing() {
               (module: GetCompanyModules200DataItem) =>
                 module.id === response.data.id
                   ? { ...module, ...response.data }
-                  : module
+                  : module,
             );
 
             return {
               ...oldData,
               data: updatedModules,
             };
-          }
+          },
         );
       },
     },

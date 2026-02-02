@@ -1,3 +1,4 @@
+import { Role } from "@/@types/roles";
 import type {
   Action,
   Column,
@@ -43,6 +44,7 @@ export default function useModulesData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["base:update"],
     },
     {
       label: "Excluir",
@@ -51,6 +53,7 @@ export default function useModulesData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["base:delete"],
     },
   ];
 

@@ -151,8 +151,8 @@ export default function UnitEdit() {
                     !companies
                       ? "Selecione um grupo empresa primeiro."
                       : companies?.data.length === 0
-                      ? "Nenhuma empresa encontrada."
-                      : undefined
+                        ? "Nenhuma empresa encontrada."
+                        : undefined
                   }
                   items={
                     companies?.data?.map((company) => ({

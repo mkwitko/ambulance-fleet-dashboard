@@ -2398,6 +2398,59 @@
         }
       }
     },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "refreshToken",
+        "summary": "Refresh token",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Refresh the access and refresh tokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refreshToken"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bases": {
       "post": {
         "operationId": "createBase",
@@ -4789,6 +4842,17 @@
             "in": "query",
             "name": "companiesId",
             "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "name": "unitsId",
+            "required": false
           }
         ],
         "security": [
@@ -5407,12 +5471,14 @@
                         "ambulance:switchShift",
                         "ambulance:associateUser",
                         "ambulanceControl:read",
+                        "ambulanceDocuments:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
                         "companyGroup_admin:accessAll",
+                        "company_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -5512,18 +5578,24 @@
           },
           {
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "in": "query",
-            "name": "companyId",
+            "name": "companiesId",
             "required": false
           },
           {
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "in": "query",
-            "name": "unitId",
+            "name": "unitsId",
             "required": false
           },
           {
@@ -5875,12 +5947,14 @@
                         "ambulance:switchShift",
                         "ambulance:associateUser",
                         "ambulanceControl:read",
+                        "ambulanceDocuments:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
                         "companyGroup_admin:accessAll",
+                        "company_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -6030,12 +6104,14 @@
                         "ambulance:switchShift",
                         "ambulance:associateUser",
                         "ambulanceControl:read",
+                        "ambulanceDocuments:read",
                         "ambulanceDocuments:create",
                         "ambulanceDocuments:update",
                         "ambulanceDocuments:delete",
                         "ambulanceDocuments:bulkUpdate",
                         "sys_admin:accessAll",
                         "companyGroup_admin:accessAll",
+                        "company_admin:accessAll",
                         "chat:create",
                         "chat:delete",
                         "chat:read",
@@ -6283,12 +6359,14 @@
                               "ambulance:switchShift",
                               "ambulance:associateUser",
                               "ambulanceControl:read",
+                              "ambulanceDocuments:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
                               "companyGroup_admin:accessAll",
+                              "company_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -6522,12 +6600,14 @@
                               "ambulance:switchShift",
                               "ambulance:associateUser",
                               "ambulanceControl:read",
+                              "ambulanceDocuments:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
                               "companyGroup_admin:accessAll",
+                              "company_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -6693,12 +6773,14 @@
                               "ambulance:switchShift",
                               "ambulance:associateUser",
                               "ambulanceControl:read",
+                              "ambulanceDocuments:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
                               "companyGroup_admin:accessAll",
+                              "company_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",
@@ -9790,12 +9872,14 @@
                               "ambulance:switchShift",
                               "ambulance:associateUser",
                               "ambulanceControl:read",
+                              "ambulanceDocuments:read",
                               "ambulanceDocuments:create",
                               "ambulanceDocuments:update",
                               "ambulanceDocuments:delete",
                               "ambulanceDocuments:bulkUpdate",
                               "sys_admin:accessAll",
                               "companyGroup_admin:accessAll",
+                              "company_admin:accessAll",
                               "chat:create",
                               "chat:delete",
                               "chat:read",

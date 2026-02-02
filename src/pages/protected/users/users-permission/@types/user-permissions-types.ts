@@ -1,3 +1,5 @@
+import type { Role } from "@/@types/roles";
+
 export interface PermissionGroup {
   resource: string;
   displayName: string;
@@ -14,5 +16,6 @@ export interface PresetRole {
   description: string;
   icon: any;
   color: string;
-  permissions: string[];
+  permissions: Role[];
+  showTo?: Role[];
 }

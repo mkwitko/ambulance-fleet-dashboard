@@ -20,7 +20,8 @@ import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
 
 export default function UsersPermissions() {
-  const { data: user } = useGetAuthenticatedUserPermissions();
+  const { data: user, queryKey: userQueryKey } =
+    useGetAuthenticatedUserPermissions();
 
   const { id } = useParams<string>();
   const isEdit = Boolean(id);
@@ -67,9 +68,16 @@ export default function UsersPermissions() {
         roleIds: selectedPermissions as Role[],
       },
     });
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
       queryKey,
     });
+
+    if (editUser?.data.id === user?.data.id) {
+      await queryClient.invalidateQueries({
+        queryKey: userQueryKey,
+      });
+    }
+
     navigate("/users/list");
   };
 
@@ -110,20 +118,25 @@ export default function UsersPermissions() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {presetRoles.map((preset) => {
-                const newPermissions = getPresetNewPermissions(preset);
-                const allSelected = newPermissions.length === 0;
+              {presetRoles
+                .filter((preset) => {
+                  if (!preset.showTo) return true;
+                  hasPermission(user?.data, preset.showTo as Role[]);
+                })
+                .map((preset) => {
+                  const newPermissions = getPresetNewPermissions(preset);
+                  const allSelected = newPermissions.length === 0;
 
-                return (
-                  <PresetCard
-                    key={preset.id}
-                    preset={preset}
-                    newPermissions={newPermissions}
-                    allSelected={allSelected}
-                    onApply={applyPreset}
-                  />
-                );
-              })}
+                  return (
+                    <PresetCard
+                      key={preset.id}
+                      preset={preset}
+                      newPermissions={newPermissions}
+                      allSelected={allSelected}
+                      onApply={applyPreset}
+                    />
+                  );
+                })}
             </div>
           </div>
 
@@ -160,7 +173,7 @@ export default function UsersPermissions() {
                   if (group.resource === "sys_admin") {
                     return hasPermission(
                       user?.data,
-                      Role["sys_admin:accessAll"]
+                      Role["sys_admin:accessAll"],
                     );
                   }
                   return group;
@@ -181,7 +194,14 @@ export default function UsersPermissions() {
 
           {/* Action buttons */}
           <div className="flex justify-end gap-3">
-            <Button variant="outline">Cancelar</Button>
+            <Button
+              onClick={() => {
+                navigate(-1);
+              }}
+              variant="outline"
+            >
+              Cancelar
+            </Button>
             <Button onClick={handleSave} disabled={!selectedPermissions.length}>
               Salvar ({selectedPermissions.length})
             </Button>

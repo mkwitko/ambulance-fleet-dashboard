@@ -15,6 +15,7 @@ import { STATUS_LABELS } from "@/utils/ambulance-status";
 import { useSwitchAmbulanceStatus } from "@/http/generated/ambulance/ambulance";
 import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
+import { Role } from "@/@types/roles";
 
 export default function useAmbulanceData({
   handleDelete,
@@ -84,10 +85,10 @@ export default function useAmbulanceData({
                     data: ambulanceData.data.map((ambulance) =>
                       ambulance.id === r.id
                         ? { ...ambulance, status: value }
-                        : ambulance
+                        : ambulance,
                     ),
                   };
-                }
+                },
               );
               toast.success("Status da ambulância atualizado com sucesso.");
             }}
@@ -108,6 +109,7 @@ export default function useAmbulanceData({
       icon: (
         <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       ),
+      role: Role["ambulance:update"],
     },
     {
       label: "Excluir",
@@ -116,6 +118,7 @@ export default function useAmbulanceData({
         <Trash className="h-4 w-4 text-destructive group-hover:text-destructive-accent transition-colors" />
       ),
       type: "destructive",
+      role: Role["ambulance:delete"],
     },
   ];
 

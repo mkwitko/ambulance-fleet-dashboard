@@ -1,29 +1,57 @@
 import { useState, useMemo, useEffect } from "react";
 import { Role, RolesData } from "@/@types/roles";
 import { resourceTranslations, actionTranslations } from "../data";
-import type { PermissionGroup, PresetRole } from "../@types/user-permissions-types";
-import { hasPermission } from "@/utils/permissions";
+import type {
+  PermissionGroup,
+  PresetRole,
+} from "../@types/user-permissions-types";
 import type { GetUser200 } from "@/http/generated/connectServer.schemas";
+import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 
-export function usePermissions({ editUser, isFetching }: { editUser?: GetUser200 | undefined; isFetching: boolean }) {
-
-
+export function usePermissions({
+  editUser,
+  isFetching,
+}: {
+  editUser?: GetUser200 | undefined;
+  isFetching: boolean;
+}) {
+  const { data: user } = useGetAuthenticatedUserPermissions();
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if(isFetching) return
-    if(editUser?.data.roles) {
-      const isAdmin = hasPermission(editUser.data as any, Role["sys_admin:accessAll"])
-      setSelectedPermissions(isAdmin ? RolesData : editUser.data.roles );
+    if (isFetching) return;
+    if (editUser?.data.roles) {
+      setSelectedPermissions(editUser.data.roles);
     }
-  }, [isFetching])
+  }, [isFetching]);
 
   const permissionGroups = useMemo(() => {
     const groups: Record<string, PermissionGroup> = {};
+    const roles = user?.data.roles ?? [];
+
     RolesData.forEach((permission) => {
       const [resource, action] = permission.split(":");
+
+      // sys_admin: só aparece se tiver sys_admin
+      if (
+        permission === Role["sys_admin:accessAll"] &&
+        !roles.includes(Role["sys_admin:accessAll"])
+      ) {
+        return;
+      }
+
+      // companyGroup_admin: aparece se tiver companyGroup OU sys_admin
+      if (
+        (permission === Role["companyGroup_admin:accessAll"] ||
+          permission === Role["company_admin:accessAll"]) &&
+        !roles.includes(Role["companyGroup_admin:accessAll"]) &&
+        !roles.includes(Role["sys_admin:accessAll"])
+      ) {
+        return;
+      }
+
       if (!groups[resource]) {
         groups[resource] = {
           resource,
@@ -38,9 +66,9 @@ export function usePermissions({ editUser, isFetching }: { editUser?: GetUser200
       });
     });
     return Object.values(groups).sort((a, b) =>
-      a.displayName.localeCompare(b.displayName)
+      a.displayName.localeCompare(b.displayName),
     );
-  }, []);
+  }, [user]);
 
   const filteredGroups = useMemo(() => {
     if (!searchQuery.trim()) return permissionGroups;
@@ -52,7 +80,7 @@ export function usePermissions({ editUser, isFetching }: { editUser?: GetUser200
           (perm) =>
             perm.displayAction.toLowerCase().includes(query) ||
             group.displayName.toLowerCase().includes(query) ||
-            perm.key.toLowerCase().includes(query)
+            perm.key.toLowerCase().includes(query),
         ),
       }))
       .filter((group) => group.permissions.length > 0);
@@ -62,7 +90,7 @@ export function usePermissions({ editUser, isFetching }: { editUser?: GetUser200
     setSelectedPermissions((prev) =>
       prev.includes(permissionKey)
         ? prev.filter((p) => p !== permissionKey)
-        : [...prev, permissionKey]
+        : [...prev, permissionKey],
     );
   };
 
@@ -78,13 +106,13 @@ export function usePermissions({ editUser, isFetching }: { editUser?: GetUser200
     const keys = group.permissions.map((p) => p.key);
     const allSelected = keys.every((k) => selectedPermissions.includes(k));
     setSelectedPermissions((prev) =>
-      allSelected ? prev.filter((p) => !keys.includes(p)) : [...prev, ...keys]
+      allSelected ? prev.filter((p) => !keys.includes(p)) : [...prev, ...keys],
     );
   };
 
   const applyPreset = (preset: PresetRole) => {
     const newOnes = preset.permissions.filter(
-      (p) => !selectedPermissions.includes(p)
+      (p) => !selectedPermissions.includes(p),
     );
     setSelectedPermissions((prev) => [...prev, ...newOnes]);
   };

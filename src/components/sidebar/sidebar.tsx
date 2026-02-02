@@ -1,4 +1,5 @@
 import {
+  Ambulance,
   AmbulanceIcon,
   Blocks,
   Building2,
@@ -33,13 +34,14 @@ export function Sidebar({ handleClose }: SidebarProps) {
   const navItems = [
     {
       type: "link",
-      role:
-        Role["companyGroup:read"] ||
-        Role["company:read"] ||
-        Role["unit:read"] ||
-        Role["base:read"] ||
-        Role["ambulance:read"] ||
+      role: [
+        Role["companyGroup:read"],
+        Role["company:read"],
+        Role["unit:read"],
+        Role["base:read"],
+        Role["ambulance:read"],
         Role["user:read"],
+      ],
       icon: Building2,
       title: "Cadastros",
       children: [
@@ -130,6 +132,13 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/integrations/list",
       icon: Blocks,
       title: "Integrações",
+    },
+    {
+      type: "link",
+      role: Role["driver:read"],
+      to: "/drivers/list",
+      icon: Ambulance,
+      title: "Motoristas",
     },
   ];
 
