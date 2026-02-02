@@ -26,6 +26,7 @@ export default function ChatsList() {
       }
     },
   });
+
   const chatMessageReceived = (message: Ably.InboundMessage) => {
     const parsedMessage = message.data as GetChatMessages200DataItem;
     playNotification(parsedMessage, user);

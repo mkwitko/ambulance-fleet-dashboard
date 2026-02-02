@@ -37,6 +37,7 @@ import {
 import { hasPermission } from "@/utils/permissions";
 import { translateIntegrationType } from "@/utils/integrations-types";
 import useIntegrationshook from "../integrations-list/hooks/use-integrations";
+import { useImportDriversLogFrotaCompany } from "@/http/generated/drivers/drivers";
 
 //
 // -----------------------
@@ -95,7 +96,7 @@ export default function IntegrationsEdit() {
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
   const isAdmin = hasPermission(
     userPermissions?.data,
-    Role["sys_admin:accessAll"]
+    Role["sys_admin:accessAll"],
   );
   hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
 
@@ -105,7 +106,7 @@ export default function IntegrationsEdit() {
       query: {
         enabled: !!userPermissions && watch("tipoVinculo") !== "GROUP",
       },
-    }
+    },
   );
 
   const { data: units, isFetching: isFetchingUnits } = useGetUnits(
@@ -120,7 +121,7 @@ export default function IntegrationsEdit() {
           Array.isArray(watch("companiesId")) &&
           (watch("companiesId")?.length ?? 0) > 0,
       },
-    }
+    },
   );
 
   const { data: integration } = useGetIntegrationsId(id!, {
@@ -145,6 +146,9 @@ export default function IntegrationsEdit() {
       },
     },
   });
+
+  const { mutateAsync: importDrivers, isPending: isImportingDrivers } =
+    useImportDriversLogFrotaCompany();
 
   //
   // -----------------------
@@ -192,31 +196,58 @@ export default function IntegrationsEdit() {
     setValue("password", integrationData.password || "");
     setValue("integrationType", integrationData.integrationType);
 
+    const companies = integrationData.companies;
+    const units = integrationData.units;
+
     if (integrationData.companyGroup) {
-      setValue("tipoVinculo", "GROUP");
+      if (!companies?.length && !units?.length) {
+        setValue("tipoVinculo", "GROUP");
+      }
       setValue("companyGroupId", integrationData.companyGroup.id);
     }
 
     if (integrationData.companies?.length) {
-      setValue("tipoVinculo", "COMPANY");
+      if (!units?.length) {
+        setValue("tipoVinculo", "COMPANY");
+      }
       setValue(
         "companiesId",
-        integrationData.companies.map((c) => c.id)
+        integrationData.companies.map((c) => c.id),
       );
     }
 
     if (integrationData.units?.length) {
       const companiesId = Array.from(
-        new Set(integrationData.units.map((u) => u.companyId))
+        new Set(integrationData.units.map((u) => u.companyId)),
       );
       setValue("tipoVinculo", "UNIT");
       setValue("companiesId", companiesId);
       setValue(
         "unitsId",
-        integrationData.units.map((u) => u.id)
+        integrationData.units.map((u) => u.id),
       );
     }
   }, [integration, isEdit]);
+
+  const options = [
+    {
+      label: "Grupo Empresarial",
+      value: "GROUP",
+      show:
+        watch("integrationType") !==
+        GetIntegrationsId200DataIntegrationType.DRIVERS,
+    },
+    { label: "Empresas", value: "COMPANY" },
+    {
+      label: "Unidades",
+      value: "UNIT",
+      show:
+        watch("integrationType") !==
+        GetIntegrationsId200DataIntegrationType.DRIVERS,
+    },
+  ];
+
+  const companiesId = watch("companiesId");
 
   //
   // -----------------------
@@ -226,9 +257,35 @@ export default function IntegrationsEdit() {
     <motion.div {...softEnter} className="space-y-8 h-full">
       <Card className="bg-connect">
         <CardHeader>
-          <CardTitle>
-            {isEdit ? "Editar Integração" : "Nova Integração"}
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>
+              {isEdit ? "Editar Integração" : "Nova Integração"}
+            </CardTitle>
+            {integration?.data.integrationType ===
+              GetIntegrationsId200DataIntegrationType.DRIVERS &&
+              hasPermission(
+                userPermissions?.data,
+                Role["integrations:create"],
+              ) && (
+                <Button
+                  onClick={async () => {
+                    await importDrivers({
+                      data: {
+                        integrationId: integration.data.id,
+                      },
+                    });
+                    toast.success("Sincronização  com sucesso!");
+                  }}
+                  variant="ghost"
+                  className="text-primary"
+                  type="button"
+                  animated
+                  isSubmitting={isImportingDrivers}
+                >
+                  Sincronizar Motoristas
+                </Button>
+              )}
+          </div>
         </CardHeader>
 
         <CardContent>
@@ -286,10 +343,10 @@ export default function IntegrationsEdit() {
                 }
                 placeholder="Selecione o tipo"
                 items={Object.entries(
-                  GetIntegrationsId200DataIntegrationType
+                  GetIntegrationsId200DataIntegrationType,
                 ).map(([k, v]) => ({
                   label: translateIntegrationType(
-                    k as GetIntegrationsId200DataIntegrationType
+                    k as GetIntegrationsId200DataIntegrationType,
                   ),
                   value: v,
                 }))}
@@ -317,16 +374,12 @@ export default function IntegrationsEdit() {
                   if (v === "GROUP" && !isAdmin) {
                     setValue(
                       "companyGroupId",
-                      userAssociations?.data.companyGroup?.id
+                      userAssociations?.data.companyGroup?.id,
                     );
                   }
                 }}
                 placeholder="Selecione"
-                items={[
-                  { label: "Grupo Empresarial", value: "GROUP" },
-                  { label: "Empresas", value: "COMPANY" },
-                  { label: "Unidades", value: "UNIT" },
-                ]}
+                items={options.filter((o) => o.show !== false)}
               />
 
               {errors.tipoVinculo && (
@@ -340,18 +393,35 @@ export default function IntegrationsEdit() {
             {watch("tipoVinculo") === "COMPANY" && (
               <div className="grid gap-2">
                 <Label>Empresas *</Label>
-                <AppMultiSelect
-                  value={watch("companiesId")}
-                  onValueChange={(v) => setValue("companiesId", v)}
-                  placeholder="Selecione Empresas"
-                  items={
-                    companies?.data?.map((c) => ({
-                      label: c.name,
-                      value: c.id,
-                    })) ?? []
-                  }
-                  loading={isFetchingCompanies}
-                />
+                {watch("integrationType") === "IRIS" && (
+                  <AppMultiSelect
+                    value={companiesId}
+                    onValueChange={(v) => setValue("companiesId", v)}
+                    placeholder="Selecione Empresas"
+                    items={
+                      companies?.data?.map((c) => ({
+                        label: c.name,
+                        value: c.id,
+                      })) ?? []
+                    }
+                    loading={isFetchingCompanies}
+                  />
+                )}
+
+                {watch("integrationType") === "DRIVERS" && (
+                  <AppSelect
+                    value={companiesId?.[0] || ""}
+                    onValueChange={(v) => setValue("companiesId", [v])}
+                    placeholder="Selecione Empresas"
+                    items={
+                      companies?.data?.map((c) => ({
+                        label: c.name,
+                        value: c.id,
+                      })) ?? []
+                    }
+                    loading={isFetchingCompanies}
+                  />
+                )}
               </div>
             )}
 
