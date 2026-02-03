@@ -50,16 +50,21 @@ export default function ChatsSidebar({
 
   // Primeiro, precisamos definir o statusFilter inicial
   const [statusFilter, setStatusFilter] = useState<GetChatsStatusItem[]>(
-    STATUS_ORDER.filter((s) => s !== "FA" && s !== "MN") as GetChatsStatusItem[]
+    STATUS_ORDER.filter(
+      (s) => s !== "FA" && s !== "MN",
+    ) as GetChatsStatusItem[],
   );
 
   const { chats, queryKey } = useChatListHook({ statusFilter });
 
   // Agora usamos o hook de busca com os chats carregados
-  const { search, setSearch, filteredChats: actualFilteredChats } =
-    useSearchChatListHook({
-      chats,
-    });
+  const {
+    search,
+    setSearch,
+    filteredChats: actualFilteredChats,
+  } = useSearchChatListHook({
+    chats,
+  });
 
   useChatsSidebarRealtimeUpdateHook({
     incomingMessage,
@@ -70,7 +75,7 @@ export default function ChatsSidebar({
   const { mutateAsync: readChat } = useReadChat();
 
   return (
-    <div className="w-[380px] h-full border-r border-input flex flex-col relative bg-transparent">
+    <div className="w-95 h-full border-r border-input flex flex-col relative bg-transparent">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-input">
         <div>
@@ -128,11 +133,9 @@ export default function ChatsSidebar({
             value: status,
             label: status,
           }))}
-
           placeholder="Todos os status"
         />
       </div>
-
 
       {/* Chat List */}
       <ScrollArea className="flex-1 px-2">
@@ -161,7 +164,7 @@ export default function ChatsSidebar({
                 .sort((a, b) => {
                   return sortByStatusOrder(
                     a.ambulance.status,
-                    b.ambulance.status
+                    b.ambulance.status,
                   );
                 })
                 .sort((a, b) => {
@@ -206,7 +209,7 @@ export default function ChatsSidebar({
                         className={cn(
                           "px-3 py-3 rounded-xl cursor-pointer transition-all duration-150",
                           "hover:bg-accent/30",
-                          isSelected ? "bg-primary/10" : "bg-transparent"
+                          isSelected ? "bg-primary/10" : "bg-transparent",
                         )}
                       >
                         <div className="flex items-start gap-3">
@@ -236,7 +239,7 @@ export default function ChatsSidebar({
                                   variant="outline"
                                   className={cn(
                                     "text-[10px] px-2 py-0.5 rounded-full border",
-                                    getStatusStyle(chat.ambulance.status)
+                                    getStatusStyle(chat.ambulance.status),
                                   )}
                                 >
                                   {chat.ambulance.status}
@@ -253,7 +256,7 @@ export default function ChatsSidebar({
                                   ? formatInTimeZone(
                                       lastMessage?.createdAt as string,
                                       "UTC",
-                                      "dd/MM/yyyy HH:mm"
+                                      "dd/MM/yyyy HH:mm",
                                     )
                                   : null}
                               </div>

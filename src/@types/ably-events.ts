@@ -4,6 +4,8 @@ export const AblyEvents = {
   readChat: "readChat",
   shiftStatus: "shiftStatus",
   radioCall: "radioCall",
+  checkingActiveness: "checkingActiveness",
+  activenessResponse: "activenessResponse",
   interCommunicationPlaySound: "interCommunicationPlaySound",
   interCommunicationCall: "interCommunicationCall",
 } as const;

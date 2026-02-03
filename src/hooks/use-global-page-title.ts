@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useGetChats } from "@/http/generated/chat/chat";
+import { useGetUnreadMessagesByPlatform } from "@/http/generated/chat/chat";
 import {
   GetChatsPlatform,
   type GetChatsStatusItem,
@@ -7,23 +7,16 @@ import {
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import useAbly from "@/hooks/use-ably";
 import { AblyEvents } from "@/@types/ably-events";
-import { queryClient } from "@/lib/react-query";
-import type {
-  GetChats200,
-  GetChatMessages200DataItem,
-} from "@/http/generated/connectServer.schemas";
-import { getUnreadChatMessages } from "@/http/generated/chat/chat";
-import { realTimeUpdateChatListMessage } from "@/pages/protected/chats/chats-list/realtime/update-chat-sidebar-message";
-import { realTimeUpdateChatReadAt } from "@/pages/protected/chats/chats-list/realtime/update-chat-read-at";
+import type { GetChatMessages200DataItem } from "@/http/generated/connectServer.schemas";
 import { STATUS_ORDER } from "@/utils/ambulance-status";
+import { playNotification } from "@/utils/notification";
 
 const DEFAULT_TITLE = "Connect App";
 
 export default function useGlobalPageTitle() {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  // Busca todos os chats (com todos os status para ter o total completo de mensagens não lidas)
-  const { data: chats, queryKey } = useGetChats(
+  const { data: unreadMessages, refetch } = useGetUnreadMessagesByPlatform(
     {
       ...queryParams,
       platform: GetChatsPlatform.WEB,
@@ -39,68 +32,33 @@ export default function useGlobalPageTitle() {
   );
 
   // Escuta eventos do websocket para atualizar em tempo real
-  useAbly({
+  const { user } = useAbly({
     events: [AblyEvents.messages, AblyEvents.readChat],
     handleMessageReceived: async (message) => {
-      if (!queryKey) return;
+      const parsedMessage = message.data as GetChatMessages200DataItem;
 
-      // Atualiza quando uma nova mensagem chega
+      //  Notificação sonora para novas mensagens
       if (message.name === AblyEvents.messages) {
-        const parsedMessage = message.data as GetChatMessages200DataItem;
-        try {
-          const unreadChatData = await getUnreadChatMessages(
-            parsedMessage.chatId,
-            {
-              unitId: parsedMessage.chat.ambulance.unitId,
-            },
-          );
-
-          queryClient.setQueryData(
-            queryKey,
-            (oldData: GetChats200 | undefined) => {
-              if (!oldData) return oldData;
-              return realTimeUpdateChatListMessage({
-                incomingMessage: message,
-                oldData,
-                unreadChatData,
-              });
-            },
-          );
-        } catch (error) {
-          console.error("Error updating unread count:", error);
-        }
+        playNotification(parsedMessage, user);
       }
 
-      // Atualiza quando um chat é marcado como lido
-      if (message.name === AblyEvents.readChat) {
-        queryClient.setQueryData(
-          queryKey,
-          (oldData: GetChats200 | undefined) => {
-            if (!oldData) return oldData;
-            const result = realTimeUpdateChatReadAt({
-              incomingMessage: message,
-              oldData,
-              setSelectedChat: () => {}, // Não precisamos atualizar chat selecionado aqui
-            });
-            // Retorna apenas os dados atualizados, ignorando o setSelectedChat
-            return result;
-          },
-        );
+      try {
+        refetch();
+      } catch (error) {
+        console.error("Error updating unread count:", error);
       }
     },
   });
 
   // Atualiza o título da aba quando os chats mudam
   useEffect(() => {
-    if (!chats?.data) {
+    if (!unreadMessages?.data) {
       document.title = DEFAULT_TITLE;
       return;
     }
 
     // Calcula o total de mensagens não lidas somando todos os unreadCountWeb
-    const totalUnread = chats.data.reduce((total, chat) => {
-      return total + (chat.unreadCountWeb || 0);
-    }, 0);
+    const totalUnread = unreadMessages.data.unreadCount;
 
     // Atualiza o título da aba
     if (totalUnread > 0) {
@@ -108,5 +66,5 @@ export default function useGlobalPageTitle() {
     } else {
       document.title = DEFAULT_TITLE;
     }
-  }, [chats]);
+  }, [unreadMessages]);
 }

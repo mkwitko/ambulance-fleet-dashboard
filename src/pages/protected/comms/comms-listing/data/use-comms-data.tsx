@@ -11,13 +11,14 @@ import { cn } from "@/lib/utils";
 import { useAgora } from "@/utils/agora";
 import { AblyEvents, RadioCallTypeEvents } from "@/@types/ably-events";
 import { useNavigate } from "react-router-dom";
-import useAbly from "@/hooks/use-ably";
 import { Role } from "@/@types/roles";
 
 export default function useCommsData({
   handleDelete,
+  publish,
 }: {
   handleDelete: (item: GetCommsUsers200DataItem) => void;
+  publish: (event: string, payload: unknown) => Promise<void>;
 }) {
   const navigate = useNavigate();
 
@@ -37,7 +38,6 @@ export default function useCommsData({
       },
     });
   const { mutateAsync: createRadioMeeting } = useCreateRadioIntercomms();
-  const { publish } = useAbly({});
 
   // Timer para atualizar o tempo restante
   useEffect(() => {
@@ -132,7 +132,6 @@ export default function useCommsData({
           baseId: item.base.id,
           type: RadioCallTypeEvents.calling,
         });
-        console.log("Call event published for channel:", item.id);
       }, 3000);
     } catch (error: any) {
       console.error("Error calling:", error);
@@ -169,8 +168,30 @@ export default function useCommsData({
         search: true,
       },
       {
+        key: "base.name",
+        label: "App Ativo",
+        render: (item) => {
+          const status = item.active ? "connected" : "disconnected";
+          const variants = {
+            connected: "bg-primary text-white",
+            disconnected: "bg-gray-200 text-gray-700",
+          };
+
+          return (
+            <Badge
+              className={cn(
+                variants[status as keyof typeof variants],
+                "transition-all duration-300",
+              )}
+            >
+              {item.active ? "Ativo" : "Não Ativo"}
+            </Badge>
+          );
+        },
+      },
+      {
         key: "base.id",
-        label: "Conexão",
+        label: "Ligação",
         render: (item) => {
           const { status, label } = getConnectionStatus(item);
 
@@ -261,7 +282,7 @@ export default function useCommsData({
                   handleLeave(item.id);
                 }}
                 disabled={isConnecting}
-                className="min-w-[120px] bg-destructive text-white px-4 py-2 rounded-md flex items-center justify-center hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="min-w-30 bg-destructive text-white px-4 py-2 rounded-md flex items-center justify-center hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 <PhoneOff className="h-4 w-4 mr-2" />
                 Desligar
@@ -272,7 +293,8 @@ export default function useCommsData({
           return (
             <button
               onClick={() => handleCall(item)}
-              className="min-w-[120px] bg-primary text-white px-4 py-2 rounded-md flex items-center justify-center hover:bg-primary/90 transition-colors shadow-sm"
+              className="min-w-30 bg-primary text-white px-4 py-2 rounded-md flex items-center justify-center hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50"
+              disabled={!item.active}
             >
               <Radio className="h-4 w-4 mr-2" />
               Ligar
@@ -339,5 +361,6 @@ export default function useCommsData({
     remainingTime,
     formattedTime: remainingTime !== null ? formatTime(remainingTime) : null,
     totalUsers: isJoined && client ? remoteUsers.length + 1 : 0,
+    publish,
   };
 }

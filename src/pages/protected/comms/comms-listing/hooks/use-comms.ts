@@ -9,7 +9,11 @@ import { toast } from "sonner";
 export default function useCommsHook() {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: commsUsers, refetch } = useGetCommsUsers(queryParams, {
+  const {
+    data: commsUsers,
+    refetch,
+    queryKey,
+  } = useGetCommsUsers(queryParams, {
     query: {
       enabled: hasSomePermission,
     },
@@ -35,5 +39,6 @@ export default function useCommsHook() {
     commsUsers,
     handleDelete,
     isPending,
+    queryKey,
   };
 }

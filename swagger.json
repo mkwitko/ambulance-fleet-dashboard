@@ -3663,6 +3663,172 @@
         }
       }
     },
+    "/companies/group/{companyGroupId}": {
+      "get": {
+        "operationId": "getCompaniesByGroup",
+        "summary": "Get companies by group",
+        "tags": [
+          "Company"
+        ],
+        "description": "Get companies by group (Sys Admin only)",
+        "parameters": [
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 10,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "perPage",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "document",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "companyGroupId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "document": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "unitsCount": {
+                            "type": "number"
+                          },
+                          "companyGroup": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "document",
+                          "createdAt",
+                          "updatedAt",
+                          "unitsCount",
+                          "companyGroup"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "totalPages": {
+                          "type": "number"
+                        },
+                        "hasNextPage": {
+                          "type": "boolean"
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean"
+                        },
+                        "currentPage": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "totalPages",
+                        "hasNextPage",
+                        "hasPreviousPage",
+                        "currentPage"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/companies/{companyId}/phones": {
       "post": {
         "operationId": "createCompanyPhoneNumber",
@@ -8303,6 +8469,123 @@
         }
       }
     },
+    "/chats/unread/platform": {
+      "get": {
+        "operationId": "getUnreadMessagesByPlatform",
+        "summary": "Get unread messages by platform",
+        "tags": [
+          "Chat"
+        ],
+        "description": "Get unread messages by platform",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "name": "unitsId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "name": "companiesId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "companyGroupId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "QAP",
+                  "OCP",
+                  "EVT",
+                  "J4",
+                  "J5",
+                  "FA",
+                  "MN"
+                ]
+              }
+            },
+            "in": "query",
+            "name": "status",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "APP",
+                "WEB"
+              ]
+            },
+            "in": "query",
+            "name": "platform",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "unreadCount": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "unreadCount"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/radio/create-meeting": {
       "post": {
         "operationId": "createRadioMeeting",
@@ -9582,6 +9865,9 @@
                               "name"
                             ],
                             "additionalProperties": false
+                          },
+                          "active": {
+                            "type": "boolean"
                           }
                         },
                         "required": [
@@ -9591,7 +9877,8 @@
                           "password",
                           "createdAt",
                           "updatedAt",
-                          "base"
+                          "base",
+                          "active"
                         ],
                         "additionalProperties": false
                       }
@@ -9641,6 +9928,9 @@
                   },
                   "baseId": {
                     "type": "string"
+                  },
+                  "active": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -9738,6 +10028,9 @@
                     "updatedAt": {
                       "type": "string",
                       "format": "date-time"
+                    },
+                    "active": {
+                      "type": "boolean"
                     }
                   },
                   "required": [
@@ -9747,7 +10040,8 @@
                     "password",
                     "base",
                     "createdAt",
-                    "updatedAt"
+                    "updatedAt",
+                    "active"
                   ],
                   "additionalProperties": false
                 }

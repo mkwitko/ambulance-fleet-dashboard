@@ -42,10 +42,10 @@ export default function Chat({
   const { data: user } = useGetAuthenticatedUser();
   const [messages, setMessages] = useState<GetChatMessages200DataItem[]>([]);
   const [currentDateOnScreen, setCurrentDateOnScreen] = useState<string | null>(
-    null
+    null,
   );
   const [resendingMessageId, setResendingMessageId] = useState<string | null>(
-    null
+    null,
   );
 
   const { online } = useOfflineHook();
@@ -128,12 +128,12 @@ export default function Chat({
         .filter((d) => d.user.id === user?.data.id) // Apenas mensagens do usuário atual
         .sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         );
       setMessages((prev) => {
         // Filtra mensagens offline já existentes
         const filteredPrev = prev.filter(
-          (m) => !offlineMessages.find((om) => om.id === m.id)
+          (m) => !offlineMessages.find((om) => om.id === m.id),
         );
         return [...filteredPrev, ...offlineMessages];
       });
@@ -152,7 +152,7 @@ export default function Chat({
       const parentRect = scrollEl.getBoundingClientRect();
 
       const sentMessages = messages.filter(
-        (msg) => msg.status !== GetChatMessages200DataItemStatus.PENDING
+        (msg) => msg.status !== GetChatMessages200DataItemStatus.PENDING,
       );
 
       for (const msg of sentMessages) {
@@ -276,6 +276,14 @@ export default function Chat({
         <div className="space-y-4 max-w-4xl mx-auto">
           <AnimatePresence mode="popLayout">
             {messages
+              .filter((message) => {
+                if (
+                  message.status === GetChatMessages200DataItemStatus.PENDING
+                ) {
+                  return message.user.id === user?.data?.id;
+                }
+                return true;
+              })
               .sort((a, b) => {
                 const isA =
                   a.status === GetChatMessages200DataItemStatus.PENDING;
