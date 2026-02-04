@@ -4,20 +4,27 @@ import {
   useGetCommsUsers,
 } from "@/http/generated/comms-user/comms-user";
 import type { GetCommsUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useCommsHook() {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
   const {
     data: commsUsers,
     refetch,
     queryKey,
-  } = useGetCommsUsers(queryParams, {
-    query: {
-      enabled: hasSomePermission,
+  } = useGetCommsUsers(
+    { ...queryParams, page, perPage },
+    {
+      query: {
+        enabled: hasSomePermission,
+      },
     },
-  });
+  );
 
   const { mutateAsync: deleteCommsUser, isPending } = useDeleteCommsUser({
     mutation: {
@@ -40,5 +47,7 @@ export default function useCommsHook() {
     handleDelete,
     isPending,
     queryKey,
+    setPage,
+    setPerPage,
   };
 }

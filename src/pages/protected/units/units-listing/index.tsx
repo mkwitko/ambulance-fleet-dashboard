@@ -8,7 +8,7 @@ import useUnitsData from "./data/use-units-data";
 import { Role } from "@/@types/roles";
 
 export default function UnitsListing() {
-  const { units, handleDelete } = useUnitsHook();
+  const { units, handleDelete, setPage, setPerPage } = useUnitsHook();
 
   const { columns, actions } = useUnitsData({
     handleDelete,
@@ -21,11 +21,17 @@ export default function UnitsListing() {
       <DataTable<GetUnits200DataItem>
         title="Unidades"
         data={units?.data || []}
+        pagination={units?.pagination}
         columns={columns}
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
         addingRole={Role["unit:create"]}
+        onPageChange={(page) => setPage(page)}
+        onPerPageChange={(perPage) => {
+          setPerPage(perPage);
+          setPage(1);
+        }}
       />
     </motion.div>
   );

@@ -1,11 +1,16 @@
 import type { GetModules200DataItem } from "@/http/generated/connectServer.schemas";
 import { useDeleteModule, useGetModules } from "@/http/generated/module/module";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useModulesHook() {
-  const { data: modules, refetch } = useGetModules(
-    {},
-  );
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  const { data: modules, refetch } = useGetModules({
+    page,
+    perPage,
+  });
   const { mutateAsync: deleteModule, isPending } = useDeleteModule({
     mutation: {
       onSuccess: async () => {
@@ -26,5 +31,7 @@ export default function useModulesHook() {
     modules,
     handleDelete,
     isPending,
+    setPage,
+    setPerPage,
   };
 }

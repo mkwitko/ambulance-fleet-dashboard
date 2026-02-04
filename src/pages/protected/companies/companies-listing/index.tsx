@@ -1,6 +1,7 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
   GetCompanies200DataItem,
+  GetCompanies200Pagination,
   GetCompanyModules200,
   GetCompanyModules200DataItem,
 } from "@/http/generated/connectServer.schemas";
@@ -21,7 +22,7 @@ import { hasPermission } from "@/utils/permissions";
 import CompanyModulesChildren from "./components/company-modules-listing";
 
 export default function CompaniesListing() {
-  const { companies, handleDelete } = useCompaniesHook();
+  const { companies, handleDelete, setPage, setPerPage } = useCompaniesHook();
   const { columns, actions } = useCompaniesData({ handleDelete });
 
   const navigate = useNavigate();
@@ -71,9 +72,10 @@ export default function CompaniesListing() {
 
   return (
     <motion.div {...softEnter}>
-      <DataTable<GetCompanies200DataItem>
+      <DataTable<GetCompanies200DataItem, GetCompanies200Pagination>
         title="Empresas"
         data={companies?.data || []}
+        pagination={companies?.pagination}
         columns={columns}
         actions={actions}
         searchableKeys={[
@@ -111,6 +113,11 @@ export default function CompaniesListing() {
           );
         }}
         hasChildren={!!isAdmin}
+        onPageChange={(page) => setPage(page)}
+        onPerPageChange={(perPage) => {
+          setPerPage(perPage);
+          setPage(1);
+        }}
       />
     </motion.div>
   );

@@ -5,9 +5,13 @@ import {
   useGetAuthenticatedUserAssociations,
   useGetUsers,
 } from "@/http/generated/user/user";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useUsersHook() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(2);
+
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
@@ -15,11 +19,18 @@ export default function useUsersHook() {
     data: users,
     refetch,
     queryKey,
-  } = useGetUsers(queryParams, {
-    query: {
-      enabled: !!hasSomePermission,
+  } = useGetUsers(
+    {
+      ...queryParams,
+      page,
+      perPage,
     },
-  });
+    {
+      query: {
+        enabled: !!hasSomePermission,
+      },
+    },
+  );
 
   const { mutateAsync: deleteUser, isPending } = useDeleteUser({
     mutation: {
@@ -47,5 +58,7 @@ export default function useUsersHook() {
     handleDelete,
     isPending,
     queryKey,
+    setPage,
+    setPerPage,
   };
 }

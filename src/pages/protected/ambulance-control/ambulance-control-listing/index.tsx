@@ -13,11 +13,14 @@ import { queryClient } from "@/lib/react-query";
 import { useState } from "react";
 import { AmbulanceControlRender } from "./components/mbulance-control-render";
 import { Button } from "@/components/ui/button";
+import type { GetAmbulancesControl200Pagination } from "@/http/generated/connectServer.schemas";
 
 export default function AmbulanceControlListing() {
   const filteringScopeHook = useFilteringScopeHook();
 
-  const { ambulances, queryKey } = useAmbulanceHook({ filteringScopeHook });
+  const { ambulances, queryKey, setPage, setPerPage } = useAmbulanceHook({
+    filteringScopeHook,
+  });
 
   const { columns } = useUsersData();
 
@@ -44,11 +47,14 @@ export default function AmbulanceControlListing() {
   const [openFullscreen, setOpenFullscreen] = useState(false);
 
   const ambulanceData = ambulances?.data ?? [];
+  const pagination =
+    ambulances?.pagination as GetAmbulancesControl200Pagination;
 
   return (
     <motion.div {...softEnter} className="space-y-6">
       <AmbulanceControlRender
         ambulances={ambulanceData}
+        pagination={pagination}
         columns={columns}
         filteringScopeHook={filteringScopeHook}
         height="500px"
@@ -61,6 +67,8 @@ export default function AmbulanceControlListing() {
             <Maximize className="w-5 h-5" />
           </Button>
         }
+        setPage={setPage}
+        setPerPage={setPerPage}
       />
 
       <Dialog open={openFullscreen} onOpenChange={setOpenFullscreen}>
@@ -69,9 +77,12 @@ export default function AmbulanceControlListing() {
             <div className="mx-auto max-w-8xl w-[95%]">
               <AmbulanceControlRender
                 ambulances={ambulanceData}
+                pagination={pagination}
                 columns={columns}
                 filteringScopeHook={filteringScopeHook}
                 height="520px"
+                setPage={setPage}
+                setPerPage={setPerPage}
               />
             </div>
           </div>

@@ -43,8 +43,9 @@ export interface SearchableKey<T> {
   label?: string;
 }
 
-export interface DataTableProps<T> {
+export interface DataTableProps<T, P> {
   data: T[];
+  pagination?: P | undefined;
   columns: Column<T>[];
   actions?: Action<T>[];
   bulkActions?: BulkAction[];
@@ -62,4 +63,6 @@ export interface DataTableProps<T> {
   autoPaginate?: boolean;
   autoPaginateInterval?: number;
   headerActions?: React.ReactNode;
+  onPageChange?: (page: number) => void;
+  onPerPageChange?: (perPage: number) => void;
 }

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Fuse from "fuse.js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -21,8 +21,12 @@ import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import type { Role } from "@/@types/roles";
 import { hasPermission } from "@/utils/permissions";
 
-export function DataTable<T extends Record<string, any>>({
+export function DataTable<
+  T extends Record<string, any>,
+  P extends Record<string, any> = Record<string, any>,
+>({
   data,
+  pagination,
   columns,
   actions = [],
   bulkActions = [],
@@ -39,7 +43,9 @@ export function DataTable<T extends Record<string, any>>({
   autoPaginate = false,
   autoPaginateInterval = 5000,
   headerActions,
-}: DataTableProps<T>) {
+  onPageChange,
+  onPerPageChange,
+}: DataTableProps<T, P>) {
   const [query, setQuery] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(defaultPerPage);
@@ -47,6 +53,14 @@ export function DataTable<T extends Record<string, any>>({
   const [sortKey, setSortKey] = React.useState<keyof T | null>(null);
   const [sortDir, setSortDir] = React.useState<SortDirection>(null);
   const [expanded, setExpanded] = React.useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (onPageChange) onPageChange(page);
+  }, [page]);
+
+  useEffect(() => {
+    if (onPerPageChange) onPerPageChange(perPage);
+  }, [perPage]);
 
   const { data: userPermissions } = useGetAuthenticatedUserPermissions();
 
@@ -83,8 +97,7 @@ export function DataTable<T extends Record<string, any>>({
     });
   }, [filtered, sortKey, sortDir]);
 
-  const totalPages = Math.max(1, Math.ceil(sorted.length / perPage));
-  const paginated = sorted.slice((page - 1) * perPage, page * perPage);
+  const totalPages = pagination?.totalPages;
 
   const toggleRow = (idx: number) => {
     const s = new Set(selected);
@@ -94,11 +107,11 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   const toggleAll = () => {
-    if (selected.size === paginated.length && paginated.length > 0) {
+    if (selected.size === data.length && data.length > 0) {
       setSelected(new Set());
     } else {
       const s = new Set<number>();
-      paginated.forEach((_, i) => s.add((page - 1) * perPage + i));
+      data.forEach((_, i) => s.add((page - 1) * perPage + i));
       setSelected(s);
     }
   };
@@ -197,8 +210,7 @@ export function DataTable<T extends Record<string, any>>({
                         <TableHead className="w-14">
                           <Checkbox
                             checked={
-                              selected.size === paginated.length &&
-                              paginated.length > 0
+                              selected.size === data.length && data.length > 0
                             }
                             onCheckedChange={toggleAll}
                             aria-label="Selecionar todos"
@@ -251,7 +263,7 @@ export function DataTable<T extends Record<string, any>>({
                   </TableHeader>
 
                   <TableBody>
-                    {paginated.length === 0 ? (
+                    {filtered.length === 0 ? (
                       <motion.tr
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -296,7 +308,7 @@ export function DataTable<T extends Record<string, any>>({
                         </td>
                       </motion.tr>
                     ) : (
-                      paginated.map((row, i) => {
+                      filtered.map((row, i) => {
                         const globalIndex = (page - 1) * perPage + i;
                         const isExpanded = expanded.has(globalIndex);
 
@@ -325,20 +337,22 @@ export function DataTable<T extends Record<string, any>>({
             </div>
           </div>
 
-          <DataTablePagination
-            page={page}
-            totalPages={totalPages}
-            totalRecords={sorted.length}
-            perPage={perPage}
-            perPageOptions={perPageOptions}
-            onPageChange={(newPage) => {
-              setPage(newPage);
-            }}
-            onPerPageChange={(newPerPage) => {
-              setPerPage(newPerPage);
-              setPage(1);
-            }}
-          />
+          {pagination && pagination.totalPages > 1 && (
+            <DataTablePagination
+              page={page}
+              totalPages={totalPages}
+              totalRecords={sorted.length}
+              perPage={perPage}
+              perPageOptions={perPageOptions}
+              onPageChange={(newPage) => {
+                setPage(newPage);
+              }}
+              onPerPageChange={(newPerPage) => {
+                setPerPage(newPerPage);
+                setPage(1);
+              }}
+            />
+          )}
         </CardContent>
       </Card>
     </>

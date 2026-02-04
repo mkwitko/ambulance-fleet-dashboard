@@ -8,7 +8,7 @@ import useUsersData from "./data/use-users-data";
 import { Role } from "@/@types/roles";
 
 export default function UsersListing() {
-  const { users, handleDelete } = useUsersHook();
+  const { users, handleDelete, setPage, setPerPage } = useUsersHook();
 
   const { columns, actions } = useUsersData({
     handleDelete,
@@ -21,11 +21,17 @@ export default function UsersListing() {
       <DataTable<GetUsers200DataItem>
         title="Usuários"
         data={users?.data || []}
+        pagination={users?.pagination}
         columns={columns}
         actions={actions}
         searchableKeys={columns}
         onNew={() => navigate("new")}
         addingRole={Role["user:create"]}
+        onPageChange={(page) => setPage(page)}
+        onPerPageChange={(perPage) => {
+          setPerPage(perPage);
+          setPage(1);
+        }}
       />
     </motion.div>
   );

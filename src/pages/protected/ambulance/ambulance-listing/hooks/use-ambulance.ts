@@ -10,11 +10,15 @@ import {
 } from "@/http/generated/connectServer.schemas";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { queryClient } from "@/lib/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useAmbulanceHook() {
   // Queries
   const { data: user } = useGetAuthenticatedUser();
+
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
@@ -27,18 +31,25 @@ export default function useAmbulanceHook() {
       query: {
         enabled: hasSomePermission,
       },
-    }
+    },
   );
 
   const {
     data: ambulances,
     refetch,
     queryKey,
-  } = useGetAmbulances(queryParams, {
-    query: {
-      enabled: !!user && hasSomePermission,
+  } = useGetAmbulances(
+    {
+      ...queryParams,
+      page,
+      perPage,
     },
-  });
+    {
+      query: {
+        enabled: !!user && hasSomePermission,
+      },
+    },
+  );
 
   const { mutateAsync: deleteAmbulance, isPending } = useDeleteAmbulance({
     mutation: {
@@ -63,5 +74,7 @@ export default function useAmbulanceHook() {
     handleDelete,
     isPending,
     queryKey,
+    setPage,
+    setPerPage,
   };
 }

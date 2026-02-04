@@ -1,16 +1,23 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useDeleteBase, useGetBases } from "@/http/generated/base/base";
 import type { GetBases200DataItem } from "@/http/generated/connectServer.schemas";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function useBasesHook() {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: bases, refetch } = useGetBases(queryParams, {
-    query: {
-      enabled: hasSomePermission,
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  const { data: bases, refetch } = useGetBases(
+    { ...queryParams, page, perPage },
+    {
+      query: {
+        enabled: hasSomePermission,
+      },
     },
-  });
+  );
   const { mutateAsync: deleteBase, isPending } = useDeleteBase({
     mutation: {
       onSuccess: async () => {
@@ -31,5 +38,7 @@ export default function useBasesHook() {
     bases,
     handleDelete,
     isPending,
+    setPage,
+    setPerPage,
   };
 }

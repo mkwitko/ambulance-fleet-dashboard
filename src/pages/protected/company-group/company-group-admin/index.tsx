@@ -1,5 +1,8 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { GetCompanyGroups200DataItem } from "@/http/generated/connectServer.schemas";
+import type {
+  GetCompanyGroups200DataItem,
+  GetCompanyGroups200Pagination,
+} from "@/http/generated/connectServer.schemas";
 import useCompanyGroupAdminData from "./data/use-company-group-admin-data";
 import useCompanyGroupAdminHook from "./hooks/use-company-group-admin";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +11,8 @@ import { softEnter } from "@/components/motion/soft-enter";
 import { Role } from "@/@types/roles";
 
 export default function CompanyGroupAdmin() {
-  const { companyGroups, handleDelete } = useCompanyGroupAdminHook();
+  const { companyGroups, handleDelete, setPage, setPerPage } =
+    useCompanyGroupAdminHook();
 
   const { columns, actions } = useCompanyGroupAdminData({
     handleDelete,
@@ -19,9 +23,10 @@ export default function CompanyGroupAdmin() {
   return (
     <>
       <motion.div {...softEnter}>
-        <DataTable<GetCompanyGroups200DataItem>
+        <DataTable<GetCompanyGroups200DataItem, GetCompanyGroups200Pagination>
           title="Grupos Empresariais"
           data={companyGroups?.data || []}
+          pagination={companyGroups?.pagination}
           columns={columns}
           actions={actions}
           searchableKeys={[
@@ -30,6 +35,11 @@ export default function CompanyGroupAdmin() {
           ]}
           onNew={() => navigate("new")}
           addingRole={Role["sys_admin:accessAll"]}
+          onPageChange={(page) => setPage(page)}
+          onPerPageChange={(perPage) => {
+            setPerPage(perPage);
+            setPage(1);
+          }}
         />
       </motion.div>
     </>

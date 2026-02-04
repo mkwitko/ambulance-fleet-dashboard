@@ -2,6 +2,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
   GetCommsUsers200,
   GetCommsUsers200DataItem,
+  GetCommsUsers200Pagination,
 } from "@/http/generated/connectServer.schemas";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
@@ -15,7 +16,8 @@ import useAbly from "@/hooks/use-ably";
 import { queryClient } from "@/lib/react-query";
 
 export default function CommsListing() {
-  const { commsUsers, handleDelete, queryKey } = useCommsHook();
+  const { commsUsers, handleDelete, queryKey, setPage, setPerPage } =
+    useCommsHook();
 
   const { publish } = useAbly({
     events: [AblyEvents.activenessResponse],
@@ -51,7 +53,6 @@ export default function CommsListing() {
 
     const sendCheck = () => {
       commsUsers.data.forEach((user) => {
-        console.log("checkingActiveness →", user.id);
         publish(AblyEvents.checkingActiveness, { userId: user.id });
       });
     };
@@ -67,14 +68,20 @@ export default function CommsListing() {
 
   return (
     <motion.div {...softEnter}>
-      <DataTable<GetCommsUsers200DataItem>
+      <DataTable<GetCommsUsers200DataItem, GetCommsUsers200Pagination>
         title="Intercomunicação"
         data={commsUsers?.data || []}
+        pagination={commsUsers?.pagination}
         columns={columns}
         actions={actions}
         searchableKeys={columns.filter((c) => c.search)}
         onNew={() => navigate("new")}
         addingRole={Role["comms:create"]}
+        onPageChange={(page) => setPage(page)}
+        onPerPageChange={(perPage) => {
+          setPerPage(perPage);
+          setPage(1);
+        }}
       />
     </motion.div>
   );

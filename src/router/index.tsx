@@ -14,6 +14,7 @@ import { AmbulancesControlRoute } from "./ambulances-control-route";
 import { RadioRoute } from "./radio-route";
 import { CommsRoute } from "./comms-route";
 import { IntegrationsRoute } from "./integrations-route";
+import { DriversRoute } from "./drivers-route";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       ...RadioRoute,
       ...IntegrationsRoute,
       ...CommsRoute,
+      ...DriversRoute,
     ],
   },
 ]);

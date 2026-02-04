@@ -2,7 +2,7 @@ import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useGetAmbulancesControl } from "@/http/generated/ambulance/ambulance";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { GetAmbulancesControl200DataItemStatus } from "@/http/generated/connectServer.schemas";
 
 export default function useAmbulanceControlHook({
@@ -11,6 +11,9 @@ export default function useAmbulanceControlHook({
   filteringScopeHook: FilteringScopeHook;
 }) {
   const { data: user } = useGetAuthenticatedUser();
+
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   const { getTopPriorityFilter, hasAppliedFilters } = filteringScopeHook;
 
@@ -22,11 +25,14 @@ export default function useAmbulanceControlHook({
     : getUserPermissionsQueryParams;
 
   // Query
-  const { data: ambulances, queryKey } = useGetAmbulancesControl(queryParams, {
-    query: {
-      enabled: !!user && hasSomePermission,
+  const { data: ambulances, queryKey } = useGetAmbulancesControl(
+    { ...queryParams, page, perPage },
+    {
+      query: {
+        enabled: !!user && hasSomePermission,
+      },
     },
-  });
+  );
 
   // Filtra as ambulâncias para excluir FA (Fora de ação) e MN (Manutenção)
   const filteredAmbulances = useMemo(() => {
@@ -35,7 +41,7 @@ export default function useAmbulanceControlHook({
     const filtered = ambulances.data.filter(
       (ambulance) =>
         ambulance.status !== GetAmbulancesControl200DataItemStatus.FA &&
-        ambulance.status !== GetAmbulancesControl200DataItemStatus.MN
+        ambulance.status !== GetAmbulancesControl200DataItemStatus.MN,
     );
 
     return {
@@ -48,5 +54,7 @@ export default function useAmbulanceControlHook({
     ambulances: filteredAmbulances,
     user,
     queryKey,
+    setPage,
+    setPerPage,
   };
 }

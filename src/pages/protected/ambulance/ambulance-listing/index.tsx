@@ -1,5 +1,8 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { GetAmbulances200DataItem } from "@/http/generated/connectServer.schemas";
+import type {
+  GetAmbulances200DataItem,
+  GetAmbulances200Pagination,
+} from "@/http/generated/connectServer.schemas";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
@@ -8,7 +11,8 @@ import useAmbulanceHook from "./hooks/use-ambulance";
 import { Role } from "@/@types/roles";
 
 export default function AmbulanceListing() {
-  const { ambulances, handleDelete, queryKey } = useAmbulanceHook();
+  const { ambulances, handleDelete, queryKey, setPage, setPerPage } =
+    useAmbulanceHook();
 
   const { columns, actions } = useUsersData({
     handleDelete,
@@ -19,9 +23,10 @@ export default function AmbulanceListing() {
 
   return (
     <motion.div {...softEnter}>
-      <DataTable<GetAmbulances200DataItem>
+      <DataTable<GetAmbulances200DataItem, GetAmbulances200Pagination>
         title="Ambulâncias"
         data={ambulances?.data || []}
+        pagination={ambulances?.pagination}
         columns={columns}
         actions={actions}
         searchableKeys={[
@@ -33,6 +38,11 @@ export default function AmbulanceListing() {
         ]}
         onNew={() => navigate("new")}
         addingRole={Role["ambulance:create"]}
+        onPageChange={(page) => setPage(page)}
+        onPerPageChange={(perPage) => {
+          setPerPage(perPage);
+          setPage(1);
+        }}
       />
     </motion.div>
   );
