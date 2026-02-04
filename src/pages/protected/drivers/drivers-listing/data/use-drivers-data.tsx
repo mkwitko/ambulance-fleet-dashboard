@@ -12,7 +12,6 @@ import {
 import type { GetDrivers200DataItem } from "@/http/generated/connectServer.schemas";
 import { maskCpf } from "@/utils/masks";
 import { Trash } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 function truncate(text: string, limit = 20) {
   if (!text) return "";
@@ -24,8 +23,6 @@ export default function useDriversData({
 }: {
   handleDelete: (row: GetDrivers200DataItem) => void;
 }) {
-  const navigate = useNavigate();
-
   const columns: Column<GetDrivers200DataItem>[] = [
     { key: "name", label: "Nome" },
     {
