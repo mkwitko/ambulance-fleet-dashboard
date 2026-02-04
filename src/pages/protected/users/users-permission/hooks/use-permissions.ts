@@ -7,6 +7,7 @@ import type {
 } from "../@types/user-permissions-types";
 import type { GetUser200 } from "@/http/generated/connectServer.schemas";
 import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
+import { useHasDriversIntegrationByUser } from "@/http/generated/drivers/drivers";
 
 export function usePermissions({
   editUser,
@@ -19,6 +20,12 @@ export function usePermissions({
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  const { data: hasDriverIntegration } = useHasDriversIntegrationByUser({
+    query: {
+      enabled: !!user,
+    },
+  });
 
   useEffect(() => {
     if (isFetching) return;
@@ -49,6 +56,10 @@ export function usePermissions({
         !roles.includes(Role["companyGroup_admin:accessAll"]) &&
         !roles.includes(Role["sys_admin:accessAll"])
       ) {
+        return;
+      }
+
+      if (resource === "driver" && !hasDriverIntegration) {
         return;
       }
 

@@ -33,6 +33,11 @@ export default function useAbly({
       suspendedRetryTimeout: 5000,
       transportParams: { remainActive: true },
     });
+
+    return () => {
+      clientRef.current?.close();
+      clientRef.current = null;
+    };
   }, [user]);
 
   // 2️⃣ Subscribe
@@ -70,7 +75,7 @@ export default function useAbly({
 
       channel.publish(event, payload);
     },
-    [user]
+    [user],
   );
 
   return {

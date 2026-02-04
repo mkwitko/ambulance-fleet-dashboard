@@ -2288,6 +2288,75 @@
         }
       }
     },
+    "/auth/sign-in/driver/pre": {
+      "post": {
+        "operationId": "preSignInDriver",
+        "summary": "Pre sign in driver user",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Pre sign in to the application informing the cpf and password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cpf",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "companies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "companies"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/sign-in/driver": {
       "post": {
         "operationId": "signInDriver",
@@ -2305,12 +2374,16 @@
                   "cpf": {
                     "type": "string"
                   },
+                  "companyId": {
+                    "type": "string"
+                  },
                   "password": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "cpf",
+                  "companyId",
                   "password"
                 ]
               }
@@ -9375,11 +9448,8 @@
                   "companyGroupId": {
                     "type": "string"
                   },
-                  "companiesIds": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "companyId": {
+                    "type": "string"
                   },
                   "unitsIds": {
                     "type": "array",
@@ -9395,6 +9465,7 @@
                   "name",
                   "document",
                   "companyGroupId",
+                  "companyId",
                   "logFrotaId"
                 ]
               }
@@ -9518,20 +9589,29 @@
                     "cpf": {
                       "type": "string"
                     },
+                    "companyGroup": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    },
                     "companies": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ],
-                        "additionalProperties": false
-                      }
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "additionalProperties": false
                     },
                     "driverAssociation": {
                       "type": "array",
@@ -9579,6 +9659,7 @@
                     "name",
                     "logFrotaId",
                     "cpf",
+                    "companyGroup",
                     "companies",
                     "driverAssociation"
                   ],
@@ -9678,6 +9759,9 @@
                           "logFrotaId": {
                             "type": "string"
                           },
+                          "cpf": {
+                            "type": "string"
+                          },
                           "driverAssociation": {
                             "type": "array",
                             "items": {
@@ -9748,43 +9832,36 @@
                             }
                           },
                           "companyGroup": {
-                            "nullable": true,
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                }
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
                               },
-                              "required": [
-                                "id",
-                                "name"
-                              ],
-                              "additionalProperties": false
-                            }
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
                           },
                           "companies": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                }
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
                               },
-                              "required": [
-                                "id",
-                                "name"
-                              ],
-                              "additionalProperties": false
-                            }
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
                           },
                           "units": {
                             "type": "array",
@@ -9810,6 +9887,7 @@
                           "id",
                           "name",
                           "logFrotaId",
+                          "cpf",
                           "driverAssociation",
                           "companyGroup",
                           "companies",
@@ -9884,11 +9962,8 @@
                   "companyGroupId": {
                     "type": "string"
                   },
-                  "companiesIds": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "companyId": {
+                    "type": "string"
                   },
                   "unitsIds": {
                     "type": "array",
@@ -10152,43 +10227,36 @@
                           }
                         },
                         "companyGroup": {
-                          "nullable": true,
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
                             },
-                            "required": [
-                              "id",
-                              "name"
-                            ],
-                            "additionalProperties": false
-                          }
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
                         },
                         "companies": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
                             },
-                            "required": [
-                              "id",
-                              "name"
-                            ],
-                            "additionalProperties": false
-                          }
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
                         },
                         "units": {
                           "type": "array",
@@ -10352,6 +10420,41 @@
       "get": {
         "operationId": "hasDriversIntegration",
         "summary": "Has drivers integration",
+        "tags": [
+          "Drivers"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasIntegration": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "hasIntegration"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drivers/has-integration/by-user": {
+      "get": {
+        "operationId": "hasDriversIntegrationByUser",
+        "summary": "Has drivers integration by user",
         "tags": [
           "Drivers"
         ],

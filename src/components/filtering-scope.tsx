@@ -56,8 +56,8 @@ export default function FilteringScope({
 
   // Permissions
   const perms = {
-    isAdmin: hasPermission(userData, Role["sys_admin:accessAll"]),
-    canCompanyGroup: hasPermission(userData, Role["companyGroup:read"]),
+    isAdmin: hasPermission(userData, Role["sys_admin:accessAll"], true),
+    canCompanyGroup: hasPermission(userData, Role["companyGroup:read"], true),
     canCompany: hasPermission(userData, Role["company:read"]),
     canUnit: hasPermission(userData, Role["unit:read"]),
   };
@@ -84,7 +84,7 @@ export default function FilteringScope({
         query: {
           enabled: !!hasCompanyGroup && !!user && perms.isAdmin,
         },
-      }
+      },
     );
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
@@ -96,7 +96,7 @@ export default function FilteringScope({
           !!user &&
           (perms.isAdmin ? !!uiCompanyGroupId : true),
       },
-    }
+    },
   );
 
   const { data: units, isFetching: isFetchingUnits } = useGetUnits(
@@ -107,7 +107,7 @@ export default function FilteringScope({
       query: {
         enabled: !!hasUnits && !!user && !!uiCompaniesId?.length,
       },
-    }
+    },
   );
 
   const { data: bases, isFetching: isFetchingBases } = useGetBases(
@@ -118,7 +118,7 @@ export default function FilteringScope({
       query: {
         enabled: !!hasBases && !!user && !!uiUnitsId?.length,
       },
-    }
+    },
   );
 
   // APLICAR FILTROS → envia somente para appliedFilters
@@ -142,7 +142,7 @@ export default function FilteringScope({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle>Filtros de Escopo</DialogTitle>
           <DialogDescription>

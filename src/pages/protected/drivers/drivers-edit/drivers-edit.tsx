@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 import { useGetCompanies } from "@/http/generated/company/company";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user";
-import { AppMultiSelect } from "@/components/app-multi-select";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -21,14 +20,14 @@ import {
   useGetDriverById,
   useUpdateDriver,
 } from "@/http/generated/drivers/drivers";
+import { AppSelect } from "@/components/app-select";
 
 // --- 🔒 Schema de validação ---
 const driversSchema = z.object({
   name: z.string().min(2, "O nome é obrigatório"),
   logFrotaId: z.string(),
   document: z.string().optional(),
-  companiesId: z.array(z.string()).min(1, "A empresa é obrigatória"),
-  unitsId: z.array(z.string()).min(1, "A unidade é obrigatória"),
+  companyId: z.string().min(1, "Selecione ao menos uma empresa"),
 });
 
 type DriversFormValues = z.infer<typeof driversSchema>;
@@ -119,9 +118,7 @@ export default function DriversEdit() {
         name: driverToEdit?.data?.name || "",
         logFrotaId: driverToEdit?.data?.logFrotaId || "",
         document: driverToEdit?.data?.cpf || "",
-        companiesId:
-          driverToEdit?.data?.companies?.map((company) => company.id) || [],
-        unitsId: driverToEdit?.data?.units?.map((unit) => unit.id) || [],
+        companyId: driverToEdit?.data?.companies.id,
       });
     }
   }, [isFetching]);
@@ -136,8 +133,7 @@ export default function DriversEdit() {
           logFrotaId: data.logFrotaId,
           document: data.document,
           companyGroupId: userAssociations?.data.companyGroup?.id as string,
-          companiesIds: data.companiesId,
-          unitsIds: data.unitsId,
+          companyId: data.companyId,
         },
       });
       return;
@@ -148,8 +144,7 @@ export default function DriversEdit() {
         logFrotaId: data.logFrotaId,
         document: data.document as string,
         companyGroupId: userAssociations?.data.companyGroup?.id as string,
-        companiesIds: data.companiesId,
-        unitsIds: data.unitsId,
+        companyId: data.companyId,
       },
     });
   };
@@ -218,10 +213,10 @@ export default function DriversEdit() {
                 {/* Empresas */}
                 <div className="flex flex-col gap-2">
                   <Label>Empresas *</Label>
-                  <AppMultiSelect
-                    value={watch("companiesId")}
+                  <AppSelect
+                    value={watch("companyId")}
                     onValueChange={(value) =>
-                      setValue("companiesId", value, { shouldValidate: true })
+                      setValue("companyId", value, { shouldValidate: true })
                     }
                     // onRemovedValue={(value) => {
                     //   const updatedUnits = units?.data
@@ -255,9 +250,9 @@ export default function DriversEdit() {
                     }
                     loading={isFetchingCompanies}
                   />
-                  {errors.companiesId && (
+                  {errors.companyId && (
                     <p className="text-sm text-destructive">
-                      {errors.companiesId.message}
+                      {errors.companyId.message}
                     </p>
                   )}
                 </div>

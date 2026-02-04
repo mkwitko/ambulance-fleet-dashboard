@@ -121,7 +121,7 @@ export default function UsersPermissions() {
               {presetRoles
                 .filter((preset) => {
                   if (!preset.showTo) return true;
-                  hasPermission(user?.data, preset.showTo as Role[]);
+                  return hasPermission(user?.data, preset.showTo as Role[]);
                 })
                 .map((preset) => {
                   const newPermissions = getPresetNewPermissions(preset);

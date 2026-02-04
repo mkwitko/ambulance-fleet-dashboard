@@ -38,6 +38,7 @@ import { hasPermission } from "@/utils/permissions";
 import { translateIntegrationType } from "@/utils/integrations-types";
 import useIntegrationshook from "../integrations-list/hooks/use-integrations";
 import { useImportDriversLogFrotaCompany } from "@/http/generated/drivers/drivers";
+import { queryClient } from "@/lib/react-query";
 
 //
 // -----------------------
@@ -45,7 +46,10 @@ import { useImportDriversLogFrotaCompany } from "@/http/generated/drivers/driver
 // -----------------------
 const integrationSchema = z.object({
   name: z.string().min(2, "O nome é obrigatório"),
-  url: z.string().min(1, "A URL é obrigatória"),
+  url: z
+    .string()
+    .min(1, "A URL é obrigatória")
+    .refine((url) => !url.endsWith("/"), "A URL não pode terminar com /"),
 
   login: z.string().optional(),
   password: z.string().optional(),
@@ -124,15 +128,17 @@ export default function IntegrationsEdit() {
     },
   );
 
-  const { data: integration } = useGetIntegrationsId(id!, {
-    query: { enabled: isEdit },
-  });
+  const { data: integration, queryKey: integrationQueryKey } =
+    useGetIntegrationsId(id!, {
+      query: { enabled: isEdit },
+    });
 
   const { mutateAsync: createIntegration } = useCreateIntegration({
     mutation: {
       onSuccess: async () => {
         toast.success("Integração criada com sucesso!");
         await refetch();
+        await queryClient.invalidateQueries({ queryKey: integrationQueryKey });
         navigate("/integrations/list");
       },
     },
@@ -142,6 +148,7 @@ export default function IntegrationsEdit() {
     mutation: {
       onSuccess: async () => {
         await refetch();
+        await queryClient.invalidateQueries({ queryKey: integrationQueryKey });
         navigate("/integrations/list");
       },
     },
@@ -274,7 +281,9 @@ export default function IntegrationsEdit() {
                         integrationId: integration.data.id,
                       },
                     });
-                    toast.success("Sincronização  com sucesso!");
+                    toast.success(
+                      "A sincronização acontecerá em segundo plano.",
+                    );
                   }}
                   variant="ghost"
                   className="text-primary"

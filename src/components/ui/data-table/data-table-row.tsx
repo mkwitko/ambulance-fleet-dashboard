@@ -178,7 +178,7 @@ export function DataTableRow<T extends Record<string, any>>({
 
         {columns.map((col) => (
           <TableCell
-            key={String(col.key)}
+            key={col.key ? String(col.key) : Math.random()}
             className={cn(
               col.align === "right"
                 ? "text-right"

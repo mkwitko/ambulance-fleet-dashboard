@@ -22,6 +22,7 @@ import { Separator } from "../ui/separator";
 import { UserCard } from "./user-card";
 import LogoInline from "@/assets/svg/inline.svg";
 import { Role } from "@/@types/roles";
+import { useHasDriversIntegrationByUser } from "@/http/generated/drivers/drivers";
 
 interface SidebarProps {
   handleClose: () => void;
@@ -30,6 +31,7 @@ interface SidebarProps {
 export function Sidebar({ handleClose }: SidebarProps) {
   const { data: user } = useGetAuthenticatedUser();
   const { data: userPermissions } = useGetAuthenticatedUserPermissions();
+  const { data: hasIntegration } = useHasDriversIntegrationByUser();
 
   const navItems = [
     {
@@ -136,6 +138,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
     {
       type: "link",
       role: Role["driver:read"],
+      hide: !hasIntegration?.hasIntegration,
       to: "/drivers/list",
       icon: Ambulance,
       title: "Motoristas",
@@ -195,6 +198,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
               );
             }
 
+            if (item.hide) return;
             if (!hasPermission(userPermissions?.data, item.role)) return null;
 
             return (

@@ -8,6 +8,7 @@ export const AblyEvents = {
   activenessResponse: "activenessResponse",
   interCommunicationPlaySound: "interCommunicationPlaySound",
   interCommunicationCall: "interCommunicationCall",
+  driverAssociation: "driverAssociation",
 } as const;
 
 export type AblyEvents = keyof typeof AblyEvents;

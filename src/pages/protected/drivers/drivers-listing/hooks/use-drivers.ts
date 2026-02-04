@@ -1,3 +1,4 @@
+import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import type { GetDrivers200DataItem } from "@/http/generated/connectServer.schemas";
 import {
@@ -8,12 +9,21 @@ import { useGetAuthenticatedUserAssociations } from "@/http/generated/user/user"
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function useDriversHook() {
+export default function useDriversHook({
+  filteringScopeHook,
+}: {
+  filteringScopeHook?: FilteringScopeHook;
+} = {}) {
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
-  const { queryParams, hasSomePermission } = useGetUserPermissions();
+  const { queryParams: getDriversPermissionsQueryParams, hasSomePermission } =
+    useGetUserPermissions();
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+
+  const queryParams = filteringScopeHook?.hasAppliedFilters()
+    ? filteringScopeHook.getTopPriorityFilter()
+    : getDriversPermissionsQueryParams;
 
   const {
     data: drivers,

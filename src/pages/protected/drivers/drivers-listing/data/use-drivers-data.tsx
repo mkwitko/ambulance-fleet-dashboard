@@ -10,7 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { GetDrivers200DataItem } from "@/http/generated/connectServer.schemas";
-import { Edit, Trash } from "lucide-react";
+import { maskCpf } from "@/utils/masks";
+import { Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function truncate(text: string, limit = 20) {
@@ -27,14 +28,29 @@ export default function useDriversData({
 
   const columns: Column<GetDrivers200DataItem>[] = [
     { key: "name", label: "Nome" },
+    {
+      key: "cpf",
+      label: "CPF",
+      align: "center",
+      render: (value) => maskCpf(value.cpf),
+    },
     { key: "logFrotaId", label: "ID LogFrota", align: "center" },
+    {
+      label: "ID Turno LogFrota",
+      align: "center",
+      render: (value) => value.driverAssociation[0]?.idTurno || "-",
+    },
+    {
+      label: "Ambulância",
+      align: "center",
+      render: (value) => value.driverAssociation[0]?.ambulance.name || "-",
+    },
     // --- GRUPO EMPRESA ---
     {
       key: "companyGroup",
       label: "Grupo Empresa",
       render: (value) => {
-        const fullText =
-          value.companyGroup?.map((c) => c.name).join(", ") || "";
+        const fullText = value.companyGroup.name;
         return (
           <TooltipProvider>
             <Tooltip>
@@ -51,7 +67,7 @@ export default function useDriversData({
       key: "companies",
       label: "Empresas",
       render: (value) => {
-        const fullText = value.companies?.map((c) => c.name).join(", ") || "";
+        const fullText = value.companies.name;
         return (
           <TooltipProvider>
             <Tooltip>
@@ -82,14 +98,14 @@ export default function useDriversData({
   ];
 
   const actions: Action<GetDrivers200DataItem>[] = [
-    {
-      label: "Editar",
-      onClick: (r: GetDrivers200DataItem) => navigate(r.id),
-      icon: (
-        <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-      ),
-      role: Role["driver:update"],
-    },
+    // {
+    //   label: "Editar",
+    //   onClick: (r: GetDrivers200DataItem) => navigate(r.id),
+    //   icon: (
+    //     <Edit className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+    //   ),
+    //   role: Role["driver:update"],
+    // },
     {
       label: "Excluir",
       onClick: handleDelete,
