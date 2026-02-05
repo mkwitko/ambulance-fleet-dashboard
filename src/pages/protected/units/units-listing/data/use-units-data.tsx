@@ -3,7 +3,7 @@ import type {
   Action,
   Column,
 } from "@/components/ui/data-table/data-table-types";
-import type { GetUnits200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetUnits200DataItem } from "@/http/generated/connect-server.schemas";
 import { Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

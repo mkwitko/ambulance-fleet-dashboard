@@ -2,7 +2,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
   GetAmbulances200DataItem,
   GetAmbulances200Pagination,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useRadioHook from "./hooks/use-radio";

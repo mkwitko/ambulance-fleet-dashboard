@@ -7,7 +7,7 @@ import {
   SendMessageBodyMessageType,
   SendMessageBodyPlatform,
   GetChatMessages200DataItemStatus,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import type { InboundMessage } from "ably";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -47,7 +47,7 @@ export default function useMessageHook({
       query: {
         enabled: !!selectedChat,
       },
-    }
+    },
   );
 
   const prevScrollHeightRef = useRef<number>(0);
@@ -73,7 +73,7 @@ export default function useMessageHook({
       const map = new Map(merged.map((m) => [m.id, m]));
       return Array.from(map.values()).sort(
         (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
     });
   }, [chatMessages]);

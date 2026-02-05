@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type {
   GetChatMessages200DataItem,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -49,7 +49,7 @@ export default function ImageMessage({
           "rounded-2xl overflow-hidden shadow-md border border-input hover:shadow-lg transition-shadow",
           isCurrentUser
             ? "bg-primary text-primary-foreground p-1"
-            : "bg-white/70 rounded-bl-md"
+            : "bg-white/70 rounded-bl-md",
         )}
       >
         <motion.div whileHover={{ scale: 1.01 }} className="relative group">
@@ -71,7 +71,7 @@ export default function ImageMessage({
           <div
             className={cn(
               "p-2 pb-0 text-sm",
-              isCurrentUser ? "text-primary-foreground" : "text-foreground"
+              isCurrentUser ? "text-primary-foreground" : "text-foreground",
             )}
           >
             {linkify(message.content as string)}

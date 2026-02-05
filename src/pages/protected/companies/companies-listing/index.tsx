@@ -1,10 +1,10 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
-  GetCompanies200DataItem,
-  GetCompanies200Pagination,
-  GetCompanyModules200,
-  GetCompanyModules200DataItem,
-} from "@/http/generated/connectServer.schemas";
+    GetCompanies200DataItem,
+    GetCompanies200Pagination,
+    GetCompanyModules200,
+    GetCompanyModules200DataItem,
+} from "@/http/generated/connect-server.schemas";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
@@ -12,8 +12,8 @@ import useCompaniesHook from "./hooks/use-companies";
 import useCompaniesData from "./data/use-companies-data";
 import { useState } from "react";
 import {
-  useGetCompanyModules,
-  useUpdateCompanyModule,
+    useGetCompanyModules,
+    useUpdateCompanyModule,
 } from "@/http/generated/company/company";
 import { queryClient } from "@/lib/react-query";
 import { Role } from "@/@types/roles";

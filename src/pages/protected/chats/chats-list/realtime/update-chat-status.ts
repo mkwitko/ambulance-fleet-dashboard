@@ -2,7 +2,7 @@ import type {
   GetChats200,
   GetChats200DataItem,
   SwitchAmbulanceStatusBodyStatus,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 import type { Dispatch, SetStateAction } from "react";
 

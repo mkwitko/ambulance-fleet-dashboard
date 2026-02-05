@@ -91,6 +91,7 @@ export default function UsersCommsEdit() {
 
   useEffect(() => {
     if (isFetching || isFetchingBases) return;
+    console.log({ userToEdit });
     if (isEdit && userToEdit && bases?.data && bases?.data.length > 0) {
       reset({
         name: userToEdit.name,
@@ -112,7 +113,7 @@ export default function UsersCommsEdit() {
       onError: (error: any) => {
         toast.error(
           error.response?.data?.message ||
-            "Houve um erro ao criar o usuário. Tente novamente."
+            "Houve um erro ao criar o usuário. Tente novamente.",
         );
       },
     },

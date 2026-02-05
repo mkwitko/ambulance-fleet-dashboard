@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type {
   GetAuthenticatedUserPermissions200Data,
   GetAuthenticatedUserPermissions200DataRolesItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { hasPermission } from "@/utils/permissions";
 import { useState } from "react";
 
@@ -41,7 +41,7 @@ export function SidebarItem({
 
   const isActive = location.pathname === item.to;
   const isParentActive = item.children?.some(
-    (child) => location.pathname === child.to
+    (child) => location.pathname === child.to,
   );
   const hasChildren = item.children && item.children.length > 0;
 
@@ -81,7 +81,7 @@ export function SidebarItem({
               "text-slate-700 dark:text-slate-300",
               "hover:bg-slate-100/80 dark:hover:bg-slate-800/80",
               "hover:shadow-sm",
-            ]
+            ],
         )}
       >
         {/* Subtle shine effect on hover */}
@@ -112,7 +112,7 @@ export function SidebarItem({
                     "text-slate-500 dark:text-slate-400",
                     "group-hover:text-slate-700 dark:group-hover:text-slate-200",
                     "group-hover:scale-110",
-                  ]
+                  ],
               )}
               strokeWidth={isActive ? 2.5 : 2}
             />
@@ -123,7 +123,7 @@ export function SidebarItem({
             className={cn(
               "flex-1 text-left truncate tracking-wide transition-all duration-300",
               isActive && "font-semibold",
-              !isActive && "group-hover:translate-x-0.5"
+              !isActive && "group-hover:translate-x-0.5",
             )}
           >
             {item.title}
@@ -150,7 +150,7 @@ export function SidebarItem({
                 !isActive && isParentActive && "text-primary",
                 !isActive &&
                   !isParentActive &&
-                  "text-slate-400 dark:text-slate-500 group-hover:text-slate-600"
+                  "text-slate-400 dark:text-slate-500 group-hover:text-slate-600",
               )}
               strokeWidth={2}
             />

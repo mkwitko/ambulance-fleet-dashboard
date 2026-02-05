@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { GetDrivers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetDrivers200DataItem } from "@/http/generated/connect-server.schemas";
 import { maskCpf } from "@/utils/masks";
 import { Trash } from "lucide-react";
 

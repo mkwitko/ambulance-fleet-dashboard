@@ -1,6 +1,6 @@
 import type { FilteringScopeHook } from "@/hooks/use-filtering-scope-hook";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import type { GetDrivers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetDrivers200DataItem } from "@/http/generated/connect-server.schemas";
 import {
   useDeleteDriver,
   useGetDrivers,

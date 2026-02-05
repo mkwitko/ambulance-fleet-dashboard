@@ -1,4 +1,4 @@
-import type { GetChatMessages200DataItemMessageType } from "@/http/generated/connectServer.schemas";
+import type { GetChatMessages200DataItemMessageType } from "@/http/generated/connect-server.schemas";
 
 export interface Message {
   id: string;

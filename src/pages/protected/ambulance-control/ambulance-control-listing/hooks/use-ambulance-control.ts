@@ -3,7 +3,7 @@ import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useGetAmbulancesControl } from "@/http/generated/ambulance/ambulance";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { useMemo, useState } from "react";
-import { GetAmbulancesControl200DataItemStatus } from "@/http/generated/connectServer.schemas";
+import { GetAmbulancesControl200DataItemStatus } from "@/http/generated/connect-server.schemas";
 
 export default function useAmbulanceControlHook({
   filteringScopeHook,

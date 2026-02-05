@@ -3,7 +3,7 @@ import type {
   GetDrivers200,
   GetDrivers200DataItem,
   GetDrivers200Pagination,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useDriversHook from "./hooks/use-drivers";

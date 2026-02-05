@@ -5,7 +5,7 @@ import { ImageIcon, Mic, Paperclip, Send, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef } from "react";
-import { GetChatMessages200DataItemMessageType } from "@/http/generated/connectServer.schemas";
+import { GetChatMessages200DataItemMessageType } from "@/http/generated/connect-server.schemas";
 import type { FilePreviewType } from "../../../../types/chat.types";
 
 interface ChatInputProps {
@@ -34,8 +34,8 @@ export function ChatInput({
         type === GetChatMessages200DataItemMessageType.IMAGE
           ? "image/*"
           : type === GetChatMessages200DataItemMessageType.VIDEO
-          ? "video/*"
-          : "application/pdf";
+            ? "video/*"
+            : "application/pdf";
       fileInputRef.current.click();
     }
     setShowAttachMenu(false);
@@ -49,8 +49,8 @@ export function ChatInput({
     const type = file.type.startsWith("image/")
       ? GetChatMessages200DataItemMessageType.IMAGE
       : file.type.startsWith("video/")
-      ? GetChatMessages200DataItemMessageType.VIDEO
-      : GetChatMessages200DataItemMessageType.DOCUMENT;
+        ? GetChatMessages200DataItemMessageType.VIDEO
+        : GetChatMessages200DataItemMessageType.DOCUMENT;
     setFilePreview({ type, url, file });
   };
 
@@ -101,7 +101,7 @@ export function ChatInput({
                     variant="ghost"
                     onClick={() =>
                       handleFileSelect(
-                        GetChatMessages200DataItemMessageType.IMAGE
+                        GetChatMessages200DataItemMessageType.IMAGE,
                       )
                     }
                     className="w-full justify-start hover:bg-accent"
@@ -118,7 +118,7 @@ export function ChatInput({
                     variant="ghost"
                     onClick={() =>
                       handleFileSelect(
-                        GetChatMessages200DataItemMessageType.VIDEO
+                        GetChatMessages200DataItemMessageType.VIDEO,
                       )
                     }
                     className="w-full justify-start hover:bg-accent"
@@ -135,7 +135,7 @@ export function ChatInput({
                     variant="ghost"
                     onClick={() =>
                       handleFileSelect(
-                        GetChatMessages200DataItemMessageType.DOCUMENT
+                        GetChatMessages200DataItemMessageType.DOCUMENT,
                       )
                     }
                     className="w-full justify-start hover:bg-accent"

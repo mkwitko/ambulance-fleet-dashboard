@@ -1,6 +1,6 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useDeleteBase, useGetBases } from "@/http/generated/base/base";
-import type { GetBases200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetBases200DataItem } from "@/http/generated/connect-server.schemas";
 import { useState } from "react";
 import { toast } from "sonner";
 

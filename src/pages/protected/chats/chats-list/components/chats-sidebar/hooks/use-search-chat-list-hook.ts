@@ -1,6 +1,4 @@
-import type {
-  GetChats200,
-} from "@/http/generated/connectServer.schemas";
+import type { GetChats200 } from "@/http/generated/connect-server.schemas";
 import { useMemo, useState } from "react";
 
 export default function useSearchChatListHook({
@@ -16,7 +14,7 @@ export default function useSearchChatListHook({
     if (search.trim()) {
       const s = search.toLowerCase();
       result = result.filter((c: any) =>
-        (c.ambulance?.name || "").toLowerCase().includes(s)
+        (c.ambulance?.name || "").toLowerCase().includes(s),
       );
     }
 

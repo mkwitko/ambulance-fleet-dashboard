@@ -1,7 +1,7 @@
 import {
   GetAuthenticatedUserRoles200DataRolesItem as Role,
   type GetAuthenticatedUserRoles200Data,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 
 export function hasPermission(
   user: GetAuthenticatedUserRoles200Data | undefined,

@@ -1,5 +1,5 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import type { GetUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetUsers200DataItem } from "@/http/generated/connect-server.schemas";
 import {
   useDeleteUser,
   useGetAuthenticatedUserAssociations,

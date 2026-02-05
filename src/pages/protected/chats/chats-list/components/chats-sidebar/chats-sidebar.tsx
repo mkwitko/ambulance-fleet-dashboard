@@ -20,7 +20,7 @@ import {
   ReadChatBodyPlatform,
   type GetChats200DataItem,
   type GetChatsStatusItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { getInitials } from "@/utils/get-initials";
 import * as Ably from "ably";
 import useChatListHook from "./hooks/use-chat-list-hook";

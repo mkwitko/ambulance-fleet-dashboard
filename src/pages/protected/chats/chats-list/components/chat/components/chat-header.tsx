@@ -3,7 +3,7 @@ import { ArrowLeft, Phone, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { GetChats200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetChats200DataItem } from "@/http/generated/connect-server.schemas";
 import { getStatusStyle } from "@/utils/ambulance-status";
 
 interface ChatHeaderProps {
@@ -52,7 +52,7 @@ export function ChatHeader({ selectedChat, onBack }: ChatHeaderProps) {
               variant="outline"
               className={cn(
                 "text-[0.625rem]",
-                getStatusStyle(selectedChat.ambulance?.status)
+                getStatusStyle(selectedChat.ambulance?.status),
               )}
             >
               {selectedChat.ambulance?.status || "FA"}

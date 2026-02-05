@@ -1,5 +1,5 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import type { GetUnits200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetUnits200DataItem } from "@/http/generated/connect-server.schemas";
 import { useDeleteUnit, useGetUnits } from "@/http/generated/unit/unit";
 import { useState } from "react";
 import { toast } from "sonner";

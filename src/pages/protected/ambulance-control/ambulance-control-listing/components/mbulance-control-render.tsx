@@ -3,7 +3,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
   GetAmbulancesControl200DataItem,
   GetAmbulancesControl200Pagination,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import AmbulanceStatusChart from "./ambulance-charts";
 
 interface Props {

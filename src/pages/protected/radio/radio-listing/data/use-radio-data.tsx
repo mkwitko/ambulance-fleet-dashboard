@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Column } from "@/components/ui/data-table/data-table-types";
-import type { GetAmbulances200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetAmbulances200DataItem } from "@/http/generated/connect-server.schemas";
 import { useCreateRadioMeeting } from "@/http/generated/radio/radio";
 import { Radio, PhoneOff, Clock, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ export default function useRadioData() {
     string | null
   >(null);
   const [currentAmbulanceId, setCurrentAmbulanceId] = useState<string | null>(
-    null
+    null,
   );
   const [channelStartTime, setChannelStartTime] = useState<number | null>(null);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
@@ -167,7 +167,7 @@ export default function useRadioData() {
             <Badge
               className={cn(
                 variants[status as keyof typeof variants],
-                "transition-all duration-300"
+                "transition-all duration-300",
               )}
             >
               {label}
@@ -188,7 +188,7 @@ export default function useRadioData() {
                   "flex items-center gap-1 w-fit",
                   remainingTime < 300
                     ? "border-destructive text-destructive bg-destructive/10 animate-pulse"
-                    : "border-primary text-primary"
+                    : "border-primary text-primary",
                 )}
               >
                 <Clock className="h-3 w-3" />
@@ -215,7 +215,7 @@ export default function useRadioData() {
                   "flex items-center gap-1 w-fit",
                   isChannelFull
                     ? "border-red-500 text-red-600 bg-red-50"
-                    : "bg-primary text-white"
+                    : "bg-primary text-white",
                 )}
               >
                 <Users className="h-3 w-3" />
@@ -287,7 +287,7 @@ export default function useRadioData() {
       tryingToConnectToChannel,
       remainingTime,
       remoteUsers,
-    ]
+    ],
   );
 
   return {

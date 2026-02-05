@@ -33,7 +33,7 @@ import useUploadDocuments from "./hooks/upload-documents";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { queryClient } from "@/lib/react-query";
 import { useGetChats } from "@/http/generated/chat/chat";
-import { GetChatsPlatform } from "@/http/generated/connectServer.schemas";
+import { GetChatsPlatform } from "@/http/generated/connect-server.schemas";
 import { hasPermission } from "@/utils/permissions";
 import { Role } from "@/@types/roles";
 

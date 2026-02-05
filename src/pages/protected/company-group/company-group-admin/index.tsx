@@ -2,7 +2,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
   GetCompanyGroups200DataItem,
   GetCompanyGroups200Pagination,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import useCompanyGroupAdminData from "./data/use-company-group-admin-data";
 import useCompanyGroupAdminHook from "./hooks/use-company-group-admin";
 import { useNavigate } from "react-router-dom";

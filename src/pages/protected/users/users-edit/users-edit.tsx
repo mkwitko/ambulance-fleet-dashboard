@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import { format } from "date-fns";
 import { queryClient } from "@/lib/react-query";
 import useUsersHook from "../users-listing/hooks/use-users";
+import { useGetBases } from "@/http/generated/base/base";
 
 // --- 🔒 Schema de validação ---
 const usersSchema = z.object({
@@ -35,6 +36,7 @@ const usersSchema = z.object({
   document: z.string().optional(),
   companiesId: z.array(z.string()).min(1, "A empresa é obrigatória"),
   unitsId: z.array(z.string()).min(1, "A unidade é obrigatória"),
+  basesId: z.array(z.string()),
   birthDate: z.string({
     message: "A data de nascimento é obrigatória",
   }),
@@ -66,7 +68,11 @@ export default function UsersEdit() {
   const { queryKey } = useUsersHook();
 
   const { data: userAssociations } = useGetAuthenticatedUserAssociations();
-  const { data: userToEdit, isFetching } = useGetUser(id as string, {
+  const {
+    data: userToEdit,
+    isFetching,
+    queryKey: userQueryKey,
+  } = useGetUser(id as string, {
     query: {
       enabled: isEdit && !!id,
     },
@@ -95,6 +101,20 @@ export default function UsersEdit() {
     },
   );
 
+  const { data: bases, isFetching: isFetchingBases } = useGetBases(
+    {
+      unitsId: watch("unitsId"),
+    },
+    {
+      query: {
+        enabled:
+          !!userAssociations &&
+          !!watch("unitsId")?.length &&
+          watch("unitsId")?.length > 0,
+      },
+    },
+  );
+
   const { mutateAsync: createUser } = useCreateUser({
     mutation: {
       onSuccess: async () => {
@@ -115,6 +135,7 @@ export default function UsersEdit() {
     mutation: {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey });
+        await queryClient.invalidateQueries({ queryKey: userQueryKey });
         toast.success("Usuário atualizado com sucesso!");
         navigate("/users/list");
       },
@@ -124,7 +145,6 @@ export default function UsersEdit() {
   useEffect(() => {
     if (isFetching) return;
     if (isEdit && userToEdit) {
-      console.log({ userToEdit });
       reset({
         name: userToEdit?.data.name || "",
         mail: userToEdit?.data.mail || "",
@@ -132,6 +152,7 @@ export default function UsersEdit() {
         companiesId:
           userToEdit?.data.companies?.map((company) => company.id) || [],
         unitsId: userToEdit?.data.units?.map((unit) => unit.id) || [],
+        basesId: userToEdit?.data.bases?.map((base) => base.id) || [],
         birthDate: userToEdit?.data.birthDate
           ? format(new Date(userToEdit.data.birthDate), "dd/MM/yyyy")
           : "",
@@ -153,6 +174,7 @@ export default function UsersEdit() {
           companyGroupId: userAssociations?.data.companyGroup?.id as string,
           companiesIds: data.companiesId,
           unitsIds: data.unitsId,
+          basesIds: data.basesId,
         },
       });
       return;
@@ -165,6 +187,7 @@ export default function UsersEdit() {
         companyGroupId: userAssociations?.data.companyGroup?.id as string,
         companiesIds: data.companiesId,
         unitsIds: data.unitsId,
+        basesIds: data.basesId,
         birthDate,
         roles: [Role["chat:read"], Role["chat:sendMessage"], Role["unit:read"]],
       },
@@ -237,7 +260,7 @@ export default function UsersEdit() {
             <section className="space-y-6">
               <h3 className="font-medium">Vínculos</h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Empresas */}
                 <div className="flex flex-col gap-2">
                   <Label>Empresas *</Label>
@@ -314,6 +337,38 @@ export default function UsersEdit() {
                   {errors.unitsId && (
                     <p className="text-sm text-destructive">
                       {errors.unitsId.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Bases */}
+                <div className="flex flex-col gap-2">
+                  <Label>Bases</Label>
+                  <AppMultiSelect
+                    value={watch("basesId")}
+                    onValueChange={(value) =>
+                      setValue("basesId", value, { shouldValidate: true })
+                    }
+                    placeholder="Selecione as Bases"
+                    disabled={!bases || bases.data.length === 0}
+                    disabledMessage={
+                      !watch("unitsId") || watch("unitsId")?.length === 0
+                        ? "Selecione unidades primeiro."
+                        : bases?.data.length === 0
+                          ? "Nenhuma base disponível."
+                          : undefined
+                    }
+                    items={
+                      bases?.data?.map((unit) => ({
+                        label: unit.name,
+                        value: unit.id,
+                      })) || []
+                    }
+                    loading={isFetchingBases}
+                  />
+                  {errors.basesId && (
+                    <p className="text-sm text-destructive">
+                      {errors.basesId.message}
                     </p>
                   )}
                 </div>

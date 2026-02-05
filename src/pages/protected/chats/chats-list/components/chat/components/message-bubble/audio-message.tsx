@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type {
   GetChatMessages200DataItem,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import MessageFooter from "./message-footer";
 
 interface Props {
@@ -94,7 +94,7 @@ export function AudioMessagePlayer({
         "rounded-2xl px-4 py-2.5 shadow-md hover:shadow-lg transition-shadow",
         isCurrentUser
           ? "bg-primary text-primary-foreground rounded-br-md"
-          : "bg-white/70 border border-input rounded-bl-md"
+          : "bg-white/70 border border-input rounded-bl-md",
       )}
     >
       <div

@@ -5936,6 +5936,25 @@
                               "additionalProperties": false
                             }
                           },
+                          "bases": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "name"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
                           "name": {
                             "type": "string"
                           },
@@ -5964,6 +5983,7 @@
                           "companyGroup",
                           "companies",
                           "units",
+                          "bases",
                           "name",
                           "mail",
                           "document",
@@ -6136,6 +6156,12 @@
                     }
                   },
                   "unitsIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "basesIds": {
                     "type": "array",
                     "items": {
                       "type": "string"
@@ -6665,6 +6691,21 @@
                             ],
                             "additionalProperties": false
                           }
+                        },
+                        "bases": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id"
+                            ],
+                            "additionalProperties": false
+                          }
                         }
                       },
                       "required": [
@@ -6678,7 +6719,8 @@
                         "roles",
                         "companyGroupId",
                         "companies",
-                        "units"
+                        "units",
+                        "bases"
                       ],
                       "additionalProperties": false
                     }

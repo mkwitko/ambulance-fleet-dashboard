@@ -3,7 +3,7 @@ import type {
   GetChatMessages200DataItem,
   GetUnreadChatMessages200,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 
 export const realTimeUpdateChatListMessage = ({

@@ -3,7 +3,7 @@ import {
   type GetChats200,
   type GetChats200DataItem,
   type ReadChat201,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 import type { Dispatch, SetStateAction } from "react";
 

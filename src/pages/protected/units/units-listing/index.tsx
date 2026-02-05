@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { GetUnits200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetUnits200DataItem } from "@/http/generated/connect-server.schemas";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";

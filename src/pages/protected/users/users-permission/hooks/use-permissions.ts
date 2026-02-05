@@ -5,7 +5,7 @@ import type {
   PermissionGroup,
   PresetRole,
 } from "../@types/user-permissions-types";
-import type { GetUser200 } from "@/http/generated/connectServer.schemas";
+import type { GetUser200 } from "@/http/generated/connect-server.schemas";
 import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import { useHasDriversIntegrationByUser } from "@/http/generated/drivers/drivers";
 

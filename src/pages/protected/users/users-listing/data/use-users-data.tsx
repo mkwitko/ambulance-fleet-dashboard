@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { GetUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetUsers200DataItem } from "@/http/generated/connect-server.schemas";
 import { Book, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -72,6 +72,23 @@ export default function useUsersData({
       label: "Unidades",
       render: (value) => {
         const fullText = value.units?.map((u) => u.name).join(", ") || "";
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>{truncate(fullText, 25)}</TooltipTrigger>
+              <TooltipContent>{fullText}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
+    },
+
+    // --- Bases ---
+    {
+      key: "bases",
+      label: "Bases",
+      render: (value) => {
+        const fullText = value.bases?.map((u) => u.name).join(", ") || "";
         return (
           <TooltipProvider>
             <Tooltip>

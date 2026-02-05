@@ -1,6 +1,6 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useGetAmbulances } from "@/http/generated/ambulance/ambulance";
-import { GetAmbulancesStatusItem } from "@/http/generated/connectServer.schemas";
+import { GetAmbulancesStatusItem } from "@/http/generated/connect-server.schemas";
 import { useState } from "react";
 
 export default function useRadioHook() {

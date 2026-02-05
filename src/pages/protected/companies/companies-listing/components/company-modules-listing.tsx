@@ -5,18 +5,18 @@ import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+    DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import type {
-  GetCompanyModules200DataItem,
-  GetModules200DataItemBillingType,
-} from "@/http/generated/connectServer.schemas";
+    GetCompanyModules200DataItem,
+    GetModules200DataItemBillingType,
+} from "@/http/generated/connect-server.schemas";
 import {
-  ModulesBillingType,
-  TranslatedModulesBillingType,
+    ModulesBillingType,
+    TranslatedModulesBillingType,
 } from "@/utils/modules-billing-type";
 import { AppSelect } from "@/components/app-select";
 import { Label } from "@/components/ui/label";

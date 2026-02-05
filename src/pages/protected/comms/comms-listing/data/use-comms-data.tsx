@@ -3,7 +3,7 @@ import type {
   Action,
   Column,
 } from "@/components/ui/data-table/data-table-types";
-import type { GetCommsUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetCommsUsers200DataItem } from "@/http/generated/connect-server.schemas";
 import { useCreateRadioIntercomms } from "@/http/generated/radio/radio";
 import { Radio, PhoneOff, Clock, Users, Edit, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

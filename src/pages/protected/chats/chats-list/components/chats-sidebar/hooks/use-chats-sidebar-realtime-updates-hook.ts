@@ -2,7 +2,7 @@ import type {
   GetChatMessages200DataItem,
   GetChats200,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { queryClient } from "@/lib/react-query";
 import { useEffect } from "react";
 import { realTimeUpdateChatStatus } from "../../../realtime/update-chat-status";

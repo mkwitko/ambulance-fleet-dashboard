@@ -7,7 +7,7 @@ import {
   GetChatMessages200DataItemMessageType,
   type GetChatMessages200DataItem,
   type GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import {
   Tooltip,
   TooltipContent,
@@ -58,7 +58,7 @@ export function MessageBubble({
       <div
         className={cn(
           "flex gap-2 items-end min-w-0",
-          isCurrentUser ? "justify-end" : "justify-start"
+          isCurrentUser ? "justify-end" : "justify-start",
         )}
       >
         {!isCurrentUser && (

@@ -1,7 +1,7 @@
 import {
   type GetChatMessages200DataItem,
   GetChatMessages200DataItemStatus,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { RefreshCw, Trash } from "lucide-react";
 import {
   Tooltip,
@@ -33,7 +33,7 @@ export default function ResendWrapper({
     <div
       className={cn(
         "flex items-center gap-4 max-w-[70%] min-w-0",
-        isCurrentUser ? "justify-end" : "justify-start"
+        isCurrentUser ? "justify-end" : "justify-start",
       )}
     >
       {/* Botão de reenvio à esquerda (mensagens de outros usuários) */}
@@ -59,14 +59,14 @@ export default function ResendWrapper({
                 disabled={!online || isResending}
                 className={cn(
                   "p-2 rounded-full bg-white/70 border border-input hover:bg-white active:scale-90 transition shadow-sm disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:active:scale-100",
-                  isResending && "opacity-50 cursor-wait"
+                  isResending && "opacity-50 cursor-wait",
                 )}
               >
                 <RefreshCw
                   size={14}
                   className={cn(
                     "text-muted-foreground",
-                    isResending && "animate-spin"
+                    isResending && "animate-spin",
                   )}
                 />
               </button>
@@ -85,7 +85,7 @@ export default function ResendWrapper({
       <div
         className={cn(
           "flex items-center justify-end min-w-0 flex-1",
-          notSent && "opacity-60"
+          notSent && "opacity-60",
         )}
       >
         {children}

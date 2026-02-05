@@ -3,7 +3,7 @@ import { realtTimeUpdateChatMessage } from "../../../realtime/update-chat-messag
 import type {
   GetChats200DataItem,
   GetChatMessages200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 import { AblyEvents } from "@/@types/ably-events";
 

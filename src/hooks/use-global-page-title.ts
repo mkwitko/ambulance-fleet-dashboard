@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useGetUnreadMessagesByPlatform } from "@/http/generated/chat/chat";
-import {
-  GetChatsPlatform,
-  type GetChatsStatusItem,
-} from "@/http/generated/connectServer.schemas";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import useAbly from "@/hooks/use-ably";
 import { AblyEvents } from "@/@types/ably-events";
-import type { GetChatMessages200DataItem } from "@/http/generated/connectServer.schemas";
 import { STATUS_ORDER } from "@/utils/ambulance-status";
 import { playNotification } from "@/utils/notification";
+import {
+  GetChatsPlatform,
+  GetChatsStatusItem,
+  type GetChatMessages200DataItem,
+} from "@/http/generated/connect-server.schemas";
 
 const DEFAULT_TITLE = "Connect App";
 

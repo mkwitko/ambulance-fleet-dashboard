@@ -1,10 +1,10 @@
 import {
   GetChats200DataItemMessagesItemMessageType,
   type GetChats200DataItemMessagesItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 
 export function getLastMessagePreview(
-  message: GetChats200DataItemMessagesItem | undefined
+  message: GetChats200DataItemMessagesItem | undefined,
 ) {
   if (!message) return "Sem mensagens";
 

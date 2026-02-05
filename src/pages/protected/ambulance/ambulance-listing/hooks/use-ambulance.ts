@@ -7,7 +7,7 @@ import { useGetChats } from "@/http/generated/chat/chat";
 import {
   GetChatsPlatform,
   type GetAmbulances200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 import { queryClient } from "@/lib/react-query";
 import { useState } from "react";

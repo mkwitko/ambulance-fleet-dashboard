@@ -1,4 +1,4 @@
-import type { GetAuthenticatedUser200Data } from "@/http/generated/connectServer.schemas";
+import type { GetAuthenticatedUser200Data } from "@/http/generated/connect-server.schemas";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -47,7 +47,7 @@ export function UserCard({ user }: UserCardProps) {
           <Avatar
             className={cn(
               "w-14 h-14 relative border-2 border-white dark:border-slate-800 shadow-lg",
-              "ring-2 ring-primary/20 ring-offset-2 ring-offset-background"
+              "ring-2 ring-primary/20 ring-offset-2 ring-offset-background",
             )}
           >
             {user.avatarUrl ? (

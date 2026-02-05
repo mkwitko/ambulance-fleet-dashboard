@@ -28,7 +28,7 @@ import {
   type CreateIntegrationBody,
   type GetIntegrationsId200Data,
   type UpdateIntegrationBody,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { Role } from "@/@types/roles";
 import {
   useGetAuthenticatedUserAssociations,

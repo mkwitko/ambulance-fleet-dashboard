@@ -1,7 +1,7 @@
 import type {
   GetAmbulancesControl200,
   SwitchAmbulanceShift204,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 
 export const realTimeUpdateAmbulanceShift = ({

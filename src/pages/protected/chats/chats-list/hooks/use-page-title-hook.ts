@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { GetChats200 } from "@/http/generated/connectServer.schemas";
+import type { GetChats200 } from "@/http/generated/connect-server.schemas";
 
 const DEFAULT_TITLE = "Connect App";
 

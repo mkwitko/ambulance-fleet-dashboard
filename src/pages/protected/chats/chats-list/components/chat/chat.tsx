@@ -4,7 +4,7 @@ import {
   GetChatMessages200DataItemStatus,
   type GetChatMessages200DataItem,
   type GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useMessageHook from "./hooks/use-message-hook";
 import useAudioHook from "./hooks/use-audio-hook";

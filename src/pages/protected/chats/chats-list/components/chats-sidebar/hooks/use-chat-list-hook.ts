@@ -3,7 +3,7 @@ import { useGetChats } from "@/http/generated/chat/chat";
 import {
   GetChatsPlatform,
   type GetChatsStatusItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 
 export default function useChatListHook({
   statusFilter,
@@ -22,7 +22,7 @@ export default function useChatListHook({
       query: {
         enabled: hasSomePermission,
       },
-    }
+    },
   );
 
   return {
@@ -30,4 +30,3 @@ export default function useChatListHook({
     queryKey,
   };
 }
-

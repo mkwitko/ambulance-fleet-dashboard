@@ -3,7 +3,7 @@ import {
   useDeleteCommsUser,
   useGetCommsUsers,
 } from "@/http/generated/comms-user/comms-user";
-import type { GetCommsUsers200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetCommsUsers200DataItem } from "@/http/generated/connect-server.schemas";
 import { useState } from "react";
 import { toast } from "sonner";
 

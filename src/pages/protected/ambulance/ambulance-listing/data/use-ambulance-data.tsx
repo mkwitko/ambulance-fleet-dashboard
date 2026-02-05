@@ -6,7 +6,7 @@ import {
   type GetAmbulances200,
   type GetAmbulances200DataItem,
   type SwitchAmbulanceStatusBodyStatus,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AmbulanceDocumentStatus from "../ambulance-document-status";

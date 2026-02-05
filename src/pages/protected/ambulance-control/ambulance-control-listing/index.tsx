@@ -13,7 +13,7 @@ import { queryClient } from "@/lib/react-query";
 import { useState } from "react";
 import { AmbulanceControlRender } from "./components/mbulance-control-render";
 import { Button } from "@/components/ui/button";
-import type { GetAmbulancesControl200Pagination } from "@/http/generated/connectServer.schemas";
+import type { GetAmbulancesControl200Pagination } from "@/http/generated/connect-server.schemas";
 
 export default function AmbulanceControlListing() {
   const filteringScopeHook = useFilteringScopeHook();

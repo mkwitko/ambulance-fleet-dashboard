@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type {
   GetChatMessages200DataItem,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { linkify } from "@/utils/chat";
 import MessageFooter from "./message-footer";
 
@@ -79,7 +79,7 @@ export function VideoMessage({
           "relative rounded-2xl overflow-hidden shadow-md border border-input hover:shadow-lg transition-shadow",
           isCurrentUser
             ? "bg-primary text-primary-foreground p-1"
-            : "bg-white/70 rounded-bl-md"
+            : "bg-white/70 rounded-bl-md",
         )}
       >
         {/* =============================
@@ -142,7 +142,7 @@ export function VideoMessage({
           <div
             className={cn(
               "p-2 pb-0 text-sm",
-              isCurrentUser ? "text-primary-foreground" : "text-foreground"
+              isCurrentUser ? "text-primary-foreground" : "text-foreground",
             )}
           >
             {linkify(message.content as string)}

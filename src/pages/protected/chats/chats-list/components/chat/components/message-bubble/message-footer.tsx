@@ -4,7 +4,7 @@ import { Check, CheckCheck } from "lucide-react";
 import type {
   GetChatMessages200DataItem,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { useEffect } from "react";
 
 export default function MessageFooter({
@@ -40,7 +40,7 @@ export default function MessageFooter({
             isCurrentUser
               ? "text-primary-foreground/70"
               : "text-muted-foreground",
-            className
+            className,
           )}
         >
           {formatTime(message.createdAt)}
@@ -50,7 +50,7 @@ export default function MessageFooter({
           <span
             className={cn(
               "text-primary-foreground/70",
-              isRead && "text-blue-400"
+              isRead && "text-blue-400",
             )}
           >
             {isRead ? <CheckCheck size={12} /> : <Check size={12} />}

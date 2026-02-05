@@ -6,7 +6,7 @@ import {
   type GetChats200DataItem,
   SendMessageBodyMessageType,
   SendMessageBodyPlatform,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { generateNewFileWithCustomName } from "@/utils/get-file-name";
 import { useGetPressignedUrl } from "@/http/generated/upload/upload";
 import { env } from "@/env";
@@ -30,7 +30,7 @@ export default function useAudioHook({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
-    null
+    null,
   );
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null); // 🔥 NOVO: controlar se cancelou a gravação
   const cancelledRecordingRef = useRef(false);
@@ -61,7 +61,7 @@ export default function useAudioHook({
         const mimeTypes = ["audio/wav", "audio/webm", "audio/ogg"];
         const selectedMimeType =
           mimeTypes.find((mimeType) =>
-            MediaRecorder.isTypeSupported(mimeType)
+            MediaRecorder.isTypeSupported(mimeType),
           ) || "audio/wav";
         const audioBlob = new Blob(audioChunksRef.current, {
           type: selectedMimeType,

@@ -1,4 +1,4 @@
-import type { GetChats200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetChats200DataItem } from "@/http/generated/connect-server.schemas";
 import { useState } from "react";
 import ChatsSidebar from "./components/chats-sidebar/chats-sidebar";
 import Chat from "./components/chat/chat";

@@ -1,4 +1,4 @@
-import type { GetChats200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetChats200DataItem } from "@/http/generated/connect-server.schemas";
 
 export default function usePaginationHook({
   page,
@@ -15,7 +15,7 @@ export default function usePaginationHook({
   const totalPages = Math.max(1, Math.ceil(filteredChats.length / perPage));
   const paginatedChats = filteredChats.slice(
     (page - 1) * perPage,
-    page * perPage
+    page * perPage,
   );
 
   const handlePageChange = (newPage: number) => {

@@ -3,7 +3,7 @@ import type {
   Action,
   Column,
 } from "@/components/ui/data-table/data-table-types";
-import type { GetCompanyGroups200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetCompanyGroups200DataItem } from "@/http/generated/connect-server.schemas";
 import { maskCnpj } from "@/utils/masks";
 import { Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";

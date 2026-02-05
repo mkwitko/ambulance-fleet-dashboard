@@ -3,7 +3,7 @@ import type {
   GetCommsUsers200,
   GetCommsUsers200DataItem,
   GetCommsUsers200Pagination,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { motion } from "framer-motion";
 import { softEnter } from "@/components/motion/soft-enter";
 import useCommsHook from "./hooks/use-comms";

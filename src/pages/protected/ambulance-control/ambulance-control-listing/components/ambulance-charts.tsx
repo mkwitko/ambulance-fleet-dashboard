@@ -2,7 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import {
   GetAmbulancesControl200DataItemStatus,
   type GetAmbulancesControl200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 
 const AmbulanceStatusChart = ({
   ambulances,
@@ -28,17 +28,17 @@ const AmbulanceStatusChart = ({
 
   const processAmbulances = () => {
     const activeAmbulances = ambulances.filter(
-      (amb) => amb.status !== GetAmbulancesControl200DataItemStatus.FA
+      (amb) => amb.status !== GetAmbulancesControl200DataItemStatus.FA,
     );
     const occupiedAmbulances = activeAmbulances.filter(
       (amb) =>
         amb.status === GetAmbulancesControl200DataItemStatus.OCP ||
-        amb.status === GetAmbulancesControl200DataItemStatus.EVT
+        amb.status === GetAmbulancesControl200DataItemStatus.EVT,
     );
     const availableAmbulances = activeAmbulances.filter(
       (amb) =>
         amb.status !== GetAmbulancesControl200DataItemStatus.OCP &&
-        amb.status !== GetAmbulancesControl200DataItemStatus.EVT
+        amb.status !== GetAmbulancesControl200DataItemStatus.EVT,
     );
 
     const totalActive = activeAmbulances.length;
@@ -78,7 +78,7 @@ const AmbulanceStatusChart = ({
               <span className="text-sm font-medium">Em Atendimento</span>
               <span
                 className={`text-sm font-bold ${getTextColor(
-                  stats.percentage
+                  stats.percentage,
                 )}`}
               >
                 ({stats.occupied}/{stats.total})

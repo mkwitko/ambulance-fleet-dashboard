@@ -2,7 +2,7 @@ import {
   useDeleteCompany,
   useGetCompanies,
 } from "@/http/generated/company/company";
-import type { GetCompanies200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetCompanies200DataItem } from "@/http/generated/connect-server.schemas";
 import { useState } from "react";
 import { toast } from "sonner";
 

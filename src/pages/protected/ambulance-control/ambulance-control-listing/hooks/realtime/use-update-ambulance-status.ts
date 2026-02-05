@@ -1,7 +1,7 @@
 import type {
   GetAmbulancesControl200,
   SwitchAmbulanceStatusBodyStatus,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import * as Ably from "ably";
 
 export interface RealTimeUpdateChatStatusMessage {

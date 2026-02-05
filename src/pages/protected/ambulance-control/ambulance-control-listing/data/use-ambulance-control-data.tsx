@@ -1,5 +1,5 @@
 import type { Column } from "@/components/ui/data-table/data-table-types";
-import type { GetAmbulancesControl200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetAmbulancesControl200DataItem } from "@/http/generated/connect-server.schemas";
 import { getStatusStyle } from "@/utils/ambulance-status";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ export default function useAmbulanceData() {
         return entry ? formatDateBrazilian(entry.shiftStart) : "-";
       },
     },
-    { 
+    {
       key: "ambulanceShiftHistories",
       label: "Saída",
       render: (r) => {

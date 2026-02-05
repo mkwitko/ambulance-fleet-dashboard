@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Send, X, FileText, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GetChatMessages200DataItemMessageType } from "@/http/generated/connectServer.schemas";
+import { GetChatMessages200DataItemMessageType } from "@/http/generated/connect-server.schemas";
 import type { FilePreviewType } from "../../../../types/chat.types";
 
 interface FilePreviewProps {

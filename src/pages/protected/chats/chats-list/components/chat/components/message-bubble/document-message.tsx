@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type {
   GetChatMessages200DataItem,
   GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { linkify } from "@/utils/chat";
 import MessageFooter from "./message-footer";
 
@@ -45,7 +45,7 @@ export function DocumentMessage({
           "relative rounded-2xl overflow-hidden shadow-md border border-input hover:shadow-lg transition-shadow",
           isCurrentUser
             ? "bg-primary text-primary-foreground"
-            : "bg-white/70 rounded-bl-md"
+            : "bg-white/70 rounded-bl-md",
         )}
       >
         {/* --- DOCUMENT PREVIEW AREA --- */}
@@ -71,7 +71,7 @@ export function DocumentMessage({
           <div
             className={cn(
               "p-4 pb-0 pt-2 text-sm",
-              isCurrentUser ? "text-primary-foreground" : "text-foreground"
+              isCurrentUser ? "text-primary-foreground" : "text-foreground",
             )}
           >
             {linkify(message.content as string)}

@@ -19,7 +19,7 @@ import {
 import {
   GetModule200DataBillingType,
   type UpdateModuleBodyBillingType,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { Modules } from "@/@types/modules";
 import { currencyMask, removeCurrencyMask } from "@/utils/masks";
 
@@ -103,7 +103,7 @@ export default function ModulesEdit() {
       setValue("name", module.data?.name);
       setValue(
         "billingValue",
-        currencyMask(String(module.data.billingValue * 100))
+        currencyMask(String(module.data.billingValue * 100)),
       );
       setValue("billingType", module.data.billingType);
     }
@@ -135,7 +135,7 @@ export default function ModulesEdit() {
                 onChange={(value) => {
                   const numericValue = value.target.value.replace(
                     /[^\d,.]/g,
-                    ""
+                    "",
                   );
                   setValue("billingValue", currencyMask(numericValue));
                 }}

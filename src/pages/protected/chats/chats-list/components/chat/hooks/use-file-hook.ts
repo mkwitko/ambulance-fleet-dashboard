@@ -5,7 +5,7 @@ import {
   SendMessageBodyPlatform,
   type GetAuthenticatedUser200Data,
   type GetChats200DataItem,
-} from "@/http/generated/connectServer.schemas";
+} from "@/http/generated/connect-server.schemas";
 import { useGetPressignedUrl } from "@/http/generated/upload/upload";
 import { generateNewFileWithCustomName } from "@/utils/get-file-name";
 import axios from "axios";
@@ -36,7 +36,7 @@ export default function useFileHook({
     if (!filePreview) return;
     if (!online) {
       toast.error(
-        "Você está offline. Não é possível enviar arquivos no momento."
+        "Você está offline. Não é possível enviar arquivos no momento.",
       );
       return;
     }
@@ -49,8 +49,8 @@ export default function useFileHook({
       filePreview.type === GetChatMessages200DataItemMessageType.IMAGE
         ? "image"
         : filePreview.type === GetChatMessages200DataItemMessageType.VIDEO
-        ? "video"
-        : "document";
+          ? "video"
+          : "document";
 
     const { pressignedUrl } = await getPressignedUrl({
       data: {

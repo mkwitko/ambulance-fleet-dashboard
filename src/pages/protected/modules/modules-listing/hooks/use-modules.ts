@@ -1,4 +1,4 @@
-import type { GetModules200DataItem } from "@/http/generated/connectServer.schemas";
+import type { GetModules200DataItem } from "@/http/generated/connect-server.schemas";
 import { useDeleteModule, useGetModules } from "@/http/generated/module/module";
 import { useState } from "react";
 import { toast } from "sonner";
