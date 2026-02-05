@@ -19,7 +19,7 @@ export const realTimeUpdateChatStatus = ({
 }: {
   incomingMessage: Ably.InboundMessage;
   oldData: GetChats200;
-  setSelectedChat: Dispatch<SetStateAction<GetChats200DataItem | undefined>>;
+  setSelectedChat?: Dispatch<SetStateAction<GetChats200DataItem | undefined>>;
 }) => {
   const message = incomingMessage.data as RealTimeUpdateChatStatusMessage;
   // Atualiza o chat correspondente com a nova mensagem
@@ -40,19 +40,20 @@ export const realTimeUpdateChatStatus = ({
     return chat;
   });
 
-  setSelectedChat((prevChat) => {
-    if (!prevChat) return prevChat;
-    if (message.chatIds.includes(prevChat.id)) {
-      return {
-        ...prevChat,
-        ambulance: {
-          ...prevChat.ambulance,
-          status: message.status,
-        },
-      };
-    }
-    return prevChat;
-  });
+  setSelectedChat &&
+    setSelectedChat((prevChat) => {
+      if (!prevChat) return prevChat;
+      if (message.chatIds.includes(prevChat.id)) {
+        return {
+          ...prevChat,
+          ambulance: {
+            ...prevChat.ambulance,
+            status: message.status,
+          },
+        };
+      }
+      return prevChat;
+    });
 
   return {
     ...oldData,

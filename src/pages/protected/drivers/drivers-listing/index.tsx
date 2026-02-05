@@ -37,7 +37,6 @@ export default function DriversListing() {
           queryKey,
           (oldData: GetDrivers200 | undefined) => {
             if (!oldData) return oldData;
-            console.log({ message });
             const updatedData = oldData.data.map((driver) => {
               if (driver.logFrotaId === message.data.driverId) {
                 console.log({ driver });

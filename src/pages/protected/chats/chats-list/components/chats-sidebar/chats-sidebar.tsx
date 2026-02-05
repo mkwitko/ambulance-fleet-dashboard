@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Search, X, Volume2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import { formatInTimeZone } from "date-fns-tz";
 import {
   ReadChatBodyPlatform,
   type GetChats200DataItem,
-  type GetChatsStatusItem,
 } from "@/http/generated/connect-server.schemas";
 import { getInitials } from "@/utils/get-initials";
 import * as Ably from "ably";
@@ -29,6 +28,7 @@ import useSettingsHook from "./hooks/use-settings-hook";
 import useChatsSidebarRealtimeUpdateHook from "./hooks/use-chats-sidebar-realtime-updates-hook";
 import { getLastMessagePreview } from "./utils/get-last-message-preview";
 import { useReadChat } from "@/http/generated/chat/chat";
+import { useStatusFilterContext } from "@/context/status-filter-context";
 
 export default function ChatsSidebar({
   selectedChat,
@@ -49,13 +49,10 @@ export default function ChatsSidebar({
   } = useSettingsHook();
 
   // Primeiro, precisamos definir o statusFilter inicial
-  const [statusFilter, setStatusFilter] = useState<GetChatsStatusItem[]>(
-    STATUS_ORDER.filter(
-      (s) => s !== "FA" && s !== "MN",
-    ) as GetChatsStatusItem[],
-  );
 
-  const { chats, queryKey } = useChatListHook({ statusFilter });
+  const { statusFilter, setStatusFilter } = useStatusFilterContext();
+
+  const { chats, queryKey } = useChatListHook();
 
   // Agora usamos o hook de busca com os chats carregados
   const {
@@ -146,7 +143,7 @@ export default function ChatsSidebar({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="flex flex-col items-center justify-center h-[400px] text-center px-4"
+              className="flex flex-col items-center justify-center h-100 text-center px-4"
             >
               <div className="w-16 h-16 rounded-full bg-accent/50 flex items-center justify-center mb-4">
                 <Search className="w-8 h-8 text-muted-foreground" />

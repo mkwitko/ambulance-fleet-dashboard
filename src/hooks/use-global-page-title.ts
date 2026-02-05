@@ -33,7 +33,7 @@ export default function useGlobalPageTitle() {
 
   // Escuta eventos do websocket para atualizar em tempo real
   const { user } = useAbly({
-    events: [AblyEvents.messages, AblyEvents.readChat],
+    events: [AblyEvents.messages],
     handleMessageReceived: async (message) => {
       const parsedMessage = message.data as GetChatMessages200DataItem;
 

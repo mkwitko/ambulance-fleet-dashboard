@@ -3,6 +3,7 @@ import { useCheckAuth } from "@/http/generated/auth/auth";
 import { useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import useGlobalPageTitle from "@/hooks/use-global-page-title";
+import { StatusFilterContextProvider } from "@/context/status-filter-context";
 
 export function AppLayout() {
   const { data, isFetching } = useCheckAuth();
@@ -32,7 +33,9 @@ export function AppLayout() {
 
       {/* Conteúdo principal */}
       <div className="mx-auto max-w-8xl w-[95%] pt-24 pb-8">
-        <Outlet />
+        <StatusFilterContextProvider>
+          <Outlet />
+        </StatusFilterContextProvider>
       </div>
     </main>
   );

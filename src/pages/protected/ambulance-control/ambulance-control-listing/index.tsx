@@ -27,6 +27,7 @@ export default function AmbulanceControlListing() {
   useAbly({
     events: [AblyEvents.status, AblyEvents.shiftStatus],
     handleMessageReceived: (message) => {
+      // Updating Ambulances
       queryClient.setQueryData(queryKey, (oldData) => {
         if (message.name === AblyEvents.status) {
           return realTimeUpdateAmbulanceStatus({
