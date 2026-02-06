@@ -1,6 +1,5 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
 import type {
-  GetCommsUsers200,
   GetCommsUsers200DataItem,
   GetCommsUsers200Pagination,
 } from "@/http/generated/connect-server.schemas";
@@ -13,35 +12,11 @@ import { Role } from "@/@types/roles";
 import { useEffect } from "react";
 import { AblyEvents } from "@/@types/ably-events";
 import useAbly from "@/hooks/use-ably";
-import { queryClient } from "@/lib/react-query";
 
 export default function CommsListing() {
-  const { commsUsers, handleDelete, queryKey, setPage, setPerPage } =
-    useCommsHook();
+  const { commsUsers, handleDelete, setPage, setPerPage } = useCommsHook();
 
-  const { publish } = useAbly({
-    events: [AblyEvents.activenessResponse],
-    handleMessageReceived: (message) => {
-      if (message.name === AblyEvents.activenessResponse) {
-        const payload = message.data as { userId: string; active: boolean };
-
-        queryClient.setQueryData(
-          queryKey,
-          (oldData: GetCommsUsers200 | undefined) => {
-            if (!oldData) return oldData;
-            return {
-              ...oldData,
-              data: oldData.data.map((user) =>
-                user.id === payload.userId
-                  ? { ...user, active: payload.active }
-                  : user,
-              ),
-            };
-          },
-        );
-      }
-    },
-  });
+  const { publish } = useAbly({});
 
   const { columns, actions } = useCommsData({ handleDelete, publish });
   const navigate = useNavigate();

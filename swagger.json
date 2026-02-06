@@ -1038,6 +1038,26 @@
                               "additionalProperties": false
                             }
                           },
+                          "chats": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "currentPhone": {
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "currentPhone"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
                           "ambulanceShiftHistories": {
                             "type": "array",
                             "items": {
@@ -1078,6 +1098,7 @@
                           "base",
                           "documents",
                           "statusHistory",
+                          "chats",
                           "ambulanceShiftHistories"
                         ],
                         "additionalProperties": false
@@ -1811,11 +1832,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "nullable": true,
-                  "enum": [
-                    null
-                  ]
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "QAP",
+                        "OCP",
+                        "EVT",
+                        "J4",
+                        "J5",
+                        "FA",
+                        "MN"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }
@@ -7255,10 +7290,15 @@
                                 "properties": {
                                   "id": {
                                     "type": "string"
+                                  },
+                                  "currentPhone": {
+                                    "nullable": true,
+                                    "type": "string"
                                   }
                                 },
                                 "required": [
-                                  "id"
+                                  "id",
+                                  "currentPhone"
                                 ],
                                 "additionalProperties": false
                               }
@@ -7829,6 +7869,63 @@
             }
           }
         }
+      },
+      "put": {
+        "operationId": "updateChat",
+        "summary": "Update an chat",
+        "tags": [
+          "Chat"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPhone": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "currentPhone"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": [
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/chats/message/{id}": {
@@ -8118,6 +8215,10 @@
                           "unreadCountWeb": {
                             "type": "number"
                           },
+                          "currentPhone": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "ambulance": {
                             "type": "object",
                             "properties": {
@@ -8200,6 +8301,7 @@
                           "lastMessageAt",
                           "unreadCountApp",
                           "unreadCountWeb",
+                          "currentPhone",
                           "ambulance",
                           "messages"
                         ],

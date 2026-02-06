@@ -1,16 +1,31 @@
 import * as Ably from "ably";
 import { useEffect, useRef, useCallback } from "react";
 import { createAblyToken } from "../http/generated/radio/radio";
-import { useGetAuthenticatedUserAssociations } from "../http/generated/user/user";
+import {
+  useGetAuthenticatedUserAssociations,
+  useGetAuthenticatedUserPermissions,
+} from "../http/generated/user/user";
+import type { Role } from "@/@types/roles";
+import { hasPermission } from "@/utils/permissions";
+
+export interface EventsType {
+  event: string;
+  permissions?: Role[];
+}
 
 export default function useAbly({
   events,
   handleMessageReceived,
 }: {
-  events?: string[];
+  events?: EventsType[];
   handleMessageReceived?: (message: Ably.InboundMessage) => void;
 }) {
   const { data: user } = useGetAuthenticatedUserAssociations();
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions({
+    query: {
+      enabled: events?.some(({ permissions }) => !!permissions),
+    },
+  });
   const clientRef = useRef<Ably.Realtime | null>(null);
 
   // 1️⃣ Create client ONLY when user exists
@@ -42,17 +57,31 @@ export default function useAbly({
 
   // 2️⃣ Subscribe
   useEffect(() => {
-    if (!user || !clientRef.current || !events) return;
+    if (
+      !clientRef.current ||
+      !user ||
+      !events?.length ||
+      !handleMessageReceived
+    ) {
+      return;
+    }
 
     const channelName = `connect-${user.data?.companyGroup?.id}`;
     const channel = clientRef.current.channels.get(channelName);
 
-    channel.subscribe(events, handleMessageReceived);
+    const allowedEvents = events.filter(
+      ({ permissions }) =>
+        !permissions || hasPermission(userPermissions?.data, permissions),
+    );
+
+    allowedEvents.forEach(({ event }) => {
+      channel.subscribe(event, handleMessageReceived);
+    });
 
     return () => {
-      if (channel && handleMessageReceived) {
-        channel.unsubscribe(events, handleMessageReceived);
-      }
+      allowedEvents.forEach(({ event }) => {
+        channel.unsubscribe(event, handleMessageReceived);
+      });
     };
   }, [user, events]);
 
@@ -80,6 +109,7 @@ export default function useAbly({
 
   return {
     user,
+    userPermissions,
     publish,
   };
 }

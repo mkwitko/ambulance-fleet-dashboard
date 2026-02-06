@@ -9,6 +9,7 @@ export const AblyEvents = {
   interCommunicationPlaySound: "interCommunicationPlaySound",
   interCommunicationCall: "interCommunicationCall",
   driverAssociation: "driverAssociation",
+  updatePhone: "updatePhone",
 } as const;
 
 export type AblyEvents = keyof typeof AblyEvents;

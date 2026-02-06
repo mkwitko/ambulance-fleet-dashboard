@@ -22,7 +22,12 @@ import { MessageBubble } from "./components/message-bubble/message-bubble";
 import useRealtimeChatMessages from "./hooks/use-realtime-chats-messages";
 import { connectDatabase } from "@/database/database";
 import { ChatTopOverlay } from "./components/chat-top-overlay";
-import { useGetAuthenticatedUser } from "@/http/generated/user/user";
+import {
+  useGetAuthenticatedUser,
+  useGetAuthenticatedUserPermissions,
+} from "@/http/generated/user/user";
+import { hasPermission } from "@/utils/permissions";
+import { Role } from "@/@types/roles";
 
 interface ChatMainProps {
   selectedChat: GetChats200DataItem | undefined;
@@ -40,6 +45,8 @@ export default function Chat({
   setIncomingMessage,
 }: ChatMainProps) {
   const { data: user } = useGetAuthenticatedUser();
+  const { data: userPermissions } = useGetAuthenticatedUserPermissions();
+
   const [messages, setMessages] = useState<GetChatMessages200DataItem[]>([]);
   const [currentDateOnScreen, setCurrentDateOnScreen] = useState<string | null>(
     null,
@@ -317,60 +324,62 @@ export default function Chat({
       </ScrollArea>
 
       {/* Input */}
-      <div className="p-4 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto">
-          {/* File Preview */}
-          <AnimatePresence>
-            {filePreview && (
-              <FilePreview
-                filePreview={filePreview}
-                message={message}
-                onMessageChange={setMessage}
-                onSend={handleSendFile}
-                onCancel={handleCancelFile}
-                isLoading={isLoading}
-              />
-            )}
-          </AnimatePresence>
-          <AnimatePresence mode="wait">
-            {!audioPreview && !isRecording && !filePreview && (
-              <ChatInput
-                message={message}
-                onMessageChange={setMessage}
-                onSend={handleSendMessage}
-                onKeyPress={handleKeyPress}
-                onStartRecording={startRecording}
-                setFilePreview={setFilePreview}
-              />
-            )}
-          </AnimatePresence>
-          <AnimatePresence mode="wait">
-            {audioPreview && (
-              <AudioPreview
-                audioPreview={audioPreview}
-                isPlaying={isPlayingPreview}
-                isPaused={isPaused}
-                audioRef={audioPreviewRef}
-                onTogglePlay={toggleAudioPreview}
-                onSend={() => {
-                  handleSendAudioMessage(audioBlob);
-                }}
-                onCancel={handleCancelAudio}
-                onEnded={() => setIsPlayingPreview(false)}
-              />
-            )}
-          </AnimatePresence>
-          <AnimatePresence mode="wait">
-            {isRecording && (
-              <RecordingIndicator
-                recordingTime={recordingTime}
-                onStop={stopRecording}
-                onCancel={handleCancelRecording}
-              />
-            )}
-          </AnimatePresence>
+      {hasPermission(userPermissions?.data, Role["chat:sendMessage"]) && (
+        <div className="p-4 backdrop-blur-sm">
+          <div className="max-w-5xl mx-auto">
+            {/* File Preview */}
+            <AnimatePresence>
+              {filePreview && (
+                <FilePreview
+                  filePreview={filePreview}
+                  message={message}
+                  onMessageChange={setMessage}
+                  onSend={handleSendFile}
+                  onCancel={handleCancelFile}
+                  isLoading={isLoading}
+                />
+              )}
+            </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {!audioPreview && !isRecording && !filePreview && (
+                <ChatInput
+                  message={message}
+                  onMessageChange={setMessage}
+                  onSend={handleSendMessage}
+                  onKeyPress={handleKeyPress}
+                  onStartRecording={startRecording}
+                  setFilePreview={setFilePreview}
+                />
+              )}
+            </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {audioPreview && (
+                <AudioPreview
+                  audioPreview={audioPreview}
+                  isPlaying={isPlayingPreview}
+                  isPaused={isPaused}
+                  audioRef={audioPreviewRef}
+                  onTogglePlay={toggleAudioPreview}
+                  onSend={() => {
+                    handleSendAudioMessage(audioBlob);
+                  }}
+                  onCancel={handleCancelAudio}
+                  onEnded={() => setIsPlayingPreview(false)}
+                />
+              )}
+            </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {isRecording && (
+                <RecordingIndicator
+                  recordingTime={recordingTime}
+                  onStop={stopRecording}
+                  onCancel={handleCancelRecording}
+                />
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

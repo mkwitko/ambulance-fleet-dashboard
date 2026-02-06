@@ -1,11 +1,15 @@
-import { useStatusFilterContext } from "@/context/status-filter-context";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { useGetChats } from "@/http/generated/chat/chat";
-import { GetChatsPlatform } from "@/http/generated/connect-server.schemas";
-import { useEffect } from "react";
+import {
+  GetChatsPlatform,
+  GetChatsStatusItem,
+} from "@/http/generated/connect-server.schemas";
 
-export default function useChatListHook() {
-  const { statusFilter } = useStatusFilterContext();
+export default function useChatListHook({
+  statusFilter,
+}: {
+  statusFilter?: GetChatsStatusItem[];
+}) {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
   const { data: chats, queryKey } = useGetChats(
@@ -20,10 +24,6 @@ export default function useChatListHook() {
       },
     },
   );
-
-  useEffect(() => {
-    console.log("Chats updated:", chats);
-  }, [chats]);
 
   return {
     chats,

@@ -2,16 +2,14 @@ import { Header } from "@/components/header/header";
 import { useCheckAuth } from "@/http/generated/auth/auth";
 import { useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import useGlobalPageTitle from "@/hooks/use-global-page-title";
-import { StatusFilterContextProvider } from "@/context/status-filter-context";
+import useWebSocket from "@/websocket/use-websocket";
 
 export function AppLayout() {
   const { data, isFetching } = useCheckAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Atualiza o título da aba com notificações não lidas em todas as páginas protegidas
-  useGlobalPageTitle();
+  useWebSocket();
 
   useEffect(() => {
     if (isFetching) return;
@@ -33,9 +31,7 @@ export function AppLayout() {
 
       {/* Conteúdo principal */}
       <div className="mx-auto max-w-8xl w-[95%] pt-24 pb-8">
-        <StatusFilterContextProvider>
-          <Outlet />
-        </StatusFilterContextProvider>
+        <Outlet />
       </div>
     </main>
   );

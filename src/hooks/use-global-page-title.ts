@@ -1,54 +1,41 @@
 import { useEffect } from "react";
 import { useGetUnreadMessagesByPlatform } from "@/http/generated/chat/chat";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import useAbly from "@/hooks/use-ably";
-import { AblyEvents } from "@/@types/ably-events";
 import { STATUS_ORDER } from "@/utils/ambulance-status";
-import { playNotification } from "@/utils/notification";
 import {
   GetChatsPlatform,
   GetChatsStatusItem,
-  type GetChatMessages200DataItem,
+  type GetAuthenticatedUserPermissions200,
 } from "@/http/generated/connect-server.schemas";
+import { hasPermission } from "@/utils/permissions";
+import { Role } from "@/@types/roles";
 
-const DEFAULT_TITLE = "Connect App";
+const DEFAULT_TITLE = "Connect";
 
-export default function useGlobalPageTitle() {
+export default function useGlobalPageTitle({
+  userPermissions,
+}: {
+  userPermissions: GetAuthenticatedUserPermissions200 | undefined;
+}) {
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: unreadMessages, refetch } = useGetUnreadMessagesByPlatform(
-    {
-      ...queryParams,
-      platform: GetChatsPlatform.WEB,
-      status: STATUS_ORDER as GetChatsStatusItem[], // Todos os status para pegar todas as mensagens não lidas
-    },
-    {
-      query: {
-        enabled: hasSomePermission,
-        // Refetch em background para manter atualizado
-        refetchInterval: 30000, // 30 segundos
+  const { data: unreadMessages, refetch: refetchUnreadMessages } =
+    useGetUnreadMessagesByPlatform(
+      {
+        ...queryParams,
+        platform: GetChatsPlatform.WEB,
+        status: STATUS_ORDER as GetChatsStatusItem[], // Todos os status para pegar todas as mensagens não lidas
       },
-    },
-  );
-
-  // Escuta eventos do websocket para atualizar em tempo real
-  const { user } = useAbly({
-    events: [AblyEvents.messages],
-    handleMessageReceived: async (message) => {
-      const parsedMessage = message.data as GetChatMessages200DataItem;
-
-      //  Notificação sonora para novas mensagens
-      if (message.name === AblyEvents.messages) {
-        playNotification(parsedMessage, user);
-      }
-
-      try {
-        refetch();
-      } catch (error) {
-        console.error("Error updating unread count:", error);
-      }
-    },
-  });
+      {
+        query: {
+          enabled:
+            hasSomePermission &&
+            hasPermission(userPermissions?.data, Role["chat:read"]),
+          // Refetch em background para manter atualizado
+          refetchInterval: 30000, // 30 segundos
+        },
+      },
+    );
 
   // Atualiza o título da aba quando os chats mudam
   useEffect(() => {
@@ -67,4 +54,8 @@ export default function useGlobalPageTitle() {
       document.title = DEFAULT_TITLE;
     }
   }, [unreadMessages]);
+
+  return {
+    refetchUnreadMessages,
+  };
 }

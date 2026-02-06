@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Search, X, Volume2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,27 +17,27 @@ import { AppMultiSelect } from "@/components/app-multi-select";
 import { Avatar } from "@/components/ui/avatar";
 import { formatInTimeZone } from "date-fns-tz";
 import {
+  GetChatsStatusItem,
   ReadChatBodyPlatform,
   type GetChats200DataItem,
 } from "@/http/generated/connect-server.schemas";
 import { getInitials } from "@/utils/get-initials";
-import * as Ably from "ably";
 import useChatListHook from "./hooks/use-chat-list-hook";
 import useSearchChatListHook from "./hooks/use-search-chat-list-hook";
 import useSettingsHook from "./hooks/use-settings-hook";
-import useChatsSidebarRealtimeUpdateHook from "./hooks/use-chats-sidebar-realtime-updates-hook";
 import { getLastMessagePreview } from "./utils/get-last-message-preview";
-import { useReadChat } from "@/http/generated/chat/chat";
-import { useStatusFilterContext } from "@/context/status-filter-context";
+import {
+  getGetUnreadMessagesByPlatformQueryKey,
+  useReadChat,
+} from "@/http/generated/chat/chat";
+import { queryClient } from "@/lib/react-query";
 
 export default function ChatsSidebar({
   selectedChat,
   setSelectedChat,
-  incomingMessage,
 }: {
   selectedChat: GetChats200DataItem | undefined;
   setSelectedChat: Dispatch<SetStateAction<GetChats200DataItem | undefined>>;
-  incomingMessage: Ably.InboundMessage | undefined;
 }) {
   const {
     soundEnabled,
@@ -49,10 +49,23 @@ export default function ChatsSidebar({
   } = useSettingsHook();
 
   // Primeiro, precisamos definir o statusFilter inicial
+  const [statusFilter, setStatusFilter] = useState<GetChatsStatusItem[]>(
+    STATUS_ORDER.filter(
+      (s) => s !== "FA" && s !== "MN",
+    ) as GetChatsStatusItem[],
+  );
 
-  const { statusFilter, setStatusFilter } = useStatusFilterContext();
+  const { chats } = useChatListHook({ statusFilter });
 
-  const { chats, queryKey } = useChatListHook();
+  useEffect(() => {
+    const chatSelected = chats?.data.find((c) => c.id === selectedChat?.id);
+    if (chatSelected) {
+      setSelectedChat(chatSelected);
+    } else {
+      // Se o chat selecionado não estiver mais na lista (ex: mudou de status), desmarca a seleção
+      setSelectedChat(undefined);
+    }
+  }, [chats]);
 
   // Agora usamos o hook de busca com os chats carregados
   const {
@@ -61,12 +74,6 @@ export default function ChatsSidebar({
     filteredChats: actualFilteredChats,
   } = useSearchChatListHook({
     chats,
-  });
-
-  useChatsSidebarRealtimeUpdateHook({
-    incomingMessage,
-    queryKey,
-    setSelectedChat,
   });
 
   const { mutateAsync: readChat } = useReadChat();
@@ -188,18 +195,23 @@ export default function ChatsSidebar({
                     >
                       {/* Card estilo WhatsApp: plano, hover leve */}
                       <div
-                        onClick={() => {
+                        onClick={async () => {
                           setSelectedChat(chat);
                           if (
                             chat?.unreadCountWeb &&
                             chat?.unreadCountWeb > 0
                           ) {
-                            readChat({
+                            await readChat({
                               id: chat.id,
                               data: {
                                 platform: ReadChatBodyPlatform.WEB,
                                 unitId: chat.ambulance.unitId,
                               },
+                            });
+
+                            queryClient.invalidateQueries({
+                              queryKey:
+                                getGetUnreadMessagesByPlatformQueryKey(),
                             });
                           }
                         }}
