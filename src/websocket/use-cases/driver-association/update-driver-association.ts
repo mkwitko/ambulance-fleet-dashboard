@@ -15,7 +15,7 @@ export const updateDriverAssociation = ({
     (oldData) => {
       if (!oldData) return oldData;
       const updatedData = oldData.data.map((driver) => {
-        if (driver.logFrotaId === incomingMessage.data.driverId) {
+        if (driver.id === incomingMessage.data.driverId) {
           return {
             ...driver,
             driverAssociation: [
