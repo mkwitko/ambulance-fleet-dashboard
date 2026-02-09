@@ -104,4 +104,9 @@ export default function useWebSocket() {
 
   // Atualiza o título da aba com notificações não lidas em todas as páginas protegidas
   const { refetchUnreadMessages } = useGlobalPageTitle({ userPermissions });
+
+  return {
+    user,
+    userPermissions,
+  };
 }

@@ -1,6 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import { Role, RolesData } from "@/@types/roles";
-import { resourceTranslations, actionTranslations } from "../data";
+import {
+  resourceTranslations,
+  actionTranslations,
+  resourceModules,
+} from "../data";
 import type {
   PermissionGroup,
   PresetRole,
@@ -8,6 +12,8 @@ import type {
 import type { GetUser200 } from "@/http/generated/connect-server.schemas";
 import { useGetAuthenticatedUserPermissions } from "@/http/generated/user/user";
 import { useHasDriversIntegrationByUser } from "@/http/generated/drivers/drivers";
+import { useGetUserModules } from "@/http/generated/module/module";
+import { hasModule } from "@/utils/modules";
 
 export function usePermissions({
   editUser,
@@ -17,15 +23,38 @@ export function usePermissions({
   isFetching: boolean;
 }) {
   const { data: user } = useGetAuthenticatedUserPermissions();
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const { data: userModules } = useGetUserModules(
+    {
+      userId: editUser?.data.id as string,
+    },
+    {
+      query: {
+        enabled: !!editUser?.data.id,
+      },
+    },
+  );
 
   const { data: hasDriverIntegration } = useHasDriversIntegrationByUser({
     query: {
       enabled: !!user,
     },
   });
+
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  const hasResourceModule = (resource: string) => {
+    // descobrir quais módulos habilitam esse resource
+    const requiredModules = Object.entries(resourceModules)
+      .filter(([, resources]) => resources.includes(resource))
+      .map(([moduleName]) => moduleName);
+
+    // se o resource não depende de nenhum módulo, mostra sempre
+    if (requiredModules.length === 0) return true;
+
+    return hasModule(requiredModules, userModules);
+  };
 
   useEffect(() => {
     if (isFetching) return;
@@ -59,6 +88,10 @@ export function usePermissions({
         return;
       }
 
+      if (!hasResourceModule(resource)) {
+        return;
+      }
+
       if (resource === "driver" && !hasDriverIntegration) {
         return;
       }
@@ -79,7 +112,7 @@ export function usePermissions({
     return Object.values(groups).sort((a, b) =>
       a.displayName.localeCompare(b.displayName),
     );
-  }, [user]);
+  }, [user, userModules]);
 
   const filteredGroups = useMemo(() => {
     if (!searchQuery.trim()) return permissionGroups;
@@ -147,5 +180,8 @@ export function usePermissions({
     selectAll,
     clearAll,
     getPresetNewPermissions,
+    hasModule,
+    userModules,
+    hasResourceModule,
   };
 }

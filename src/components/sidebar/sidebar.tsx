@@ -5,6 +5,7 @@ import {
   Building2,
   Group,
   Home,
+  Info,
   MessagesSquare,
   Radio,
   Users,
@@ -23,6 +24,14 @@ import { UserCard } from "./user-card";
 import LogoInline from "@/assets/svg/inline.svg";
 import { Role } from "@/@types/roles";
 import { useHasDriversIntegrationByUser } from "@/http/generated/drivers/drivers";
+import { useGetUserModules } from "@/http/generated/module/module";
+import { getModuleAccessInfo } from "@/utils/modules";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface SidebarProps {
   handleClose: () => void;
@@ -32,6 +41,16 @@ export function Sidebar({ handleClose }: SidebarProps) {
   const { data: user } = useGetAuthenticatedUser();
   const { data: userPermissions } = useGetAuthenticatedUserPermissions();
   const { data: hasIntegration } = useHasDriversIntegrationByUser();
+  const { data: userModules } = useGetUserModules(
+    {
+      userId: user?.data.id as string,
+    },
+    {
+      query: {
+        enabled: !!user?.data.id,
+      },
+    },
+  );
 
   const navItems = [
     {
@@ -46,6 +65,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       ],
       icon: Building2,
       title: "Cadastros",
+      module: ["Base"],
       children: [
         {
           type: "link",
@@ -98,6 +118,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/ambulances/control",
       icon: AmbulanceIcon,
       title: "Controle de VTRs",
+      module: ["Controle de Status"],
     },
     {
       type: "link",
@@ -113,6 +134,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/chats/list",
       icon: MessagesSquare,
       title: "Conversas",
+      module: ["Chat"],
     },
     {
       type: "link",
@@ -120,6 +142,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/radio/list",
       icon: Radio,
       title: "Rádio",
+      module: ["Rádio"],
     },
     {
       type: "link",
@@ -127,6 +150,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/comms/list",
       icon: Radio,
       title: "Intercomunicação",
+      module: ["Intercomunicador"],
     },
     {
       type: "link",
@@ -134,6 +158,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/integrations/list",
       icon: Blocks,
       title: "Integrações",
+      module: ["Integração com Status IRIS", "Motoristas"],
     },
     {
       type: "link",
@@ -142,6 +167,7 @@ export function Sidebar({ handleClose }: SidebarProps) {
       to: "/drivers/list",
       icon: Ambulance,
       title: "Motoristas",
+      module: ["Motoristas"],
     },
   ];
 
@@ -201,6 +227,9 @@ export function Sidebar({ handleClose }: SidebarProps) {
             if (item.hide) return;
             if (!hasPermission(userPermissions?.data, item.role)) return null;
 
+            const moduleInfo = getModuleAccessInfo(item.module, userModules);
+            if (!moduleInfo.hasAccess) return null;
+
             return (
               <motion.div
                 key={idx}
@@ -216,7 +245,27 @@ export function Sidebar({ handleClose }: SidebarProps) {
                   item={item as NavLinkItem}
                   handleClose={handleClose}
                   user={userPermissions?.data}
-                />
+                >
+                  {moduleInfo.partial && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="ml-auto h-4 w-4 text-yellow-500" />
+                        </TooltipTrigger>
+                        <TooltipContent align="end" className="max-w-xs">
+                          <p className="font-medium mb-1">
+                            Disponível apenas para:
+                          </p>
+                          <ul className="text-xs list-disc pl-4">
+                            {moduleInfo.companiesWithAccess.map((company) => (
+                              <li key={company}>{company}</li>
+                            ))}
+                          </ul>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </SidebarItem>
               </motion.div>
             );
           })}

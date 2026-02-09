@@ -1,6 +1,6 @@
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
-import { useGetAmbulances } from "@/http/generated/ambulance/ambulance";
 import { GetAmbulancesStatusItem } from "@/http/generated/connect-server.schemas";
+import { useGetRadioAmbulances } from "@/http/generated/radio/radio";
 import { useState } from "react";
 
 export default function useRadioHook() {
@@ -9,7 +9,7 @@ export default function useRadioHook() {
 
   const { queryParams, hasSomePermission } = useGetUserPermissions();
 
-  const { data: ambulances } = useGetAmbulances(
+  const { data: ambulances } = useGetRadioAmbulances(
     {
       ...queryParams,
       page,

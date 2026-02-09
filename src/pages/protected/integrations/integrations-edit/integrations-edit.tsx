@@ -39,6 +39,8 @@ import { translateIntegrationType } from "@/utils/integrations-types";
 import useIntegrationshook from "../integrations-list/hooks/use-integrations";
 import { useImportDriversLogFrotaCompany } from "@/http/generated/drivers/drivers";
 import { queryClient } from "@/lib/react-query";
+import { useGetUserModules } from "@/http/generated/module/module";
+import { hasModule } from "@/utils/modules";
 
 //
 // -----------------------
@@ -102,6 +104,19 @@ export default function IntegrationsEdit() {
     userPermissions?.data,
     Role["sys_admin:accessAll"],
   );
+
+  const { data: userModules } = useGetUserModules(
+    {
+      userId: userPermissions?.data.id as string,
+      modules: ["Motoristas", "Integração com Status IRIS"],
+    },
+    {
+      query: {
+        enabled: !!userPermissions?.data.id,
+      },
+    },
+  );
+
   hasPermission(userPermissions?.data, Role["sys_admin:accessAll"]);
 
   const { data: companies, isFetching: isFetchingCompanies } = useGetCompanies(
@@ -351,14 +366,29 @@ export default function IntegrationsEdit() {
                   setValue("integrationType", v)
                 }
                 placeholder="Selecione o tipo"
-                items={Object.entries(
-                  GetIntegrationsId200DataIntegrationType,
-                ).map(([k, v]) => ({
-                  label: translateIntegrationType(
-                    k as GetIntegrationsId200DataIntegrationType,
-                  ),
-                  value: v,
-                }))}
+                items={Object.entries(GetIntegrationsId200DataIntegrationType)
+                  .filter(([k]) => {
+                    if (
+                      k === GetIntegrationsId200DataIntegrationType.DRIVERS &&
+                      !hasModule(["Motoristas"], userModules)
+                    )
+                      return null;
+                    if (
+                      k === GetIntegrationsId200DataIntegrationType.IRIS &&
+                      !hasModule(["Integração com Status IRIS"], userModules)
+                    )
+                      return null;
+
+                    return true;
+                  })
+                  .map(([k, v]) => {
+                    return {
+                      label: translateIntegrationType(
+                        k as GetIntegrationsId200DataIntegrationType,
+                      ),
+                      value: v,
+                    };
+                  })}
               />
 
               {errors.integrationType && (
@@ -408,10 +438,21 @@ export default function IntegrationsEdit() {
                     onValueChange={(v) => setValue("companiesId", v)}
                     placeholder="Selecione Empresas"
                     items={
-                      companies?.data?.map((c) => ({
-                        label: c.name,
-                        value: c.id,
-                      })) ?? []
+                      companies?.data
+                        ?.filter((c) => {
+                          userModules?.data.companies.some((company) => {
+                            return company.companyModules.some(
+                              (companyModule) =>
+                                companyModule.module.name ===
+                                  "Integração com Status IRIS" &&
+                                company.id === c.id,
+                            );
+                          });
+                        })
+                        .map((c) => ({
+                          label: c.name,
+                          value: c.id,
+                        })) ?? []
                     }
                     loading={isFetchingCompanies}
                   />
@@ -423,10 +464,20 @@ export default function IntegrationsEdit() {
                     onValueChange={(v) => setValue("companiesId", [v])}
                     placeholder="Selecione Empresas"
                     items={
-                      companies?.data?.map((c) => ({
-                        label: c.name,
-                        value: c.id,
-                      })) ?? []
+                      companies?.data
+                        ?.filter((c) => {
+                          return userModules?.data.companies.some((company) => {
+                            return company.companyModules.some(
+                              (companyModule) =>
+                                companyModule.module.name === "Motoristas" &&
+                                company.id === c.id,
+                            );
+                          });
+                        })
+                        .map((c) => ({
+                          label: c.name,
+                          value: c.id,
+                        })) ?? []
                     }
                     loading={isFetchingCompanies}
                   />

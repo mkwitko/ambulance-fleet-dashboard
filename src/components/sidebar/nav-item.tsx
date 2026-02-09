@@ -25,6 +25,7 @@ interface SidebarItemProps {
   handleClose: () => void;
   user?: GetAuthenticatedUserPermissions200Data;
   level?: number;
+  children?: React.ReactNode;
 }
 
 export function SidebarItem({
@@ -32,6 +33,7 @@ export function SidebarItem({
   handleClose,
   user,
   level = 0,
+  children,
 }: SidebarItemProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -172,6 +174,7 @@ export function SidebarItem({
             className="w-2 h-2 bg-white rounded-full relative z-10"
           />
         )}
+        {children && children}
       </motion.button>
 
       {/* Children with staggered animation */}

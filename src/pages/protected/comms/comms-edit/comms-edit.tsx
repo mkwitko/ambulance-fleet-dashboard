@@ -34,6 +34,8 @@ import {
 import { useGetBases } from "@/http/generated/base/base";
 import useGetUserPermissions from "@/hooks/use-get-user-permissions";
 import { queryClient } from "@/lib/react-query";
+import { useGetUserModules } from "@/http/generated/module/module";
+import { useGetAuthenticatedUser } from "@/http/generated/user/user";
 
 // --- Schema ---
 const usersSchema = z.object({
@@ -67,6 +69,8 @@ export default function UsersCommsEdit() {
     mode: "all",
   });
 
+  const { data: user } = useGetAuthenticatedUser();
+
   // Get user to edit
   const {
     data: userToEdit,
@@ -75,6 +79,22 @@ export default function UsersCommsEdit() {
   } = useGetCommsUserById(id as string, {
     query: { enabled: isEdit && !!id },
   });
+
+  const { data: userModules } = useGetUserModules(
+    {
+      userId: user?.data.id as string,
+      modules: ["Intercomunicador"],
+    },
+    {
+      query: {
+        enabled: !!user?.data.id,
+      },
+    },
+  );
+
+  useEffect(() => {
+    console.log("User Modules:", userModules);
+  }, [userModules]);
 
   // Permissions + bases
   const { queryParams, hasSomePermission } = useGetUserPermissions();
@@ -91,7 +111,6 @@ export default function UsersCommsEdit() {
 
   useEffect(() => {
     if (isFetching || isFetchingBases) return;
-    console.log({ userToEdit });
     if (isEdit && userToEdit && bases?.data && bases?.data.length > 0) {
       reset({
         name: userToEdit.name,
@@ -240,10 +259,18 @@ export default function UsersCommsEdit() {
                     emptyMessage="Nenhuma base encontrada."
                     loading={isFetchingBases}
                     items={
-                      bases?.data?.map((b) => ({
-                        label: b.name,
-                        value: b.id,
-                      })) || []
+                      bases?.data
+                        .filter((b) => {
+                          if (!userModules?.data) return true; // Se não temos os módulos do usuário, mostramos todas as bases
+
+                          return userModules.data.companies.some((c) => {
+                            return c.bases.some((cb) => cb.id === b.id);
+                          });
+                        })
+                        ?.map((b) => ({
+                          label: b.name,
+                          value: b.id,
+                        })) || []
                     }
                   />
 

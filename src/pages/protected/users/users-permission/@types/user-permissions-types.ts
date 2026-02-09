@@ -18,4 +18,5 @@ export interface PresetRole {
   color: string;
   permissions: Role[];
   showTo?: Role[];
+  module: string[];
 }

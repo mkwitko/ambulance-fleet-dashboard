@@ -42,6 +42,24 @@ export const resourceTranslations: Record<string, string> = {
   integrations: "Integrações",
 };
 
+export const resourceModules: Record<string, string[]> = {
+  Base: [
+    "companyGroup",
+    "company",
+    "unit",
+    "base",
+    "user",
+    "ambulance",
+    "ambulanceDocuments",
+  ],
+  Chat: ["chat"],
+  "Controle de Status": ["ambulanceControl"],
+  Rádio: ["radio"],
+  Intercomunicador: ["comms"],
+  Motoristas: ["driver", "integrations"],
+  "Integração com Status IRIS": ["integrations"],
+};
+
 export const presetRoles: PresetRole[] = [
   {
     id: "admin",
@@ -51,6 +69,7 @@ export const presetRoles: PresetRole[] = [
     color: "from-purple-500 to-pink-500",
     permissions: [Role["companyGroup_admin:accessAll"]],
     showTo: [Role["sys_admin:accessAll"]],
+    module: ["Base"],
   },
   {
     id: "admin",
@@ -60,6 +79,7 @@ export const presetRoles: PresetRole[] = [
     color: "from-purple-500 to-pink-500",
     permissions: [Role["company_admin:accessAll"]],
     showTo: [Role["sys_admin:accessAll"], Role["companyGroup_admin:accessAll"]],
+    module: ["Base"],
   },
   {
     id: "rop",
@@ -80,6 +100,7 @@ export const presetRoles: PresetRole[] = [
       Role["radio:read"],
       Role["unit:read"],
     ],
+    module: ["Base"],
   },
   {
     id: "nurse",
@@ -99,5 +120,6 @@ export const presetRoles: PresetRole[] = [
       Role["ambulance:associateUser"],
       Role["driver:associateDriver"],
     ],
+    module: ["Base"],
   },
 ];

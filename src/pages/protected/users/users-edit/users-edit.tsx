@@ -189,7 +189,13 @@ export default function UsersEdit() {
         unitsIds: data.unitsId,
         basesIds: data.basesId,
         birthDate,
-        roles: [Role["chat:read"], Role["chat:sendMessage"], Role["unit:read"]],
+        roles: [
+          Role["chat:read"],
+          Role["chat:sendMessage"],
+          Role["company:read"],
+          Role["unit:read"],
+          Role["base:read"],
+        ],
       },
     });
   };

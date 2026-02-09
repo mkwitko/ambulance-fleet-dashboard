@@ -59,6 +59,8 @@ export default function UsersPermissions() {
     selectAll,
     clearAll,
     getPresetNewPermissions,
+    hasModule,
+    userModules,
   } = usePermissions({ editUser, isFetching });
 
   const handleSave = async () => {
@@ -121,7 +123,10 @@ export default function UsersPermissions() {
               {presetRoles
                 .filter((preset) => {
                   if (!preset.showTo) return true;
-                  return hasPermission(user?.data, preset.showTo as Role[]);
+                  return (
+                    hasPermission(user?.data, preset.showTo as Role[]) &&
+                    hasModule(preset.module, userModules)
+                  );
                 })
                 .map((preset) => {
                   const newPermissions = getPresetNewPermissions(preset);
