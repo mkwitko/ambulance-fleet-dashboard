@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "yarn orval && vite",
-    "start": "yarn orvalProd && vite",
+    "start": "yarn orval && vite",
     "build": "yarn orval && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
