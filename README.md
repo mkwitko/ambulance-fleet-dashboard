@@ -109,7 +109,6 @@ yarn vite           # or: yarn dev (runs orval first)
 
 - No automated tests and no CI.
 - `swagger.json` is a snapshot of the API contract and can drift from `ambulance-fleet-api`.
-- The `start` script references an `orvalProd` script that is not defined.
 - Offline message queue (`src/database`, `use-offline-hook.ts`) is not active.
 
 ## Testing
