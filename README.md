@@ -29,6 +29,7 @@ Captured with Playwright against the Vite dev server, with API responses served 
 System context:
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#0B0C0E","primaryColor":"#15171B","primaryTextColor":"#E6E8EB","primaryBorderColor":"#9AA0A8","secondaryColor":"#1E2126","tertiaryColor":"#1E2126","lineColor":"#9AA0A8","textColor":"#E6E8EB","clusterBkg":"#101216","clusterBorder":"#2A2E35","edgeLabelBackground":"#0B0C0E","actorBkg":"#15171B","actorBorder":"#9AA0A8","actorTextColor":"#E6E8EB","signalColor":"#9AA0A8","signalTextColor":"#E6E8EB","noteBkgColor":"#1E2126","noteTextColor":"#E6E8EB","noteBorderColor":"#2A2E35","fontFamily":"ui-monospace, SFMono-Regular, Menlo, monospace","fontSize":"13px"}, "flowchart":{"curve":"linear","nodeSpacing":40,"rankSpacing":48,"padding":12}}}%%
 flowchart LR
   Dash[ambulance-fleet-dashboard<br/>operator web console]
   App[ambulance-fleet-app<br/>crew and base app]
@@ -50,6 +51,7 @@ flowchart LR
 Inside this app:
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#0B0C0E","primaryColor":"#15171B","primaryTextColor":"#E6E8EB","primaryBorderColor":"#9AA0A8","secondaryColor":"#1E2126","tertiaryColor":"#1E2126","lineColor":"#9AA0A8","textColor":"#E6E8EB","clusterBkg":"#101216","clusterBorder":"#2A2E35","edgeLabelBackground":"#0B0C0E","actorBkg":"#15171B","actorBorder":"#9AA0A8","actorTextColor":"#E6E8EB","signalColor":"#9AA0A8","signalTextColor":"#E6E8EB","noteBkgColor":"#1E2126","noteTextColor":"#E6E8EB","noteBorderColor":"#2A2E35","fontFamily":"ui-monospace, SFMono-Regular, Menlo, monospace","fontSize":"13px"}, "flowchart":{"curve":"linear","nodeSpacing":40,"rankSpacing":48,"padding":12}}}%%
 flowchart TB
   Router[src/router<br/>React Router, one file per area] --> Pages[src/pages/protected/*<br/>listing, edit, data and hooks per page]
   Pages --> Gen[src/http/generated<br/>Orval + React Query, git-ignored]
@@ -64,6 +66,7 @@ flowchart TB
 Realtime event flow:
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#0B0C0E","primaryColor":"#15171B","primaryTextColor":"#E6E8EB","primaryBorderColor":"#9AA0A8","secondaryColor":"#1E2126","tertiaryColor":"#1E2126","lineColor":"#9AA0A8","textColor":"#E6E8EB","clusterBkg":"#101216","clusterBorder":"#2A2E35","edgeLabelBackground":"#0B0C0E","actorBkg":"#15171B","actorBorder":"#9AA0A8","actorTextColor":"#E6E8EB","signalColor":"#9AA0A8","signalTextColor":"#E6E8EB","noteBkgColor":"#1E2126","noteTextColor":"#E6E8EB","noteBorderColor":"#2A2E35","fontFamily":"ui-monospace, SFMono-Regular, Menlo, monospace","fontSize":"13px"}, "flowchart":{"curve":"linear","nodeSpacing":40,"rankSpacing":48,"padding":12}}}%%
 sequenceDiagram
   participant Srv as ambulance-fleet-api
   participant Ably
