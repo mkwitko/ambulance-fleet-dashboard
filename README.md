@@ -14,6 +14,16 @@ Web operator console for a multi-tenant ambulance-fleet platform: administer com
 - Permission-aware navigation: sidebar and routes depend on the user's roles (`src/hooks/use-get-user-permissions.ts`, `src/utils/permissions.ts`).
 - Notification sound for incoming messages.
 
+## Screenshots
+
+Captured with Playwright against the Vite dev server, with API responses served by route mocks and fictitious data (no real backend or customer data). The header logo still shows the legacy product name.
+
+<table>
+<tr><td width="50%"><img src="docs/screenshots/01-vehicle-control-desktop.png" alt="Ambulance control board with status table and in-service meters"><br><sub>Ambulance control board (desktop). The header logo still shows the legacy name.</sub></td><td width="50%"><img src="docs/screenshots/02-ambulances-desktop.png" alt="Ambulance list with plate, unit, base and status selector"><br><sub>Ambulance list with unit, base and status selector (desktop).</sub></td></tr>
+<tr><td width="50%"><img src="docs/screenshots/03-chats-desktop.png" alt="Chat conversation list with unread counts"><br><sub>Chat conversation list with unread counts (desktop).</sub></td><td width="50%"><img src="docs/screenshots/05-bases-desktop.png" alt="Bases list"><br><sub>Bases list (desktop).</sub></td></tr>
+<tr><td width="50%"><img src="docs/screenshots/01-vehicle-control-mobile.png" alt="Ambulance control board on a phone"><br><sub>Control board (mobile).</sub></td><td width="50%"><img src="docs/screenshots/02-ambulances-mobile.png" alt="Ambulance list on a phone"><br><sub>Ambulance list (mobile).</sub></td></tr>
+</table>
+
 ## Architecture
 
 System context:
